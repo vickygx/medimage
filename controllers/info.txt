@@ -1,0 +1,1 @@
+All the functions related to manipulating and retrieving information frm the database
