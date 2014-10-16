@@ -1,3 +1,0 @@
-Folder to hold schemas and model!
-
-(i.e. last line should be module.exports = mongoose.model('user', UserSchema')

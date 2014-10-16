@@ -1,2 +1,11 @@
-h1= title
-p Welcome to #{title}
+html
+	head
+		include ./partials/head.jade
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		block head
+
+	body
+		h1= title
+		p Welcome to #{title}
+		block body
+
