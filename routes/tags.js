@@ -1,6 +1,6 @@
 
 module.exports = function(app){
-  // Create tag for photo with given id
+  // Create or add tag for photo with given id
   app.post('/tag/:imageid', function(req, res){
 
   });
