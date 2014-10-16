@@ -17,21 +17,21 @@ var DemoController = function() {
     eventListeners();
   }
 
-  var ajaxController = function() {
-    this.get = function(url, data) {
-      return ajaxReq("GET", url, data);
+  var AjaxController = function() {
+    this.get = function(url, data, failCallback) {
+      return ajaxReq("GET", url, data, failCallback);
     }
 
-    this.post = function(url, data) {
-      return ajaxReq("POST", url, data);
+    this.post = function(url, data, failCallback) {
+      return ajaxReq("POST", url, data, failCallback);
     }
 
-    this.put = function(url, data) {
-      return ajaxReq("PUT", url, data);
+    this.put = function(url, data, failCallback) {
+      return ajaxReq("PUT", url, data, failCallback);
     }
 
-    this.del = function(url, data) {
-      return ajaxReq("DELETE", url, data);
+    this.del = function(url, data, failCallback) {
+      return ajaxReq("DELETE", url, data, failCallback);
     }
 
     var ajaxReq = function(type, url, data, failCallback) {
@@ -53,37 +53,58 @@ var DemoController = function() {
   }
 
   var eventListeners = function() {
-    $("#annotationsGet").on("click", function() {
-      var data = {};
 
-      ajaxController.get('/annotation/0', data).done(function(res) {
+    var ajaxController = new AjaxController();
+    /////////////////////////////////////////////////////////////////
+    // Annotations
+    /////////////////////////////////////////////////////////////////
+    (function() {
+      $("#annotationsGetBtn").on("click", function() {
+        var data = {};
 
+        ajaxController.get('/annotation/0', data).done(function(res) {
+          $("#annotationsGet").text(res);
+        });
       });
-    });
 
-    $("#annotationsCreate").on("click", function() {
-      var data = {};
+      $("#annotationsCreateBtn").on("click", function() {
+        var data = {};
 
-      ajaxController.post('/annotation', data).done(function(res) {
-
+        ajaxController.post('/annotation', data).done(function(res) {
+          $("#annotationsCreate").text(res);
+        });
       });
-    });
 
-    $("#annotationsEdit").on("click", function() {
-      var data = {};
+      $("#annotationsEditBtn").on("click", function() {
+        var data = {};
 
-      ajaxController.put('/annotation', data).done(function(res) {
-
+        ajaxController.put('/annotation', data).done(function(res) {
+          $("#annotationsEdit").text(res);
+        });
       });
-    });
 
-    $("#annotationsDelete").on("click", function() {
-      var data = {};
+      $("#annotationsDeleteBtn").on("click", function() {
+        var data = {};
 
-      ajaxController.del('/annotation', data).done(function(res) {
-
+        ajaxController.del('/annotation', data).done(function(res) {
+          $("#annotationsDelete").text(res);
+        });
       });
-    });
+    })();
+
+    /////////////////////////////////////////////////////////////////
+    // Contributions
+    /////////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////////////////////////
+    // MedImages
+    /////////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////////////////////////
+    // Tags
+    /////////////////////////////////////////////////////////////////
   }
 
   return {
