@@ -1,54 +1,24 @@
-var ndapp = angular.module('ndapp');
+var Controller = function() {
+  
+  // Public variables, available outside controller
+  var public = {};
 
-ndapp.controller('Controller', function($scope, ndService) {
+  // Private variables, 
+  var private = {};
 
-  // Public /////////////////////////////////////////////////////////
-
-  var public = $scope.viewModel = {
-
-  }
-
-  var setViewModel = function() {
-
-    $scope.$apply(function() {
-
-    });
-  }
-
-  // Private ////////////////////////////////////////////////////////
-
-  var private = (function() {
-    return {
-
-    }
-  })();
-
+  // Helper functions
   var helpers = (function() {
- 
-    function sizingJS() {}
 
-    function responsiveJS() {
-      sizingJS();
-    }
-
-    return {
-      sizingJS: sizingJS, 
-      responsiveJS: responsiveJS
-    }
+    return {}
   })();
 
-  var init = (function() {
-    setViewModel();
+  // Starts all processes
+  var init = function() {
 
-    helpers.sizingJS();
-    $(window).resize(function() {
-      helpers.responsiveJS();
-    });
-
-    eventHandlers();
-  })();
-
-  function eventHandlers() {
-    
   }
-});
+
+  return {
+    public: public, 
+    init: init
+  }
+}
