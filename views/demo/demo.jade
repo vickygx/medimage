@@ -52,7 +52,9 @@ block content
           div Response: 
           div#imagesGet
         li Create a medical image
-          button Submit
+          form#uploadImageForm(name="uploadImage")
+            input(type="file" name="medImage" required)
+            input(type="submit")
           div Response: 
           div#imagesCreate
         li Delete an image

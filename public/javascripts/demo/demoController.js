@@ -73,6 +73,32 @@ var DemoController = function() {
     // MedImages
     /////////////////////////////////////////////////////////////////
 
+    (function() {
+      $("#uploadImageForm").on("submit", function(e) {
+        //prevent reload
+        e.preventDefault();
+        
+        //get formdata
+        var formData = new FormData($(this)[0]);
+
+        //upload image
+        $.ajax({
+          url: "/medimages",
+          type: "POST",
+          data: formData,
+          dataType: "json",
+          contentType: false,
+          processData: false,
+          success: function(res) {
+            console.log("good post request!");
+            console.log("type: " + res.fileType);
+          },
+          error: function() {
+            console.log("bad post request...");
+          }
+        });
+      });
+    })();
 
     /////////////////////////////////////////////////////////////////
     // Tags
