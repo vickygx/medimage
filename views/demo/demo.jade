@@ -7,8 +7,9 @@ block content
 
   script.
     var demoController = new DemoController();
-    // Replace with document.ready
-    window.onload = demoController.init();
+    $(document).ready(function() {
+      demoController.init();
+    });
   
   ul
     li Annotations
