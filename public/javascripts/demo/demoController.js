@@ -84,6 +84,12 @@ var DemoController = function() {
 
       });
     });
+
+    $("#uploadImageForm").on("submit", function(e) {
+      e.preventDefault();
+      console.log("submitted without reload");
+
+    });
   }
 
   return {
