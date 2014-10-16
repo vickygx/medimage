@@ -24,37 +24,44 @@ var DemoController = function() {
     // Annotations
     /////////////////////////////////////////////////////////////////
     (function() {
-      $("#annotationsGetBtn").on("click", function() {
-        var data = {};
 
-        ajaxController.get('/annotation/0', data).done(function(res) {
+      // Get all the annotations of the medical image
+      // with the given id
+      $("#annotationsGetBtn").on("click", function() {
+        var imageId = 0;
+
+        ajaxController.get('/annotation/' + imageId).done(function(res) {
           $("#annotationsGet").text(res);
         });
       });
 
+      // Create a new annotation
       $("#annotationsCreateBtn").on("click", function() {
-        var data = {};
+        var data = {message: 'AnnotationCreateBtn clicked'};
 
         ajaxController.post('/annotation', data).done(function(res) {
           $("#annotationsCreate").text(res);
         });
       });
 
+      // Edit an existing annotation
       $("#annotationsEditBtn").on("click", function() {
-        var data = {};
+        var data = {message: 'AnnotationEditBtn clicked'};
 
         ajaxController.put('/annotation', data).done(function(res) {
           $("#annotationsEdit").text(res);
         });
       });
 
+      // Delete an annotation
       $("#annotationsDeleteBtn").on("click", function() {
-        var data = {};
+        var data = {message: 'AnnotationDeleteBtn clicked'};
 
         ajaxController.del('/annotation', data).done(function(res) {
           $("#annotationsDelete").text(res);
         });
       });
+
     })();
 
     /////////////////////////////////////////////////////////////////
