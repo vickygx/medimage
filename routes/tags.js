@@ -1,8 +1,17 @@
 
 module.exports = function(app){
-  // Get all the tags of the medical image with
-  // the given id
-  app.get('/tag/:id', function(req, res) {
+  // Create tag for photo with given id
+  app.post('/tag/:imageid', function(req, res){
+
+  });
+
+  // Remove tag off of photo with given id
+  app.del('/tag/:imageid', function(req, res){
+
+  });
+
+  // Get all the tags of the medical image with given id
+  app.get('/tag/:imageid', function(req, res) {
 
   });
 
@@ -10,8 +19,5 @@ module.exports = function(app){
   app.get('/search?tag=<item>&<item>', function(req, res) {
 
   });
-
-  app.get('/user/access?id=<imageid>', function(req, res) {
-
-  });
+  
 };
