@@ -19,7 +19,7 @@ module.exports = function(app){
 
   // Delete an annotation
   app.del('/annotation', function(res, res) {
-    res.end('AnnotationBtn clicked');
+    res.end('AnnotationDeleteBtn clicked');
   });
 
 };
