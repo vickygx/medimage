@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+legend {
+  border-bottom: 1px solid #ccc;
+  border-color: #ccc;
+}

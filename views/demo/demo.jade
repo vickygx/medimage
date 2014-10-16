@@ -1,0 +1,40 @@
+extends ../layout
+
+block head
+  script(type="text/javascript", src="/javascripts/demo/demoController")
+  
+block content
+
+  script.
+    var demoController = new DemoController();
+    // Replace with document.ready
+    window.onload = demoController.init();
+  
+  ul
+    li Annotations
+      ul
+        li Get all annotations for a medical image
+          button Submit
+          div Response: 
+          div#annotationsGet
+        li Create a new annotation
+          button Submit
+          div Response: 
+          div#annotationsCreate
+        li Edit an existing annotation
+          button Submit
+          div Response: 
+          div#annotationsEdit
+        li Delete an annotation
+          button Submit
+          div Response: 
+          div#annotationsDelete
+    li Contributions
+      ul
+        li
+    li MedImages
+      ul
+        li
+    li Tags
+      ul
+        li

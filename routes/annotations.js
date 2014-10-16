@@ -7,17 +7,17 @@ module.exports = function(app){
 
   });
 
-  // Create a new annotation
-  app.post('/annotation/:imageid', function(req, res) {
+  // Create a new annotation or edit an annotation
+  app.post('/annotation', function(req, res) {
 
   });
 
   // Delete an annotation
-  app.del('/annotation/:imageid', function(res, res) {
+  app.del('/annotation', function(res, res) {
 
   });
 
   // TODO: Editing annotation - 
-  // Are we doing deleting + creating, or editing existing
+
 
 };
