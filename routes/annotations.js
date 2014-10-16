@@ -7,4 +7,14 @@ module.exports = function(app){
 
   });
 
+  // Create a new annotation
+  app.post('/annotation', function(req, res) {
+
+  });
+
+  // Delete an annotation
+  app.del('/annotation', function(res, res) {
+
+  });
+
 };
