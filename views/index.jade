@@ -1,11 +1,8 @@
-html
-	head
-		include ./partials/head.jade
-		link(rel='stylesheet', href='/stylesheets/style.css')
-		block head
+extends layout
 
-	body
-		h1= title
-		p Welcome to #{title}
-		block body
+block content
+	h1= title
+	p Welcome to #{title}
+	p This is the index page
+
 
