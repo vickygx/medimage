@@ -7,8 +7,13 @@ module.exports = function(app){
 
   });
 
-  // Create a new annotation or edit an annotation
+  // Create a new annotation
   app.post('/annotation', function(req, res) {
+
+  });
+
+  // Edit an existing annotation
+  app.put('/annotation', function(req, res) {
 
   });
 
@@ -16,8 +21,5 @@ module.exports = function(app){
   app.del('/annotation', function(res, res) {
 
   });
-
-  // TODO: Editing annotation - 
-
 
 };
