@@ -26,8 +26,10 @@ var DemoController = function() {
 
       // Get all the annotations of the medical image
       // with the given id
-      $("#annotationsGetBtn").on("click", function() {
-        var imageId = 0;
+      $("#annotationsGetForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var imageId = $("#imageId").val();
 
         ajaxController.get('/annotation/' + imageId).done(function(res) {
           $("#annotationsGet").text(res);
@@ -35,8 +37,10 @@ var DemoController = function() {
       });
 
       // Create a new annotation
-      $("#annotationsCreateBtn").on("click", function() {
-        var data = {message: 'AnnotationCreateBtn clicked'};
+      $("#annotationsCreateForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
 
         ajaxController.post('/annotation', data).done(function(res) {
           $("#annotationsCreate").text(res);
@@ -44,8 +48,10 @@ var DemoController = function() {
       });
 
       // Edit an existing annotation
-      $("#annotationsEditBtn").on("click", function() {
-        var data = {message: 'AnnotationEditBtn clicked'};
+      $("#annotationsEditForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
 
         ajaxController.put('/annotation', data).done(function(res) {
           $("#annotationsEdit").text(res);
@@ -53,8 +59,10 @@ var DemoController = function() {
       });
 
       // Delete an annotation
-      $("#annotationsDeleteBtn").on("click", function() {
-        var data = {message: 'AnnotationDeleteBtn clicked'};
+      $("#annotationsDeleteForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
 
         ajaxController.del('/annotation', data).done(function(res) {
           $("#annotationsDelete").text(res);

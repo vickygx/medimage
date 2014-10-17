@@ -1,6 +1,7 @@
 extends ../layout
 
 block head
+  link(rel="stylesheet", href="/stylesheets/demo/demo.css")
   script(type="text/javascript", src="/javascripts/AjaxController.js")
   script(type="text/javascript", src="/javascripts/demo/demoController.js")
   
@@ -16,66 +17,77 @@ block content
     li Annotations
       ul
         li Get all annotations for a medical image
-          button#annotationsGetBtn Submit
+          form#annotationsGetForm(name="annotationsGetForm")
+            span Image id: 
+            input#imageId(required)
+            br
+            input(type="submit")
           div Response: 
-          div#annotationsGet
+          div.responseDiv#annotationsGet
         li Create a new annotation
-          button#annotationsCreateBtn Submit
+          form#annotationsCreateForm(name="annotationsCreateForm")
+            input(type="submit")
           div Response: 
-          div#annotationsCreate
+          div.responseDiv#annotationsCreate
         li Edit an existing annotation
-          button#annotationsEditBtn Submit
+          form#annotationsEditForm(name="annotationsEditForm")
+            span Annotation id: 
+            input(name="annotationId", required)
+            input(type="submit")
           div Response: 
-          div#annotationsEdit
+          div.responseDiv#annotationsEdit
         li Delete an annotation
-          button#annotationsDeleteBtn Submit
+          form#annotationsDeleteForm(name="annotationsDeleteForm")
+            span Annotation id: 
+            input(name="annotationId", required)
+            input(type="submit")
           div Response: 
-          div#annotationsDelete
+          div.responseDiv#annotationsDelete
     li Contributions
       ul
         li Get all contributors for a medical image
           button Submit
           div Response: 
-          div#contributorsGet
+          div.responseDiv#contributorsGet
         li Add a new contributor from an image
           button Submit
           div Response: 
-          div#contributorsCreate
+          div.responseDiv#contributorsCreate
         li Delete a contributor from an image
           button Submit
           div Response: 
-          div#contributorsDelete
+          div.responseDiv#contributorsDelete
     li MedImages
       ul
         li Get a medical image
           button Submit
           div Response: 
-          div#imagesGet
+          div.responseDiv#imagesGet
         li Create a medical image
           form#uploadImageForm(name="uploadImage")
             input(type="file" name="medImage" required)
             input(type="submit")
           div Response: 
-          div#imagesCreate
+          div.responseDiv#imagesCreate
         li Delete an image
           button Submit
           div Response: 
-          div#imagesDelete
+          div.responseDiv#imagesDelete
     li Tags
       ul
         li Get all tags for a medical image
           button Submit
           div Response: 
-          div#tagsGet
+          div.responseDiv#tagsGet
         li Add a new tag to an image
           button Submit
           div Response: 
-          div#tagsAdd
+          div.responseDiv#tagsAdd
         li Remove an existing tag from an image
           button Submit
           div Response: 
-          div#tagsRemove
+          div.responseDiv#tagsRemove
         li Get images with the following tags
           button Submit
           div Response: 
-          div#tagsPhotoGet
+          div.responseDiv#tagsPhotoGet
