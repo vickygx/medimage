@@ -7,7 +7,7 @@ var express = require('express');
 var app = module.exports = express();
 
 // Setup mongoose
-var dbName = 'medImage';
+var dbName = 'MedImage';
 var dbURL = 'localhost/' + dbName;
 if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   dbURL = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ':' +
