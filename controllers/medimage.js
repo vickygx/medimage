@@ -1,5 +1,6 @@
 //Dependency Modules
 var fs = require('fs');
+var MedImage = require('../data/models/medImage');
 
 /**
  * Returns the folder path for MedImage
@@ -43,11 +44,22 @@ module.exports.uploadImage = function(medImage, uploadFolder, callback) {
         res.json(500, err);
         return;
       }
-      //TODO: update database with new medImage
+      
+      //upload image into db
+      var image = new MedImage({
+        image_url: uploadPath
+      });
+
+      // image.save(function(err) {
+      //   if (err) {
+      //     res.json(500, err);
+      //     return;
+      //   }
+
+      //   callback();
+      // });
 
       callback();
     });
   });
-
-
 }
