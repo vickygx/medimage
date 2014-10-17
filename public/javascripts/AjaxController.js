@@ -1,28 +1,28 @@
 var AjaxController = function() {
-  this.get = function(url, failCallback) {
-    return ajaxReq("GET", url, null, failCallback);
+  this.get = function(url, doneCallback, failCallback) {
+    return ajaxReq("GET", url, null, doneCallback, failCallback);
   }
 
-  this.post = function(url, data, failCallback) {
-    return ajaxReq("POST", url, data, failCallback);
+  this.post = function(url, data, doneCallback, failCallback) {
+    return ajaxReq("POST", url, data, doneCallback, failCallback);
   }
 
-  this.put = function(url, data, failCallback) {
-    return ajaxReq("PUT", url, data, failCallback);
+  this.put = function(url, data, doneCallback, failCallback) {
+    return ajaxReq("PUT", url, data, doneCallback, failCallback);
   }
 
-  this.del = function(url, data, failCallback) {
-    return ajaxReq("DELETE", url, data, failCallback);
+  this.del = function(url, data, doneCallback, failCallback) {
+    return ajaxReq("DELETE", url, data, doneCallback, failCallback);
   }
 
-  var ajaxReq = function(type, url, data, failCallback) {
+  var ajaxReq = function(type, url, data, doneCallback, failCallback) {
     return $.ajax({
       datatype: "json", 
       type: type, 
       url: url, 
       data: data
     }).done(function(res) {
-      return res;
+      doneCallback(res);
     }).fail(function(e) {
       if (failCallback !== undefined && typeof failCallback == "function") {
         failCallback(e);
