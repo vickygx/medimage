@@ -36,14 +36,25 @@ var DemoController = function() {
         });
       });
 
-      // Create a new annotation
-      $("#annotationsCreateForm").on("submit", function(e) {
+      // Create a new point annotation
+      $("#pointAnnotationsCreateForm").on("submit", function(e) {
 
         e.preventDefault();
         var data = $(this).serializeArray();
 
         ajaxController.post('/annotation', data).done(function(res) {
-          $("#annotationsCreate").text(res);
+          $("#pointAnnotationsCreate").text(res);
+        });
+      });
+
+      // Create a new range annotation
+      $("#rangeAnnotationsCreateForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        ajaxController.post('/annotation', data).done(function(res) {
+          $("#rangeAnnotationsCreate").text(res);
         });
       });
 
