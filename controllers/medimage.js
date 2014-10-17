@@ -35,7 +35,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, callback) {
                      .slice(0, 10).toLowerCase();
   fileName += Date.now();
 
-  var fileType = (medImage.type === "images/png") ? ".png" : ".jpg";
+  var fileType = (medImage.type === "image/png") ? ".png" : ".jpg";
 
   var uploadPath = uploadFolder + "/" + fileName + fileType;
 
