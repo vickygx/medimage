@@ -10,7 +10,8 @@
     "jade": ">= 0.0.1",
     "jquery": "^2.1.1",
     "mongoose": ">=2.7.0",
-    "mongoose-schema-extend": "~0.1.7"
+    "mongoose-schema-extend": "~0.1.7",
+    "mkdirp": "0.5.0"
   },
   "devDependencies": {},
   "bundleDependencies": [],

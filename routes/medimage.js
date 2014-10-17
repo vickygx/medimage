@@ -1,10 +1,14 @@
 module.exports = function(app){
   var fs = require('fs');
+  var mkdirp = require('mkdirp');
+  var MedImageController = require('../controllers/medimage');
 
   // Creates a medical image
   app.post('/medimages', function(req, res){
+    var medImage = req.files.medImage
+
     //check file type
-    var fileType = req.files.medImage.type;
+    var fileType = medImage.type;
     if (fileType !== "image/jpeg" && fileType !== "image/png") {
       //ERROR: wrong file type
       res.send(400, "Invalid File Type: file must be a PNG or JPEG");
@@ -18,33 +22,31 @@ module.exports = function(app){
       return;
     }
 
-    //build upload path
-    //TODO get real userID when we can
+    //build folder path if doesn't exist
     var userID = 0;
+    var folderPath = MedImageController.getUploadFolderPath(app.settings.env, userID);
 
-    var fileName = req.files.medImage.name;
-    fileName = fileName.replace(/\s+/g, '').slice(0, 10).toLowerCase();
-
-    var date = Date.now();
-
-    var uploadFolder = __dirname;
-    if (app.settings.env === "development") {
-      uploadPath += "/../public/local";
-    } else {
-      uploadPath += "/../public/prod";
-    }
-    uploadFolder += "/uploads/" + userID;
-
-    fs.exists(uploadFolder, function(exists) {
-      if (!exists) {
-        fs.mkdir(uploadFolder, function(err) {
+    fs.exists(folderPath, function(exists) {
+      if (exists) {
+        MedImageController.uploadImage(medImage, folderPath, function(err) {
+          res.json({
+            pathExists: true
+          });
+        });
+      } else {
+        //make dir if doesn't exist
+        mkdirp(folderPath, function(err) {
           if (err) {
             res.json(500, err);
             return;
           }
+
+          MedImageController.uploadImage(medImage, folderPath, function(err) {
+            res.json({
+              pathExists: false
+            })
+          });
         });
-      } else {
-        //TODO upload
       }
     });
 
