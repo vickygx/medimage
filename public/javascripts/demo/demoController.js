@@ -120,6 +120,65 @@ var DemoController = function() {
     /////////////////////////////////////////////////////////////////
     // Tags
     /////////////////////////////////////////////////////////////////
+
+    (function(){
+
+      // Get all the tags of the medical image with given id
+      $("#tagGetForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var image_id = 123;
+
+        ajaxController.get('/tag/' + image_id, data)
+          .done(function(res) {
+            $("#tagsGet").text(res.text);
+        });
+      });
+
+      // Add a tag to the medical image with given id
+      $("#tagAddForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var image_id = 123;
+
+        ajaxController.post('/tag/' + image_id, data)
+          .done(function(res) {
+            $("#tagsAdd").text(res.text);
+        });
+
+      });
+
+      // Add a tag to the medical image with given id
+      $("#tagRemoveForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var image_id = 123;
+
+        ajaxController.del('/tag/' + image_id, data)
+          .done(function(res) {
+            $("#tagsRemove").text(res.text);
+        });
+
+      });
+
+      // Add a tag to the medical image with given id
+      $("#tagSearchForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var tags = 'hello&goodbye';
+
+        ajaxController.post('/search?tag=' + tags, data)
+          .done(function(res) {
+            $("#tagsPhotoGet").text(res.text);
+        });
+      });
+
+
+    })();
   }
 
   return {

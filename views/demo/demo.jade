@@ -127,22 +127,41 @@ block content
     li Tags
       ul
         li Get all tags for a medical image
-          button Submit
           legend
+            form#tagGetForm(name="tagGetForm")
+              input(name="image_id", placeholder="Image id", required) 
+              br
+              input(type="submit") 
+              br
             div Response: 
             div.responseDiv#tagsGet
         li Add a new tag to an image
-          button Submit
           legend
+            form#tagAddForm(name="tagAddForm")
+              input(name="tag", placeholder="Tag", required) 
+              br
+              input(name="image_id", placeholder="Image id", required) 
+              br
+              input(type="submit") 
+              br
             div Response: 
             div.responseDiv#tagsAdd
         li Remove an existing tag from an image
-          button Submit
           legend
+            form#tagRemoveForm(name="tagRemoveForm")
+              input(name="tag", placeholder="Tag", required) 
+              br
+              input(name="image_id", placeholder="Image id", required) 
+              br
+              input(type="submit") 
+              br
             div Response: 
             div.responseDiv#tagsRemove
         li Get images with the following tags
-          button Submit
           legend
+            form#tagSearchForm(name="tagSearchForm")
+              input(name="tag", placeholder="Tag name's separated by a comma", required) 
+              br
+              input(type="submit") 
             div Response: 
             div.responseDiv#tagsPhotoGet
