@@ -98,7 +98,7 @@ var DemoController = function() {
           processData: false,
           success: function(res) {
             console.log("good post request!");
-            console.log("type: " + res.fileType);
+            //console.log("type: " + res.uploadPath);
           },
           error: function() {
             console.log("bad post request...");
