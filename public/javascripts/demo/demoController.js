@@ -31,7 +31,7 @@ var DemoController = function() {
         e.preventDefault();
         var imageId = $("#imageId").val();
 
-        ajaxController.get('/annotation/' + imageId, function(res) {
+        ajaxController.get('/annotation/' + imageId).done(function(res) {
           $("#annotationsGet").text(res);
         });
       });
@@ -42,7 +42,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.post('/annotation', data, function(res) {
+        ajaxController.post('/annotation', data).done(function(res) {
           $("#pointAnnotationsCreate").text(res);
         });
       });
@@ -53,7 +53,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.post('/annotation', data, function(res) {
+        ajaxController.post('/annotation', data).done(function(res) {
           $("#rangeAnnotationsCreate").text(res);
         });
       });
@@ -64,7 +64,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.put('/annotation', data, function(res) {
+        ajaxController.put('/annotation', data).done(function(res) {
           $("#annotationsEdit").text(res);
         });
       });
@@ -75,7 +75,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.del('/annotation', data, function(res) {
+        ajaxController.del('/annotation', data).done(function(res) {
           $("#annotationsDelete").text(res);
         });
       });
