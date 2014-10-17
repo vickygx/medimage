@@ -1,6 +1,6 @@
 var AjaxController = function() {
-  this.get = function(url, data, failCallback) {
-    return ajaxReq("GET", url, data, failCallback);
+  this.get = function(url, failCallback) {
+    return ajaxReq("GET", url, null, failCallback);
   }
 
   this.post = function(url, data, failCallback) {
@@ -24,7 +24,7 @@ var AjaxController = function() {
     }).done(function(res) {
       return res;
     }).fail(function(e) {
-      if (failCallback) {
+      if (failCallback !== undefined && typeof failCallback == "function") {
         failCallback(e);
       } else {
         console.log("ERROR: " + type + " request to " + url + " failed with the following error: \n" + e.responseText);
@@ -32,3 +32,5 @@ var AjaxController = function() {
     });
   }
 }
+
+var ajaxController = new AjaxController();
