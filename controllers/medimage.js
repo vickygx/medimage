@@ -31,7 +31,8 @@ module.exports.getUploadFolderPath = function(env, userID) {
 module.exports.uploadImage = function(medImage, uploadFolder, callback) {
   //get fileName, remove spaces, shrink name <=10 chars, lowercase
   var fileName = medImage.name;
-  fileName = fileName.replace(/\s+/g, '').slice(0, 10).toLowerCase();
+  fileName = fileName.replace('/(\s+)|(\.png)|(\.jpg)/g', '')
+                     .slice(0, 10).toLowerCase();
   fileName += Date.now();
 
   var fileType = (medImage.type === "images/png") ? ".png" : ".jpg";

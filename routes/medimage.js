@@ -4,7 +4,7 @@ module.exports = function(app){
   var MedImageController = require('../controllers/medimage');
 
   // Creates a medical image
-  app.post('/medimages', function(req, res){
+  app.post('/medimages', function(req, res) {
     var medImage = req.files.medImage
 
     //check file type
