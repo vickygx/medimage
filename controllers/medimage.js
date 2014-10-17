@@ -1,4 +1,4 @@
-//dependency modules
+//Dependency Modules
 var fs = require('fs');
 
 /**
@@ -33,22 +33,21 @@ module.exports.uploadImage = function(medImage, uploadFolder, callback) {
   fileName = fileName.replace(/\s+/g, '').slice(0, 10).toLowerCase();
   fileName += Date.now();
 
-  var uploadPath = uploadFolder + "/" + fileName;
+  var fileType = (medImage.type === "images/png") ? ".png" : ".jpg";
 
-  // fs.readFile(readPath, function(err, data) {
-  //   fs.writeFile(uploadPath, data, function (err) {
-  //     if (err) {
-  //       res.json(500, err);
-  //       return;
-  //     }
+  var uploadPath = uploadFolder + "/" + fileName + fileType;
 
-  //     res.json({
-  //       uploadPath: uploadPath
-  //     });
+  fs.readFile(medImage.path, function(err, data) {
+    fs.writeFile(uploadPath, data, function (err) {
+      if (err) {
+        res.json(500, err);
+        return;
+      }
+      //TODO: update database with new medImage
 
-  //     //TODO: update database with new medImage
-  //   });
-  // });
+      callback();
+    });
+  });
 
-  callback();
+
 }

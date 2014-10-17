@@ -23,25 +23,25 @@ module.exports = function(app){
     }
 
     //build folder path if doesn't exist
-    var userID = 0;
+    var userID = "00000000000000000000";
     var folderPath = MedImageController.getUploadFolderPath(app.settings.env, userID);
 
     fs.exists(folderPath, function(exists) {
       if (exists) {
-        MedImageController.uploadImage(medImage, folderPath, function(err) {
+        MedImageController.uploadImage(medImage, folderPath, function() {
           res.json({
             pathExists: true
           });
         });
       } else {
-        //make dir if doesn't exist
+        //make dir because it doesn't exist
         mkdirp(folderPath, function(err) {
           if (err) {
             res.json(500, err);
             return;
           }
 
-          MedImageController.uploadImage(medImage, folderPath, function(err) {
+          MedImageController.uploadImage(medImage, folderPath, function() {
             res.json({
               pathExists: false
             })
@@ -49,21 +49,6 @@ module.exports = function(app){
         });
       }
     });
-
-    // fs.readFile(req.files.medImage.path, function(err, data) {
-    //   fs.writeFile(uploadPath, data, function (err) {
-    //     if (err) {
-    //       res.json(500, err);
-    //       return;
-    //     }
-
-    //     res.json({
-    //       uploadPath: uploadPath
-    //     });
-
-    //     //TODO: update database with new medImage
-    //   });
-    // });
   });
 
   // Deletes a medical image
