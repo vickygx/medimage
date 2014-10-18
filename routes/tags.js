@@ -17,8 +17,8 @@ module.exports = function(app){
   });
 
   //  Get all the photos that have these tags
-  app.get('/search?tag=:tags', function(req, res) {
-    res.send({text: 'data given is:' + JSON.stringify(req.body)});
+  app.get('/search', function(req, res) {
+    res.send({text: 'data given is:' + JSON.stringify(req.query.tag)});
   });
   
 };
