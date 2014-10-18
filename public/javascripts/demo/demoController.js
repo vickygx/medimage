@@ -166,12 +166,15 @@ var DemoController = function() {
 
       // Add a tag to the medical image with given id
       $("#tagSearchForm").on("submit", function(e) {
-
         e.preventDefault();
-        var data = $(this).serializeArray();
-        var tags = 'hello&goodbye';
+        var tags = $("#tags").val().split(',');
+        var i;
+        var tagString = '';
+        for (i = 0; i < tags.length ; i++){
+          tagString += 'tag=' + tags[i].trim() + '&';
+        }
 
-        ajaxController.post('/search?tag=' + tags, data)
+        ajaxController.get('/search?' + tagString, null)
           .done(function(res) {
             $("#tagsPhotoGet").text(res.text);
         });
