@@ -26,7 +26,6 @@ module.exports.getUploadFolderPath = function(env, userID) {
  * new directory
  *
  * @param medImage - image file object as returned in req.files
- * @param uploadFolder - dir of where image will be uploaded to
  * @param userID - id of user who uploaded image
  * @param callback - callback called after uploading
  */
@@ -39,7 +38,12 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
 
   var fileType = (medImage.type === "image/png") ? ".png" : ".jpg";
 
+  //get upload path starting from '/public'
   var uploadPath = uploadFolder + "/" + fileName + fileType;
+  uploadPath = path.resolve(uploadPath);
+
+  //set imageURL
+  var imageURL = '/uploads/images/' + userID + "/" + fileName + fileType;
 
   fs.readFile(medImage.path, function(err, data) {
     fs.writeFile(uploadPath, data, function (err) {
@@ -51,7 +55,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
       //upload image into db
       var image = new MedImage({
         user_id: userID,
-        image_url: uploadPath
+        image_url: imageURL
       });
 
       image.save(function(err) {
@@ -60,7 +64,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
           return;
         }
 
-        callback();
+        callback(undefined, {uploadPath: uploadPath, imageURL: imageURL});
       });
     });
   });

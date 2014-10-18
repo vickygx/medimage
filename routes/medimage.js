@@ -20,7 +20,7 @@ module.exports = function(app){
       return;
     }
 
-    //TODO: Check if userID is in proper ObjectId format
+    //TODO: get real userID
     var userID = "123456789012345678901234";
     if (!ObjectId.isValid(userID)) {
       res.send(500, "Server Error: Invalid userID given");
@@ -31,15 +31,13 @@ module.exports = function(app){
     var folderPath = MedImageController.getUploadFolderPath(app.settings.env, userID);
     fs.exists(folderPath, function(exists) {
       if (exists) {
-        MedImageController.uploadImage(medImage, folderPath, userID, function(err) {
+        MedImageController.uploadImage(medImage, folderPath, userID, function(err, data) {
           if (err) {
             res.json(500, err);
             return;
           }
 
-          res.json({
-            pathExists: true
-          });
+          res.json(data);
         });
       } else {
         //make dir because it doesn't exist
@@ -49,15 +47,13 @@ module.exports = function(app){
             return;
           }
 
-          MedImageController.uploadImage(medImage, folderPath, userID, function(err) {
+          MedImageController.uploadImage(medImage, folderPath, userID, function(err, data) {
             if (err) {
               res.json(500, err);
               return;
             }
 
-            res.json({
-              pathExists: false
-            })
+            res.json(data);
           });
         });
       }
