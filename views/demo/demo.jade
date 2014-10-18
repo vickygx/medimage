@@ -70,7 +70,15 @@ block content
         li Edit an existing annotation
           legend
             form#annotationsEditForm(name="annotationsEditForm")
-              input(name="annotationId", placeholder="Annotation id", required) 
+              input(name="id", placeholder="Annotation id", required) 
+              br
+              input(name="text", placeholder="Annotation text", required)
+              br
+              input(type="radio", name="type", value="point", required)
+              span Point
+              br
+              input(type="radio", name="type", value="range", required) 
+              span Range 
               br
               input(type="submit") 
               br
@@ -81,7 +89,14 @@ block content
           legend
             form#annotationsDeleteForm(name="annotationsDeleteForm")
               span Annotation id: 
-              input(name="annotationId", placeholder="Annotation id", required) 
+              input(name="id", placeholder="Annotation id", required) 
+              br
+              input(type="radio", name="type", value="point", required) 
+              span Point
+              br
+              input(type="radio", name="type", value="range", required) 
+              span Range
+              br
               br
               input(type="submit") 
               br
