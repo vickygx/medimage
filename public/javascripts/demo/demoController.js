@@ -147,7 +147,6 @@ var DemoController = function() {
           .done(function(res) {
             $("#tagsAdd").text(res.text);
         });
-
       });
 
       // Add a tag to the medical image with given id
@@ -161,7 +160,6 @@ var DemoController = function() {
           .done(function(res) {
             $("#tagsRemove").text(res.text);
         });
-
       });
 
       // Add a tag to the medical image with given id
