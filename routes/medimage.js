@@ -2,33 +2,41 @@ module.exports = function(app){
   var fs = require('fs');
   var mkdirp = require('mkdirp');
   var MedImageController = require('../controllers/medimage');
+  var ObjectId = require('mongoose').Types.ObjectId;
 
   // Creates a medical image
   app.post('/medimages', function(req, res) {
     var medImage = req.files.medImage
 
     //check file type
-    var fileType = medImage.type;
-    if (fileType !== "image/jpeg" && fileType !== "image/png") {
-      //ERROR: wrong file type
+    if (medImage.type !== "image/jpeg" && medImage.type !== "image/png") {
       res.send(400, "Invalid File Type: file must be a PNG or JPEG");
       return;
     }
 
     //check app environment
     if (app.settings.env !== "development" && app.settings.env !== "production") {
-      //ERROR: unknown environment
-      res.send(500, "Server Error: Invalid app environment");
+      res.send(500, "Server Error: Unexpected app environment");
+      return;
+    }
+
+    //TODO: Check if userID is in proper ObjectId format
+    var userID = "123456789012345678901234";
+    if (!ObjectId.isValid(userID)) {
+      res.send(500, "Server Error: Invalid userID given");
       return;
     }
 
     //build folder path if doesn't exist
-    var userID = "00000000000000000000";
     var folderPath = MedImageController.getUploadFolderPath(app.settings.env, userID);
-
     fs.exists(folderPath, function(exists) {
       if (exists) {
-        MedImageController.uploadImage(medImage, folderPath, function() {
+        MedImageController.uploadImage(medImage, folderPath, userID, function(err) {
+          if (err) {
+            res.json(500, err);
+            return;
+          }
+
           res.json({
             pathExists: true
           });
@@ -41,7 +49,12 @@ module.exports = function(app){
             return;
           }
 
-          MedImageController.uploadImage(medImage, folderPath, function() {
+          MedImageController.uploadImage(medImage, folderPath, userID, function(err) {
+            if (err) {
+              res.json(500, err);
+              return;
+            }
+
             res.json({
               pathExists: false
             })
