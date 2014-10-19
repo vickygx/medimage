@@ -58,7 +58,6 @@ module.exports = function(app){
 
   // Gets the medical image with the given id
   app.get('/medimages/:id', function(req, res) {
-
   });
 
 };
