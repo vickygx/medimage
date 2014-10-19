@@ -1,19 +1,17 @@
-
 module.exports = function(app){
 
   // Adds user to collaboration on medical image with given id
-  app.post('/collab/:imageid', function(req, res) {
-
+  app.post('/contributions', function(req, res) {
+    //TODO
   });
 
   // Removes user from collaboration on medical image with given id
-  app.del('/collab/:imageid', function(Req, res){
-
+  app.del('/contributions/:id', function(req, res) {
+    //TODO
   });
 
   // Sees if user has access to edit medical image with given id
-  app.get('/collab/access?id=<imageid>', function(req, res) {
-
+  app.get('/contributions/access', function(req, res) {
+    //TODO
   });
-
 };
