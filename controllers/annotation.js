@@ -69,14 +69,24 @@ module.exports.updateAnnotation = function(id, type, data, callback) {
   
   var Annotation = getAnnotationModel(type);
 
-  Annotation.update({_id: id}, 
-  {
-    $set: data
-  }, function(err) {
+  Annotation.findOne({_id: id}, function(err, annotation) {
     if (err) {
       return callback(err);
     }
-    callback();
+    if (annotation) {
+      for (var key in data) {
+        annotation[key] = data[key];
+      }
+      annotation.save();
+      callback();
+    } else {
+      var err = {
+        status: 500, 
+        name: "Bad input", 
+        message: "Unable to find the annotation with the given id"
+      };
+      return callback(err);
+    }
   });
 }
 
@@ -85,6 +95,7 @@ module.exports.updateAnnotation = function(id, type, data, callback) {
  * Then performs the given callback
  */
 module.exports.deleteAnnotation = function(id, type, callback) {
+  
   var Annotation = getAnnotationModel(type);
 
   Annotation.findOne({_id: id}, function(err, annotation) {
