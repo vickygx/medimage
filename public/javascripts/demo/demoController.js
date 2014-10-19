@@ -20,6 +20,55 @@ var DemoController = function() {
   var eventListeners = function() {
 
     /////////////////////////////////////////////////////////////////
+    // Users
+    /////////////////////////////////////////////////////////////////
+    (function() {
+
+      // Get all users
+      $("#usersGetForm").on("submit", function(e) {
+
+        e.preventDefault();
+
+        ajaxController.get('/users').done(function(res) {
+          $("#usersGet").text(res);
+        });
+      });
+
+      // Create a new user
+      $("#usersCreateForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        ajaxController.post('/users', data).done(function(res) {
+          $("#usersCreate").text(res);
+        });
+      });
+
+      // Edit an existing user
+      $("#usersEditForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        ajaxController.put('/users', data).done(function(res) {
+          $("#usersEdit").text(res);
+        });
+      });
+
+      // Delete an user
+      $("#usersDeleteForm").on("submit", function(e) {
+
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        ajaxController.del('/users', data).done(function(res) {
+          $("#usersDelete").text(res);
+        });
+      });
+    })();
+
+    /////////////////////////////////////////////////////////////////
     // Annotations
     /////////////////////////////////////////////////////////////////
     (function() {
@@ -29,9 +78,9 @@ var DemoController = function() {
       $("#annotationsGetForm").on("submit", function(e) {
 
         e.preventDefault();
-        var imageId = $("#imageId").val();
+        var data = $(this).serializeArray();
 
-        ajaxController.get('/medImages/' + imageId + '/annotations').done(function(res) {
+        ajaxController.get('/medImages/' + data[0].value + '/annotations').done(function(res) {
           $("#annotationsGet").text(res);
         });
       });
@@ -79,7 +128,6 @@ var DemoController = function() {
           $("#annotationsDelete").text(res);
         });
       });
-
     })();
 
     /////////////////////////////////////////////////////////////////
@@ -90,7 +138,6 @@ var DemoController = function() {
     /////////////////////////////////////////////////////////////////
     // MedImages
     /////////////////////////////////////////////////////////////////
-
     (function() {
       $("#uploadImageForm").on("submit", function(e) {
         //prevent reload
@@ -120,7 +167,6 @@ var DemoController = function() {
     /////////////////////////////////////////////////////////////////
     // Tags
     /////////////////////////////////////////////////////////////////
-
     (function(){
 
       // Get all the tags of the medical image with given id

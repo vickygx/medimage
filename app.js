@@ -43,6 +43,7 @@ require('./routes/annotations')(app);
 require('./routes/medimage')(app);
 require('./routes/tags')(app);
 require('./routes/uploads')(app);
+require('./routes/users')(app);
 
 var port = Number(process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.listen(port, process.env.OPENSHIFT_NODEJS_IP, function() {

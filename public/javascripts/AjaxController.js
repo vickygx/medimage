@@ -58,12 +58,6 @@ var AjaxController = function() {
       type: type, 
       url: url, 
       data: data
-    }).done(function(res) {
-      // Default action if .done not applied
-      console.log("Server responded with: \n", res);
-    }).fail(function(e) {
-      // Default action if .fail not applied
-      console.log("ERROR: " + type + " request to " + url + " failed with the following error: \n" + e.responseText);
     });
   }
 }

@@ -14,12 +14,65 @@ block content
     });
   
   ul
+    li Users
+      ul
+        li Get all users
+          legend
+            form#usersGetForm(name="usersGetForm")
+              input(type="submit")
+              br
+          legend
+            div Response: 
+            div.responseDiv#usersGet
+        li Create a new user
+          legend
+            form#usersCreateForm(name="usersCreateForm")
+              input(name="first_name", placeholder="First name", required) 
+              br
+              input(name="last_name", placeholder="Last name", required) 
+              br
+              input(name="username", placeholder="Username", required) 
+              br
+              input(name="password", placeholder="Password", type="password", required) 
+              br
+              input(type="submit") 
+              br
+          legend
+            div Response: 
+            div.responseDiv#usersCreate
+        li Edit an existing user
+          legend
+            form#usersEditForm(name="usersEditForm")
+              legend
+                div User to edit
+                input(name="username", placeholder="Username", required)
+                br
+              input(name="first_name", placeholder="First name") 
+              br
+              input(name="last_name", placeholder="Last name") 
+              br
+              input(name="password", placeholder="Password", type="password") 
+              br
+              input(type="submit")
+          legend
+            div Response: 
+            div.responseDiv#usersEdit
+        li Delete an user
+          legend
+            form#usersDeleteForm(name="usersDeleteForm")
+              input(name="username", placeholder="Username", required) 
+              br
+              input(type="submit") 
+              br
+          legend
+            div Response: 
+            div.responseDiv#usersDelete
     li Annotations
       ul
         li Get all annotations for a medical image
           legend
             form#annotationsGetForm(name="annotationsGetForm")
-              input#imageId(placeholder="Image id", required)
+              input(name="image_id", placeholder="Image id", required)
               br
               input(type="submit")
               br
