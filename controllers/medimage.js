@@ -4,6 +4,18 @@ var path = require('path')
 var MedImage = require('../data/models/medimage');
 
 /**
+ * Gets the MedImages from a user
+ *
+ * @param userID - id of the user
+ * @param callback - callback called after getting images
+ */
+module.exports.getMedImagesByUserID = function(userID, callback) {
+  MedImage.find({ user_id: userID }, function(err, images) {
+    callback(err, images);
+  });
+}
+
+/**
  * Returns the folder path for MedImage
  *
  * @param env - environment of app
@@ -59,12 +71,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
       });
 
       image.save(function(err) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        callback(undefined, {uploadPath: uploadPath, imageURL: imageURL});
+        callback(err, {uploadPath: uploadPath, imageURL: imageURL});
       });
     });
   });

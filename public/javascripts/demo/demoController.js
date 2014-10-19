@@ -115,6 +115,16 @@ var DemoController = function() {
           }
         });
       });
+
+      $("#medImageForUserForm").on("submit", function(e) {
+        //prevent reload
+        e.preventDefault();
+
+        var userID = $(this)[0].elements["user_id"].value;
+        ajaxController.get("/users/" + userID + "/medimages").done(function(res) {
+          $("#medImageForUser").text(JSON.stringify(res));
+        });
+      });
     })();
 
     /////////////////////////////////////////////////////////////////

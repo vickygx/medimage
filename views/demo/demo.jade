@@ -122,14 +122,19 @@ block content
             div.responseDiv#contributorsDelete
     li MedImages
       ul
-        li Get a medical image
-          button Submit
+        li Get medical images for a user
+          legend
+            form#medImageForUserForm
+              input(type="text", name="user_id", placeholder="User ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#imagesGet
+            div.responseDiv#medImageForUser
         li Create a medical image
           form#uploadImageForm(name="uploadImage")
-            input(type="file" name="medImage" required)
+            input(type="file", name="medImage", required)
             input(type="submit")
           legend
             div Response: 
