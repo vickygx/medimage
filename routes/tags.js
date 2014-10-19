@@ -1,18 +1,63 @@
 var TagController = require('../controllers/tag');
+var MedImageController = require('../controllers/medimage');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = function(app){
-  // Get all the tags of the medical image with given id
-  app.get('/tag/:imageid', function(req, res) {
-    var imageId = req.params.imageid;
-    TagController.getTagsOf(imageId, function(err, tags){
-      if (err)
-        res.send({text: 'Error'});
-      else {
-        res.send({text: 'imageId given is:' + imageId
-                      + 'with tags: ' + tags});
-      }
-    });
+
+  var errors = {
+    missingTypeError: {
+      status: 500, 
+      name: "Missing input", 
+      message: "You must provide the type of annotation to create"
+    }, 
+    invalidIdError: {
+      status: 500, 
+      name: "Bad Input", 
+      message: "The given id is not a valid ObjectId"
+    }
+  }
+
+  var errorChecking = (function() {
     
+    var missingType = function(type, next) {
+      if (!type) {
+        return next(errors.missingTypeError);
+      }
+    }
+
+    var invalidId = function(id, next) {
+      if (!ObjectId.isValid(id)) {
+        return next(errors.invalidIdError);
+      }
+    }
+
+    return {
+      missingType: missingType, 
+      invalidId: invalidId
+    }
+  })();
+
+  // Get all the tags of the medical image with given id
+  app.get('/tag/:imageid', function(req, res, next) {
+    var imageId = req.params.imageid;
+
+    errorChecking.invalidId(imageId, next);
+
+    // Checking if imageId exists
+    MedImageController.getMedImageByID(imageId, function(err, image){
+      if (err)
+        return next(err);
+      else {
+        TagController.getTagsOf(imageId, function(err, tags){
+          if (err)
+            return next(err);
+          else {
+            res.send({text: 'image: ' + imageId
+                          + '\n has tags: ' + tags});
+          }
+        });
+      }
+    });  
   });
 
   // Create or add tag for photo with given id
@@ -22,7 +67,7 @@ module.exports = function(app){
 
     TagController.addTagTo(imageId, tagName, function(err, tag){
       if (err)
-        res.send({text: 'Error'});
+        res.send({text: 'Error:' +  err});
       else {
          res.send({text: 'Adding tag: ' + tagName + ' to ' + imageId});
       }
@@ -36,7 +81,7 @@ module.exports = function(app){
 
     TagController.removeTagFrom(imageId, tagName, function(err, tag){
       if (err)
-        res.send({text: 'Error'});
+        res.send({text: 'Error: ' + err});
       else {
         res.send({text: 'Removing tag: ' + tagName + ' from ' + imageId});
       }
