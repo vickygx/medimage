@@ -175,23 +175,33 @@ block content
             div.responseDiv#contributorsDelete
     li MedImages
       ul
-        li Get a medical image
-          button Submit
+        li Get medical images for a user
+          legend
+            form#medImageForUserForm
+              input(type="text", name="user_id", placeholder="User ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#imagesGet
+            div.responseDiv#medImageForUser
         li Create a medical image
-          form#uploadImageForm(name="uploadImage")
-            input(type="file" name="medImage" required)
+          form#uploadImageForm
+            input(type="file", name="medImage", required)
             input(type="submit")
           legend
             div Response: 
-            div.responseDiv#imagesCreate
+            div.responseDiv#medImageCreate
         li Delete an image
-          button Submit
+          legend
+            form#deleteImageForm
+              input(type="text", name="image_id", placeholder="Image ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#imagesDelete
+            div.responseDiv#medImageDelete
     li Tags
       ul
         li Get all tags for a medical image

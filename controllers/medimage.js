@@ -4,6 +4,25 @@ var path = require('path')
 var MedImage = require('../data/models/medimage');
 
 /**
+ * Gets the medImage by ID
+ */
+module.exports.getMedImageByID = function(imageID, callback) {
+  MedImage.findById(imageID, callback);
+}
+
+/**
+ * Gets the MedImages from a user
+ *
+ * @param userID - id of the user
+ * @param callback - callback called after getting images
+ */
+module.exports.getMedImagesByUserID = function(userID, callback) {
+  MedImage.find({ user_id: userID }, function(err, images) {
+    callback(err, images);
+  });
+}
+
+/**
  * Returns the folder path for MedImage
  *
  * @param env - environment of app
@@ -59,13 +78,35 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
       });
 
       image.save(function(err) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        callback(undefined, {uploadPath: uploadPath, imageURL: imageURL});
+        callback(err, {imageURL: imageURL});
       });
+    });
+  });
+}
+
+/**
+ * Delete medImage from mongo and file associated with it
+ *
+ * @param medImage - image to delete
+ * @param env - environment of app
+ * @param callback - callback called after deleting
+ */
+module.exports.deleteImage = function(medImage, env, callback) {
+  //get image path
+  var folderPath = module.exports.getUploadFolderPath(env, medImage.user_id);
+  var parseURLList = medImage.image_url.split("/");
+  var fileName = parseURLList[parseURLList.length - 1];
+  var imagePath = folderPath + "/" + fileName;
+
+  //delete from directory
+  fs.unlink(path.resolve(imagePath), function(err) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    MedImage.findOneAndRemove({ _id: medImage._id }, function(err) {
+      callback(err, {});
     });
   });
 }
