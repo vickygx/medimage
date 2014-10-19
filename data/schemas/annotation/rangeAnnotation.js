@@ -6,8 +6,8 @@ var AnnotationSchema = require('./annotation');
 //
 
 var RangeAnnotationSchema = AnnotationSchema.extend({
-  startPoint: {x: Number, y: Number}, 
-  endPoint: {x: Number, y: Number}
+  start_point: {x: Number, y: Number}, 
+  end_point: {x: Number, y: Number}
 });
 
 module.exports = RangeAnnotationSchema;

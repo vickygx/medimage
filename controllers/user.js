@@ -11,6 +11,9 @@ module.exports.getAllUsers = function(req, res, next, callback) {
 }
 
 module.exports.createUser = function(req, res, next, callback) {
+  
+  res.write(" with data :" + JSON.stringify(req.body));
+
   User.create(req.body, function(err) {
     if (err) {
       return next(err);
@@ -21,16 +24,18 @@ module.exports.createUser = function(req, res, next, callback) {
 
 module.exports.editUser = function(req, res, next, callback) {
   // Empty inputs are not considered
-  var updateData = {}
-  if (req.body.first_name.length != 0) {
+  var updateData = {};
+  if (req.body.first_name && req.body.first_name.length != 0) {
     updateData.first_name = req.body.first_name;
   } 
-  if (req.body.last_name.length != 0) {
+  if (req.body.last_name && req.body.last_name.length != 0) {
     updateData.last_name = req.body.last_name;
   } 
-  if (req.body.password.length != 0) {
+  if (req.body.password && req.body.password.length != 0) {
     updateData.password = req.body.password;
   }
+
+  res.write(" with data: " + JSON.stringify(updateData));
 
   User.update({username: req.body.username}, 
   {
@@ -44,6 +49,9 @@ module.exports.editUser = function(req, res, next, callback) {
 }
 
 module.exports.deleteUser = function(req, res, next, callback) {
+  
+  res.write(" to the user with username: " + req.body.username);
+
   User.findOne({username: req.body.username}, function(err, user) {
     if (err) {
       return next(err);

@@ -6,7 +6,7 @@ var AnnotationSchema = require('./annotation');
 //
 
 var PointAnnotationSchema = AnnotationSchema.extend({
-  startPoint: {x: Number, y: Number}
+  start_point: {x: Number, y: Number}
 });
 
 module.exports = PointAnnotationSchema;

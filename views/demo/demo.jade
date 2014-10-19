@@ -125,7 +125,15 @@ block content
             form#annotationsEditForm(name="annotationsEditForm")
               input(name="id", placeholder="Annotation id", required) 
               br
-              input(name="text", placeholder="Annotation text", required)
+              input(name="text", placeholder="Annotation text")
+              br
+              input(name="start_x", placeholder="Start X")
+              br
+              input(name="start_y", placeholder="Start Y")
+              br
+              input(name="end_x", placeholder="End X")
+              br
+              input(name="end_y", placeholder="End Y")
               br
               input(type="radio", name="type", value="point", required)
               span Point
