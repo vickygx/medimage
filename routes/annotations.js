@@ -8,23 +8,13 @@ module.exports = function(app){
   // Get all the annotations of the medical image
   // with the given id
   app.get('/medImages/:id/annotations', function(req, res, next) {
-    var id = req.params.id;
-    PointAnnotation.find({image_id: id}, function(err, pointAnnotations) {
-      if (err) {
-        return next(err);
-      }
+    var showResponse = function(req, res, data) {
+      res.end(" and successfully returned: " + data);
+    }
 
-      RangeAnnotation.find({image_id: id}, function(err, rangeAnnotations) {
-        if (err) {
-          return next(err);
-        }
+    AnnotationController.getMedImageAnnotations(req, res, next, callback);
 
-        // Create an array of all point and range annotations for the image
-        var annotations = pointAnnotations.concat(rangeAnnotations);
-        res.end("GET request made to: " + req.url + "\n and returned: " + annotations);
-      });
-
-    });
+    res.write("GET request made to: " + req.url);
   });
 
   // Create a new annotation

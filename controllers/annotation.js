@@ -14,3 +14,27 @@ var getAnnotationType = module.exports.getAnnotationModel = function(type) {
     return RangeAnnotation;
   }
 }
+
+module.exports.getMedImageAnnotations = function(req, res, next, callback) {
+  var id = req.params.id;
+  PointAnnotation.find({image_id: id}, function(err, pointAnnotations) {
+    if (err) {
+      return next(err);
+    }
+
+    RangeAnnotation.find({image_id: id}, function(err, rangeAnnotations) {
+      if (err) {
+        return next(err);
+      }
+
+      // Create an array of all point and range annotations for the image
+      var annotations = pointAnnotations.concat(rangeAnnotations);
+      callback(req, res, annotations);
+    });
+
+  });
+}
+
+module.exports.createAnnotation = function(req, res, next, callback) {
+  
+}

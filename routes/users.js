@@ -1,4 +1,3 @@
-var User = require('../data/models/user');
 var UserController = require('../controllers/user');
 
 module.exports = function(app) {
@@ -43,7 +42,7 @@ module.exports = function(app) {
   app.del('/users', function(req, res, next) {
 
     var showResponse = function(req, res, user) {
-      res.end(" and successfully deleted user:" + req.body.username);
+      res.end(" and successfully deleted user: " + req.body.username);
     }
 
     UserController.deleteUser(req, res, next, showResponse);
