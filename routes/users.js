@@ -5,8 +5,6 @@ module.exports = function(app) {
 
   // Gets all users
   app.get('/users', function(req, res, next) {
-
-    res.set('Content-Type', 'text/html');
     
     var showResponse = function(req, res, data) {
       res.end(" and successfully retrieved the following users: " + data);
@@ -45,7 +43,7 @@ module.exports = function(app) {
   app.del('/users', function(req, res, next) {
 
     var showResponse = function(req, res, user) {
-      res.end(" and successfully deleted user:" + user.username);
+      res.end(" and successfully deleted user:" + req.body.username);
     }
 
     UserController.deleteUser(req, res, next, showResponse);
