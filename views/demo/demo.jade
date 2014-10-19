@@ -195,8 +195,12 @@ block content
             div.responseDiv#medImageForUser
         li Create a medical image
           form#uploadImageForm
+            input(type="text", name="user_id", placeholder="User ID", required)
+            br
             input(type="file", name="medImage", required)
+            br
             input(type="submit")
+            br
           legend
             div Response: 
             div.responseDiv#medImageCreate
