@@ -15,6 +15,11 @@ var getAnnotationModel = module.exports.getAnnotationModel = function(type) {
   }
 }
 
+/**
+ * Gets all annotations for the medical image with the image_id that is 
+ * req.params.id
+ * Then performs the given callback, passing in the found annotations
+ */
 module.exports.getMedImageAnnotations = function(req, res, next, callback) {
   var id = req.params.id;
 
@@ -38,6 +43,13 @@ module.exports.getMedImageAnnotations = function(req, res, next, callback) {
   });
 }
 
+/**
+ * Creates a new annotation based on the fields given in req.body
+ * req.body keys should match annotations schema keys
+ * Creates a point annotation if req.body.type == "point"
+ *   or a range annotation if req.body type == "range"
+ * Performs the given callback after the annotation is created
+ */
 module.exports.createAnnotation = function(req, res, next, callback) {
   var Annotation = getAnnotationModel(req.body.type);
   var data = req.body;
@@ -61,6 +73,12 @@ module.exports.createAnnotation = function(req, res, next, callback) {
   });
 }
 
+/**
+ * Updates the annotation with _id given by req.body.id
+ * Can update text, start_point, and end_point
+ * start_point and end_point only updated if x and y are given
+ * The performs given callback
+ */
 module.exports.updateAnnotation = function(req, res, next, callback) {
   var Annotation = getAnnotationModel(req.body.type);
 
@@ -89,6 +107,10 @@ module.exports.updateAnnotation = function(req, res, next, callback) {
   });
 }
 
+/**
+ * Deletes the annotation with _id given by req.body.id
+ * Then performs the given callback
+ */
 module.exports.deleteAnnotation = function(req, res, next, callback) {
   var Annotation = getAnnotationModel(req.body.type);
 
