@@ -71,7 +71,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
       });
 
       image.save(function(err) {
-        callback(err, {uploadPath: uploadPath, imageURL: imageURL});
+        callback(err, {imageURL: imageURL});
       });
     });
   });

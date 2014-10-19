@@ -92,6 +92,16 @@ var DemoController = function() {
     /////////////////////////////////////////////////////////////////
 
     (function() {
+      $("#medImageForUserForm").on("submit", function(e) {
+        //prevent reload
+        e.preventDefault();
+
+        var userID = $(this)[0].elements["user_id"].value;
+        ajaxController.get("/users/" + userID + "/medimages").done(function(res) {
+          $("#medImageForUser").text(JSON.stringify(res));
+        });
+      });
+
       $("#uploadImageForm").on("submit", function(e) {
         //prevent reload
         e.preventDefault();
@@ -107,22 +117,8 @@ var DemoController = function() {
           dataType: "json",
           contentType: false,
           processData: false,
-          success: function(res) {
-            console.log("good post request!");
-          },
-          error: function() {
-            console.log("bad post request...");
-          }
-        });
-      });
-
-      $("#medImageForUserForm").on("submit", function(e) {
-        //prevent reload
-        e.preventDefault();
-
-        var userID = $(this)[0].elements["user_id"].value;
-        ajaxController.get("/users/" + userID + "/medimages").done(function(res) {
-          $("#medImageForUser").text(JSON.stringify(res));
+        }).always(function(res) {
+          $("#medImageCreate").text(JSON.stringify(res));
         });
       });
     })();
