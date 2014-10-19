@@ -166,16 +166,30 @@ block content
             div.responseDiv#annotationsDelete
     li Contributions
       ul
-        li Get all contributors for a medical image
-          button Submit
+        li Check if user has access to an image
+          legend
+            form#accessToImageForm
+              input(type="text", name="user_id", placeholder="User ID", required)
+              br
+              input(type="text", name="image_id", placeholder="Image ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
             div.responseDiv#contributorsGet
         li Add a new contributor from an image
-          button Submit
+          legend
+            form#createContributionForm
+              input(type="text", name="user_id", placeholder="User ID", required)
+              br
+              input(type="text", name="image_id", placeholder="Image ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#contributorsCreate
+            div.responseDiv#contributionCreate
         li Delete a contributor from an image
           button Submit
           legend

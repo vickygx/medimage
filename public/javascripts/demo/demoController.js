@@ -134,11 +134,36 @@ var DemoController = function() {
     // Contributions
     /////////////////////////////////////////////////////////////////
 
+    (function() {
+
+      // Check for access of image
+      $("#accessToImageForm").on("submit", function(e) {
+        //TODO
+      });
+
+      // Create Contribution
+      $("#createContributionForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var userID = $(this)[0].elements["user_id"].value;
+        var imageID = $(this)[0].elements["image_id"].value;
+        var data = {
+          user_id: userID,
+          image_id: imageID
+        };
+
+        ajaxController.post('/contributions', data).always(function(res) {
+          $("#contributionCreate").text(JSON.stringify(res));
+        });
+      });
+    })();
 
     /////////////////////////////////////////////////////////////////
     // MedImages
     /////////////////////////////////////////////////////////////////
+
     (function() {
+      // Get MedImages for a User
       $("#medImageForUserForm").on("submit", function(e) {
         //prevent reload
         e.preventDefault();
@@ -149,6 +174,7 @@ var DemoController = function() {
         });
       });
 
+      // Create MedImage
       $("#uploadImageForm").on("submit", function(e) {
         //prevent reload
         e.preventDefault();
@@ -170,6 +196,7 @@ var DemoController = function() {
       });
     })();
 
+    // Delete MedImage
     $("#deleteImageForm").on("submit", function(e) {
       e.preventDefault();
 
