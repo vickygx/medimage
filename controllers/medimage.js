@@ -38,7 +38,7 @@ module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) 
 
   var fileType = (medImage.type === "image/png") ? ".png" : ".jpg";
 
-  //get upload path starting from '/public'
+  //get upload path
   var uploadPath = uploadFolder + "/" + fileName + fileType;
   uploadPath = path.resolve(uploadPath);
 
