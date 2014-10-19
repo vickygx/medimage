@@ -1,10 +1,8 @@
 module.exports = function(app){
-  var fs = require('fs');
-  var mkdirp = require('mkdirp');
   var MedImageController = require('../controllers/medimage');
   var ObjectId = require('mongoose').Types.ObjectId;
 
-  // Gets the medical image with the given id
+  // Gets the medical images for a user
   app.get('/users/:id/medimages', function(req, res) {
     //Check if proper userID
     var userID = req.params.id;
@@ -46,36 +44,14 @@ module.exports = function(app){
       return;
     }
 
-    //build folder path if doesn't exist
-    var folderPath = MedImageController.getUploadFolderPath(app.settings.env, userID);
-    fs.exists(folderPath, function(exists) {
-      if (exists) {
-        MedImageController.uploadImage(medImage, folderPath, userID, function(err, data) {
-          if (err) {
-            res.json(500, err);
-            return;
-          }
-
-          res.json(data);
-        });
-      } else {
-        //make dir because it doesn't exist
-        mkdirp(folderPath, function(err) {
-          if (err) {
-            res.json(500, err);
-            return;
-          }
-
-          MedImageController.uploadImage(medImage, folderPath, userID, function(err, data) {
-            if (err) {
-              res.json(500, err);
-              return;
-            }
-
-            res.json(data);
-          });
-        });
+    //upload image
+    MedImageController.uploadImage(medImage, app.settings.env, userID, function(err, data) {
+      if (err) {
+        res.json(500, err);
+        return;
       }
+
+      res.json(data);
     });
   });
 
@@ -94,6 +70,7 @@ module.exports = function(app){
         return;
       } else if (!medImage) {
         res.json(400, "Invalid Request");
+        return;
       }
 
       MedImageController.deleteImage(medImage, app.settings.env, function(err, data) {
