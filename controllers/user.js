@@ -55,6 +55,8 @@ module.exports.deleteUser = function(req, res, next, callback) {
         }
         callback(req, res, user);
       });
+    } else {
+      res.end("Unable to find user: " + req.body.username);
     }
   });
 }
