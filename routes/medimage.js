@@ -83,5 +83,4 @@ module.exports = function(app){
   app.del('/medimages/:id', function(req, res){
 
   });
-
 };

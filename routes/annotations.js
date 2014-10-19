@@ -7,18 +7,19 @@ module.exports = function(app){
 
   // Get all the annotations of the medical image
   // with the given id
-  app.get('/annotation/:imageId', function(req, res, next) {
-    var imageId = req.params.imageId;
-    PointAnnotation.find({image_id: imageId}, function(err, pointAnnotations) {
+  app.get('/medImages/:id/annotations', function(req, res, next) {
+    var id = req.params.id;
+    PointAnnotation.find({image_id: id}, function(err, pointAnnotations) {
       if (err) {
         return next(err);
       }
 
-      RangeAnnotation.find({image_id: imageId}, function(err, rangeAnnotations) {
+      RangeAnnotation.find({image_id: id}, function(err, rangeAnnotations) {
         if (err) {
           return next(err);
         }
 
+        // Create an array of all point and range annotations for the image
         var annotations = pointAnnotations.concat(rangeAnnotations);
         res.end("GET request made to: " + req.url + "\n and returned: " + annotations);
       });
@@ -27,7 +28,7 @@ module.exports = function(app){
   });
 
   // Create a new annotation
-  app.post('/annotation', function(req, res, next) {
+  app.post('/annotations', function(req, res, next) {
 
     var Annotation = AnnotationController.getAnnotationModel(req.body.type);
     var data = req.body;
@@ -51,7 +52,7 @@ module.exports = function(app){
   });
 
   // Edit an existing annotation
-  app.put('/annotation', function(req, res, next) {
+  app.put('/annotations', function(req, res, next) {
     var Annotation = AnnotationController.getAnnotationModel(req.body.type);
     Annotation.update({_id: req.body.id}, 
     {
@@ -66,7 +67,7 @@ module.exports = function(app){
   });
 
   // Delete an annotation
-  app.del('/annotation', function(req, res, next) {
+  app.del('/annotations', function(req, res, next) {
     var Annotation = AnnotationController.getAnnotationModel(req.body.type);
 
     Annotation.findOne({_id: req.body.id}, function(err, annotation) {
