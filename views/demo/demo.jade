@@ -133,17 +133,22 @@ block content
             div Response: 
             div.responseDiv#medImageForUser
         li Create a medical image
-          form#uploadImageForm(name="uploadImage")
+          form#uploadImageForm
             input(type="file", name="medImage", required)
             input(type="submit")
           legend
             div Response: 
             div.responseDiv#medImageCreate
         li Delete an image
-          button Submit
+          legend
+            form#deleteImageForm
+              input(type="text", name="image_id", placeholder="Image ID", required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#imagesDelete
+            div.responseDiv#medImageDelete
     li Tags
       ul
         li Get all tags for a medical image

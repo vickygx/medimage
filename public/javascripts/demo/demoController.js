@@ -123,6 +123,15 @@ var DemoController = function() {
       });
     })();
 
+    $("#deleteImageForm").on("submit", function(e) {
+      e.preventDefault();
+
+      var imageID = $(this)[0].elements["image_id"].value;
+      ajaxController.del("/medimages/" + imageID).always(function(res) {
+        $("#medImageDelete").text(JSON.stringify(res));
+      });
+    });
+
     /////////////////////////////////////////////////////////////////
     // Tags
     /////////////////////////////////////////////////////////////////

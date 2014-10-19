@@ -81,6 +81,29 @@ module.exports = function(app){
 
   // Deletes a medical image
   app.del('/medimages/:id', function(req, res){
+    //Check if valid id
+    var imageID = req.params.id;
+    if (!ObjectId.isValid(imageID)) {
+      res.json(400, "Invalid Request");
+    }
 
+    //get image details for deleting
+    MedImageController.getMedImageByID(imageID, function(err, medImage) {
+      if (err) {
+        res.json(500, err);
+        return;
+      } else if (!medImage) {
+        res.json(400, "Invalid Request");
+      }
+
+      MedImageController.deleteImage(medImage, app.settings.env, function(err, data) {
+        if (err) {
+          res.json(500, err);
+          return;
+        }
+
+        res.json(data);
+      });
+    });
   });
 };
