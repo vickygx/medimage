@@ -38,14 +38,26 @@ module.exports.createUser = function(data, callback) {
 
 module.exports.editUser = function(username, data, callback) {
   
-  User.update({username: username}, 
-  {
-    $set: data
-  }, function(err) {
+  User.findOne({username: username}, function(err, user) {
+
     if (err) {
       return callback(err);
     }
-    callback();
+
+    if (user) {
+      for (var key in data) {
+        user[key] = data[key];
+      }
+      user.save();
+      callback();
+    } else {
+      var err = {
+        status: 500, 
+        name: "Bad input", 
+        message: "Unable to find the user with the given username"
+      };
+      return callback(err);
+    }
   });
 }
 
@@ -66,7 +78,7 @@ module.exports.deleteUser = function(username, callback) {
       var err = {
         status: 500, 
         name: "Bad input", 
-        message: "Could not find this user to delete"
+        message: "Unable to find the user with the given username"
       };
       return callback(err);
     }
