@@ -20,24 +20,21 @@ var getAnnotationModel = module.exports.getAnnotationModel = function(type) {
  * req.params.id
  * Then performs the given callback, passing in the found annotations
  */
-module.exports.getMedImageAnnotations = function(req, res, next, callback) {
-  var id = req.params.id;
+module.exports.getMedImageAnnotations = function(imageId, callback) {
 
-  res.write(" to the MedImage with id: " + id);
-
-  PointAnnotation.find({image_id: id}, function(err, pointAnnotations) {
+  PointAnnotation.find({image_id: imageId}, function(err, pointAnnotations) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
 
-    RangeAnnotation.find({image_id: id}, function(err, rangeAnnotations) {
+    RangeAnnotation.find({image_id: imageId}, function(err, rangeAnnotations) {
       if (err) {
-        return next(err);
+        return callback(err);
       }
 
       // Create an array of all point and range annotations for the image
       var annotations = pointAnnotations.concat(rangeAnnotations);
-      callback(req, res, annotations);
+      callback(null, annotations);
     });
 
   });
@@ -50,26 +47,15 @@ module.exports.getMedImageAnnotations = function(req, res, next, callback) {
  *   or a range annotation if req.body type == "range"
  * Performs the given callback after the annotation is created
  */
-module.exports.createAnnotation = function(req, res, next, callback) {
-  var Annotation = getAnnotationModel(req.body.type);
-  var data = req.body;
-  data.start_point = {x: data.start_x, y: data.start_y};
-  delete data.start_x;
-  delete data.start_y;
-
-  if (data.type == "range") {
-    data.end_point = {x: data.end_x, y: data.end_y};
-    delete data.end_x;
-    delete data.end_y;
-  }
-
-  res.write(" with data: " + JSON.stringify(data));
+module.exports.createAnnotation = function(type, data, callback) {
+  
+  var Annotation = getAnnotationModel(type);
 
   Annotation.create(data, function(err) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-    callback(req, res);
+    callback();
   });
 }
 
@@ -79,31 +65,18 @@ module.exports.createAnnotation = function(req, res, next, callback) {
  * start_point and end_point only updated if x and y are given
  * The performs given callback
  */
-module.exports.updateAnnotation = function(req, res, next, callback) {
-  var Annotation = getAnnotationModel(req.body.type);
+module.exports.updateAnnotation = function(id, type, data, callback) {
+  
+  var Annotation = getAnnotationModel(type);
 
-  var updateData = {};
-  if (req.body.text && req.body.text.length != 0) {
-    updateData.text = req.body.text;
-  } 
-  if (req.body.start_x && req.body.start_y && 
-      req.body.start_x.length != 0 && req.body.start_y.length != 0) {
-    updateData.start_point = {x: req.body.start_x, y: req.body.start_y};
-  } 
-  if (req.body.end_x && req.body.end_y && 
-      req.body.end_x.length != 0 && req.body.end_y.length != 0) {
-    updateData.end_point = {x: req.body.end_x, y: req.body.end_y};
-  } 
-
-  res.write(" with data: " + JSON.stringify(updateData));
-  Annotation.update({_id: req.body.id}, 
+  Annotation.update({_id: id}, 
   {
-    $set: updateData
+    $set: data
   }, function(err) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-    callback(req, res);
+    callback();
   });
 }
 
@@ -111,25 +84,28 @@ module.exports.updateAnnotation = function(req, res, next, callback) {
  * Deletes the annotation with _id given by req.body.id
  * Then performs the given callback
  */
-module.exports.deleteAnnotation = function(req, res, next, callback) {
-  var Annotation = getAnnotationModel(req.body.type);
+module.exports.deleteAnnotation = function(id, type, callback) {
+  var Annotation = getAnnotationModel(type);
 
-  Annotation.findOne({_id: req.body.id}, function(err, annotation) {
+  Annotation.findOne({_id: id}, function(err, annotation) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-
-    res.write(" with data: " + JSON.stringify(req.body));
 
     if (annotation) {
       annotation.remove(function(err) {
         if (err) {
-          return next(err);
+          return callback(err);
         }
-        callback(req, res);
+        callback();
       });
     } else {
-      res.end(" and failed to find the given annotation");
+      var err = {
+        status: 500, 
+        name: "Bad input", 
+        message: "Unable to find the annotation with the given id"
+      }
+      return callback(err);
     }
   });
 }
