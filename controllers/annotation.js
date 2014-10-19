@@ -1,6 +1,8 @@
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
 var RangeAnnotation = require('../data/models/annotation/rangeAnnotation');
 
+var errors = require('../errors/errors');
+
 /**
  * Returns the correct annotation model based on the given type
  * @param {String} type: type of annotation to get
@@ -80,12 +82,7 @@ module.exports.updateAnnotation = function(id, type, data, callback) {
       annotation.save();
       callback();
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the annotation with the given id"
-      };
-      return callback(err);
+      return callback(errors.annotations.notFound);
     }
   });
 }
@@ -111,12 +108,7 @@ module.exports.deleteAnnotation = function(id, type, callback) {
         callback();
       });
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the annotation with the given id"
-      }
-      return callback(err);
+      return callback(errors.annotations.notFound);
     }
   });
 }
