@@ -12,6 +12,17 @@ module.exports = {}
       fn - callback function 
 */
 module.exports.addTagTo = function(imageId, tagname, fn){
+  // Check if imageId exists
+
+  // Create new tag relationship and add to database
+  var tag = new Tag({
+    image_id: imageId,
+    tag_name: tagname.trim()
+  });
+
+  tag.save(function(err, tg){
+    fn(err, tg);
+  });
 
 }
 
@@ -23,7 +34,12 @@ module.exports.addTagTo = function(imageId, tagname, fn){
       fn - callback function 
 */
 module.exports.removeTagFrom = function(imageId, tagname, fn){
-
+  // Finds and removes the tag relationship object
+  Tag.findOneAndRemove(
+    {image_id: imageId, tag_name: tagname},
+    function(err, tg){
+      fn(err, tg);
+    });
 }
 
 /*  
@@ -32,7 +48,13 @@ module.exports.removeTagFrom = function(imageId, tagname, fn){
       fn - callback function 
 */
 module.exports.getTagsOf = function(imageId, fn){
-
+  // Finds all tags associated with the image id
+  Tag.find(
+    {image_id: imageId}, 
+    'tag_name',
+    function(err, tags){
+      fn(err, tags);
+    });
 }
 
 
@@ -43,7 +65,6 @@ module.exports.getTagsOf = function(imageId, fn){
       fn - callback function 
 */
 module.exports.getPhotosWithEveryTag = function(tags, fn){
-
 }
 
 /*  
@@ -53,5 +74,4 @@ module.exports.getPhotosWithEveryTag = function(tags, fn){
       fn - callback function 
 */
 module.exports.getPhotosWithEitherTag = function(tags, fn){
-
 }
