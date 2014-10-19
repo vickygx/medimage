@@ -1,6 +1,7 @@
 //Dependency Modules
 var fs = require('fs');
-var MedImage = require('../data/models/medImage');
+var path = require('path')
+var MedImage = require('../data/models/medimage');
 
 /**
  * Returns the folder path for MedImage
@@ -9,15 +10,15 @@ var MedImage = require('../data/models/medImage');
  * @param userID - userID for user-specific folder
  */
 module.exports.getUploadFolderPath = function(env, userID) {
-  var path = __dirname + "/..";
+  var folderPath = __dirname + "/..";
   if (env === "development") {
-    path += "/public/local";
+    folderPath += "/public/local";
   } else {
-    path += "/public/prod";
+    folderPath += "/public/prod";
   }
-  path += "/uploads/" + userID;
+  folderPath += "/uploads/" + userID;
 
-  return path;
+  return path.resolve(folderPath);
 }
 
 /**
@@ -25,10 +26,10 @@ module.exports.getUploadFolderPath = function(env, userID) {
  * new directory
  *
  * @param medImage - image file object as returned in req.files
- * @param uploadFolder - dir of where image will be uploaded to
+ * @param userID - id of user who uploaded image
  * @param callback - callback called after uploading
  */
-module.exports.uploadImage = function(medImage, uploadFolder, callback) {
+module.exports.uploadImage = function(medImage, uploadFolder, userID, callback) {
   //get fileName, remove spaces and .png/.jpg, shrink name <=10 chars, lowercase
   var fileName = medImage.name;
   fileName = fileName.replace(/(\s+)|(\.png)|(\.jpg)/g, '')
@@ -37,30 +38,34 @@ module.exports.uploadImage = function(medImage, uploadFolder, callback) {
 
   var fileType = (medImage.type === "image/png") ? ".png" : ".jpg";
 
+  //get upload path
   var uploadPath = uploadFolder + "/" + fileName + fileType;
+  uploadPath = path.resolve(uploadPath);
+
+  //set imageURL
+  var imageURL = '/uploads/images/' + userID + "/" + fileName + fileType;
 
   fs.readFile(medImage.path, function(err, data) {
     fs.writeFile(uploadPath, data, function (err) {
       if (err) {
-        res.json(500, err);
+        callback(err);
         return;
       }
       
       //upload image into db
       var image = new MedImage({
-        image_url: uploadPath
+        user_id: userID,
+        image_url: imageURL
       });
 
-      // image.save(function(err) {
-      //   if (err) {
-      //     res.json(500, err);
-      //     return;
-      //   }
+      image.save(function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
 
-      //   callback();
-      // });
-
-      callback();
+        callback(undefined, {uploadPath: uploadPath, imageURL: imageURL});
+      });
     });
   });
 }

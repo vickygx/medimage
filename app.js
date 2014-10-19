@@ -40,8 +40,9 @@ app.configure('production', function(){
 // Routes
 require('./routes/index')(app);
 require('./routes/annotations')(app);
-require('./routes/medImage')(app);
+require('./routes/medimage')(app);
 require('./routes/tags')(app);
+require('./routes/uploads')(app);
 
 var port = Number(process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.listen(port, process.env.OPENSHIFT_NODEJS_IP, function() {
