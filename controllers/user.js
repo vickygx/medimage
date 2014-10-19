@@ -6,7 +6,9 @@ module.exports.getAllUsers = function(req, res, next, callback) {
       return next(err);
     }
 
-    callback(req, res, users);
+    if (callback) {
+      callback(req, res, users);
+    }
   });
 }
 
@@ -18,7 +20,9 @@ module.exports.createUser = function(req, res, next, callback) {
     if (err) {
       return next(err);
     }
-    callback(req, res);
+    if (callback) {
+      callback(req, res);
+    }
   });
 }
 
@@ -44,7 +48,9 @@ module.exports.editUser = function(req, res, next, callback) {
     if (err) {
       return next(err);
     }
-    callback(req, res)
+    if (callback) {
+      callback(req, res);
+    }
   });
 }
 
@@ -61,7 +67,9 @@ module.exports.deleteUser = function(req, res, next, callback) {
         if (err) {
           return next(err);
         }
-        callback(req, res);
+        if (callback) {
+          callback(req, res);
+        }
       });
     } else {
       res.end("Unable to find user: " + req.body.username);
