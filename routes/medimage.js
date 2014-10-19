@@ -23,7 +23,8 @@ module.exports = function(app){
 
   // Creates a medical image
   app.post('/medimages', function(req, res) {
-    var medImage = req.files.medImage
+    var medImage = req.files.medImage;
+    var userID = req.body.user_id;
 
     //check file type
     if (medImage.type !== "image/jpeg" && medImage.type !== "image/png") {
@@ -37,8 +38,7 @@ module.exports = function(app){
       return;
     }
 
-    //TODO: get real userID
-    var userID = "123456789012345678901234";
+    //check if userID is valid
     if (!ObjectId.isValid(userID)) {
       res.send(500, "Server Error: Invalid userID given");
       return;
