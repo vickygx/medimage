@@ -51,7 +51,7 @@ module.exports = function(app){
       if (err) {
         return next(err);
       }
-      res.end(JSON.stringify(data));
+      res.end(data);
     });
   });
 

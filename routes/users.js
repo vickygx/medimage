@@ -5,41 +5,64 @@ module.exports = function(app) {
   // Gets all users
   app.get('/users', function(req, res, next) {
 
-    res.write("GET request made to: " + req.url);
+    UserController.getAllUsers(function(err, data) {
+      if (err) {
+        return next(err);
+      }
 
-    UserController.getAllUsers(req, res, next, function(req, res, data) {
-      res.end(" and successfully retrieved the following users: " + data);
+      res.json(data);
+      res.end();
     });
   });
 
   // Create a new user
   app.post('/users', function(req, res, next) {
 
-    res.write("POST request made to: " + req.url);
+    UserController.createUser(req.body, function(err) {
+      if (err) {
+        return next(err);
+      }
 
-    UserController.createUser(req, res, next, function(req, res) {
-      res.end(" and successfully created user!");
+      res.end();
     });
   });
 
   // Edit an existing user
   app.put('/users', function(req, res, next) {
 
-    res.write("PUT request made to: " + req.url);
+    var updateData = {};
+  
+    // Empty inputs are not considered
+    if (req.body.first_name && req.body.first_name.length != 0) {
+      updateData.first_name = req.body.first_name;
+    } 
+    if (req.body.last_name && req.body.last_name.length != 0) {
+      updateData.last_name = req.body.last_name;
+    } 
+    if (req.body.password && req.body.password.length != 0) {
+      updateData.password = req.body.password;
+    }
 
-    UserController.editUser(req, res, next, function(req, res) {
-      res.end(" and successfully edited user!");
+    UserController.editUser(req.body.username, updateData, function(err) {
+      if (err) {
+        return next(err);
+      }
+
+      res.end();
     });
   });
 
   // Delete an user
   app.del('/users', function(req, res, next) {
 
-    res.write("DELETE request made to: " + req.url + " with data: " + JSON.stringify(req.body));
+    var username = req.body.username;
 
-    UserController.deleteUser(req, res, next, function(req, res, user) {
-      res.end(" and successfully deleted user: " + req.body.username);
+    UserController.deleteUser(username, function(err) {
+      if (err) {
+        return next(err);
+      }
+
+      res.end();
     });
   });
-
 }

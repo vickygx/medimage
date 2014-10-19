@@ -1,78 +1,74 @@
 var User = require('../data/models/user');
 
-module.exports.getAllUsers = function(req, res, next, callback) {
+module.exports.getAllUsers = function(callback) {
   User.find({}, function(err, users) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
 
-    if (callback) {
-      callback(req, res, users);
-    }
+    callback(null, users);
   });
 }
 
-module.exports.createUser = function(req, res, next, callback) {
-  
-  res.write(" with data :" + JSON.stringify(req.body));
+module.exports.createUser = function(data, callback) {
 
-  User.create(req.body, function(err) {
+  User.findOne({username: data.username}, function(err, user) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-    if (callback) {
-      callback(req, res);
+
+    if (user) {
+      var err = {
+        status: 500, 
+        name: "Bad input", 
+        message: "A user with this username already exists"
+      }
+      return callback(err);
     }
+
+    User.create(data, function(err) {
+      if (err) {
+        return callback(err);
+      }
+
+      callback();
+    });
   });
 }
 
-module.exports.editUser = function(req, res, next, callback) {
-  // Empty inputs are not considered
-  var updateData = {};
-  if (req.body.first_name && req.body.first_name.length != 0) {
-    updateData.first_name = req.body.first_name;
-  } 
-  if (req.body.last_name && req.body.last_name.length != 0) {
-    updateData.last_name = req.body.last_name;
-  } 
-  if (req.body.password && req.body.password.length != 0) {
-    updateData.password = req.body.password;
-  }
-
-  res.write(" with data: " + JSON.stringify(updateData));
-
-  User.update({username: req.body.username}, 
+module.exports.editUser = function(username, data, callback) {
+  
+  User.update({username: username}, 
   {
-    $set: updateData
+    $set: data
   }, function(err) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-    if (callback) {
-      callback(req, res);
-    }
+    callback();
   });
 }
 
-module.exports.deleteUser = function(req, res, next, callback) {
-  
-  res.write(" to the user with username: " + req.body.username);
+module.exports.deleteUser = function(username, callback) {
 
-  User.findOne({username: req.body.username}, function(err, user) {
+  User.findOne({username: username}, function(err, user) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
     if (user) {
       user.remove(function(err) {
         if (err) {
-          return next(err);
+          return callback(err);
         }
-        if (callback) {
-          callback(req, res);
-        }
+        callback();
       });
     } else {
-      res.end("Unable to find user: " + req.body.username);
+      var err = {
+        status: 500, 
+        name: "Bad input", 
+        message: "Could not find this user to delete"
+      };
+      return callback(err);
     }
   });
 }
