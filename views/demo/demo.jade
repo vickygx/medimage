@@ -169,15 +169,15 @@ block content
         li Check if user has access to an image
           legend
             form#accessToImageForm
-              input(type="text", name="user_id", placeholder="User ID", required)
+              input(type="text", name="user_id", placeholder="User ID")
               br
-              input(type="text", name="image_id", placeholder="Image ID", required)
+              input(type="text", name="image_id", placeholder="Image ID")
               br
               input(type="submit")
               br
           legend
             div Response: 
-            div.responseDiv#contributorsGet
+            div.responseDiv#contributionAccess
         li Add a new contributor from an image
           legend
             form#createContributionForm

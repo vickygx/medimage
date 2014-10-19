@@ -138,7 +138,15 @@ var DemoController = function() {
 
       // Check for access of image
       $("#accessToImageForm").on("submit", function(e) {
-        //TODO
+        e.preventDefault();
+
+        var userID = $(this)[0].elements["user_id"].value;
+        var imageID = $(this)[0].elements["image_id"].value;
+        var accessUrl = "/contributions/access?userID=" + encodeURIComponent(userID)
+                      + "&imageID=" + encodeURIComponent(imageID);
+        ajaxController.get(accessUrl).always(function(res) {
+          $("#contributionAccess").text(JSON.stringify(res));
+        });
       });
 
       // Create Contribution

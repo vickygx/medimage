@@ -1,6 +1,19 @@
 //Module Dependencies
 var Contribution = require('../data/models/contribution');
 
+/**
+ * Checks if the inputed user has access to the inputed image
+ *
+ * @param {ObjectID} userID - id of user
+ * @param {ObjectID} imageID - id of image
+ * @param {function} callback - callback called with true/false json
+ */
+module.exports.hasAccess = function(userID, imageID, callback) {
+  Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
+    callback(err, {hasAccess: (contribution) ? true : false});
+  });
+}
+
 /** 
  * Creates a contribution in the database
  * 
@@ -10,10 +23,10 @@ var Contribution = require('../data/models/contribution');
  */
 module.exports.createContribution = function(userID, imageID, callback) {
   //Check if created in DB already
-  Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
+  module.exports.hasAccess(userID, imageID, function(err, data) {
     if (err) {
       return callback(err);
-    } else if (contribution) {
+    } else if (data.hasAccess) {
       return callback(undefined, {});
     }
     

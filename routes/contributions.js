@@ -40,7 +40,7 @@ module.exports = function(app){
           res.json(500, err);
           return;
         }
-        
+
         res.json(data);
       });
     });
@@ -53,6 +53,39 @@ module.exports = function(app){
 
   // Sees if user has access to edit medical image with given id
   app.get('/contributions/access', function(req, res) {
-    //TODO
+    var userID = req.query.userID;
+    var imageID = req.query.imageID;
+
+    //Check if userID and imageID are inputted
+    if (userID.length === 0 || imageID.length === 0) {
+      //TODO: FIX THIS
+      var err = {
+        status: 400,
+        name: "Bad Request",
+        message: "Request requires a User ID and an Image ID"
+      }
+      res.json(400, err);
+      return;
+    }
+
+    //Check if userID and imageID are valid IDs
+    if (!ObjectId.isValid(userID) || !ObjectId.isValid(imageID)) {
+      res.json(400, {
+        status: 400,
+        name: "Bad Input",
+        message: "Invalid User ID or Image ID given"
+      });
+      return;
+    }
+
+    ContriController.hasAccess(userID, imageID, function(err, data) {
+      if (err) {
+        res.json(500, err);
+        return;
+      }
+      res.json(data);
+    });
+
+    
   });
 };
