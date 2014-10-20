@@ -232,7 +232,7 @@ var DemoController = function() {
 
         ajaxController.get('/search?' + tagString, null)
           .done(function(res) {
-            $("#tagsPhotoGet").text(res.text);
+            $("#tagsPhotoGet").text(JSON.stringify(res));
         });
       });
     })();

@@ -52,8 +52,7 @@ module.exports = function(app){
           if (err)
             return next(err);
           else {
-            res.send({text: 'image: ' + imageId
-                          + '\n has tags: ' + tags});
+            res.send(tags);
           }
         });
       }
@@ -69,7 +68,7 @@ module.exports = function(app){
       if (err)
         return next(err);
       else {
-         res.send({text: 'Adding tag: ' + tagName + ' to ' + imageId});
+         res.end();
       }
     });
   });
@@ -83,7 +82,7 @@ module.exports = function(app){
       if (err)
         return next(err);
       else {
-        res.send({text: 'Removing tag: ' + tagName + ' from ' + imageId});
+        res.end();
       }
     });
     
@@ -94,10 +93,10 @@ module.exports = function(app){
   app.get('/search', function(req, res, next) {
     var tags = Array.isArray(req.query.tag) ? req.query.tag : [req.query.tag];
 
-    TagController.getPhotosWithEveryTag(tags, function(err, photos){
+    TagController.searchPhotosWithTags(tags, 10, function(err, photos){
       if (err)
         return next(err);
-      res.send({text: 'photo ids: ' + photos});  
+      res.send({photos});  
     });
     
   });

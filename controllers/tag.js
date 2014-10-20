@@ -47,18 +47,6 @@ module.exports.getTagsOf = function(imageId, fn){
              fn);
 }
 
-
-/*  
-    Function that retrieves all the photos that have all the tags
-    in the tags list.
-    Inputs:
-      tags: a list of tag names (all strings)
-      fn - callback function 
-*/
-module.exports.getPhotosWithEveryTag = function(tags, fn){
-  Tag.find({tag_name: {$in: tags }}, fn);
-}
-
 /*  
     Function that retrieves all the photos that have at 
     least one of the tags in the tags list
@@ -66,4 +54,28 @@ module.exports.getPhotosWithEveryTag = function(tags, fn){
       fn - callback function 
 */
 module.exports.getPhotosWithEitherTag = function(tags, fn){
+  Tag.find({tag_name: {$in: tags }}, fn);
+}
+
+/*  Function that searches for images with the listed tags
+    and returns a list of JSON containing the MedImage object and the tags
+    matched with the image. 
+    params: 
+      limit: integer indicicator how many photos passed into fn
+      tags: list of strings of tag names
+*/ 
+module.exports.searchPhotosWithTags = function(tags, limit, fn){
+  Tag.aggregate(
+    [
+      { $match: {
+          tag_name: {$in: tags}
+      }},
+      { $group: {
+          _id: "$_image",
+          count: { $sum: 1 },
+          tags: {$addToSet: '$tag_name'}
+      }},
+      { $sort : { count: -1 }},
+      { $limit : limit }
+    ], fn);
 }
