@@ -1,104 +1,131 @@
 module.exports = function(app){
+  //Controllers
   var MedImageController = require('../controllers/medimage');
   var UserController = require('../controllers/user');
-  var ObjectId = require('mongoose').Types.ObjectId;
+  var ContribController = require('../controllers/contribution');
+  var AnnotationController = require('../controllers/annotation');
+  var TagController = require('../controllers/tag');
+
+  //Error Modules
+  ErrorChecking = require('../errors/errorChecking');
+  Errors = require('../errors/errors');
 
   // Gets the medical images for a user
-  app.get('/users/:id/medimages', function(req, res) {
-    //Check if proper userID
+  app.get('/users/:id/medimages', function(req, res, next) {
+    //check if proper userID format
     var userID = req.params.id;
-    if (!ObjectId.isValid(userID)) {
-      res.send(500, "Server Error: Invalid userID given");
-      return;
+    if (ErrorChecking.invalidId(userID, next)) {
+      return next(Errors.invalidIdError);
     }
 
-    //Get images for user
+    //get images for user
     MedImageController.getMedImagesByUserID(userID, function(err, images) {
       if (err) {
-        res.json(500, err);
-        return;
+        return next(err);
       }
       res.json(images);
+      res.end();
     });
   });
 
   // Creates a medical image
-  app.post('/medimages', function(req, res) {
+  app.post('/medimages', function(req, res, next) {
     var userID = req.body.user_id;
     var title = req.body.title.trim();
     var medImage = req.files.medImage;
 
     //check file type
-    if (medImage.type !== "image/jpeg" && medImage.type !== "image/png") {
-      res.send(400, "Invalid File Type: file must be a PNG or JPEG");
-      return;
+    if (ErrorChecking.medimages.invalidFileType(medImage.type)) {
+      return next(Errors.medimages.invalidFileTypeError);
     }
 
     //check app environment
-    if (app.settings.env !== "development" && app.settings.env !== "production") {
-      res.send(500, "Server Error: Unexpected app environment");
-      return;
+    if (ErrorChecking.invalidAppEnv(app.settings.env)) {
+      return next(Errors.invalidAppEnvError);
     }
 
     //check if userID is valid ObjectID
-    if (!ObjectId.isValid(userID)) {
-      res.send(500, "Server Error: Invalid userID given");
-      return;
+    if (ErrorChecking.invalidId(userID)) {
+      return next(Errors.invalidIdError);
     }
 
     //check if title (trimmed) is nonempty
-    if (title.length === 0) {
-      res.send(500, "Server Error: Title must be a non empty string (ignoring whitespace)");
-      return;
+    if (ErrorChecking.emptyString(title)) {
+      return next(Errors.invalidStringError);
     }
 
     //check if user exists in database
     UserController.getUserByID(userID, function(err, user) {
       if (err) {
-        res.send(500, "blah");
-        return;
+        return next(err);
       } else if (!user) {
-        res.send(500, "User doesn't exist");
-        return;
+        return next(Errors.users.notFound);
       }
 
       //upload image
       MedImageController.uploadImage(medImage, app.settings.env, userID, title, function(err, data) {
         if (err) {
-          res.json(500, err);
-          return;
+          return next(err);
         }
 
-        res.json(data);
+        //Create contribution for user with image
+        ContribController.createContribution(userID, data._id, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.json(data);
+          res.end();        
+        });
       });
     });
   });
 
   // Deletes a medical image
-  app.del('/medimages/:id', function(req, res){
+  app.del('/medimages/:id', function(req, res, next) {
     //Check if valid id
     var imageID = req.params.id;
-    if (!ObjectId.isValid(imageID)) {
-      res.json(400, "Invalid Request");
+    if (ErrorChecking.invalidId(imageID)) {
+      return next(Errors.invalidIdError);
     }
 
     //get image details for deleting
     MedImageController.getMedImageByID(imageID, function(err, medImage) {
       if (err) {
-        res.json(500, err);
-        return;
+        return next(err);
       } else if (!medImage) {
-        res.json(400, "Invalid Request");
-        return;
+        return next(Errors.medimages.notFound);
       }
 
+      //Delete image
       MedImageController.deleteImage(medImage, app.settings.env, function(err, data) {
         if (err) {
-          res.json(500, err);
-          return;
+          return next(err);
         }
 
-        res.json(data);
+        //Delete contributions
+        ContribController.deleteContributionsForImage(imageID, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          //Delete annotations
+          AnnotationController.deleteAnnotationsForImage(imageID, function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            //Delete tags
+            TagController.removeTagsFrom(imageID, function(err) {
+              if (err) {
+                return next(err);
+              }
+              
+              res.json(data);
+              res.end();
+            });
+          })
+        });
       });
     });
   });

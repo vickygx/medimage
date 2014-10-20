@@ -9,8 +9,9 @@ var MedImage = require('../data/models/medimage');
 /**
  * Returns the folder path for MedImage
  *
- * @param env - environment of app
- * @param userID - userID for user-specific folder
+ * @param {String} env - environment of app
+ * @param {ObjectID} userID - userID for user-specific folder
+ * @return {String}
  */
 var getUploadFolderPath = function(env, userID) {
   var folderPath = __dirname + "/..";
@@ -27,8 +28,8 @@ var getUploadFolderPath = function(env, userID) {
 /**
  * Builds the directory for a folder path if necessary
  *
- * @param folderPath - directory path to build
- * @param callback - callback called after creating directory
+ * @param {String} folderPath - directory path to build
+ * @param {Function} callback - callback called after creating directory
  */
 var buildDirectory = function(folderPath, callback) {
   fs.exists(folderPath, function(exists) {
@@ -45,6 +46,9 @@ var buildDirectory = function(folderPath, callback) {
 
 /**
  * Gets the medImage by ID
+ *
+ * @param {ObjectID} imageID - id of image
+ * @param {Function} callback - callback called after getting images
  */
 module.exports.getMedImageByID = function(imageID, callback) {
   MedImage.findById(imageID, callback);
@@ -53,13 +57,11 @@ module.exports.getMedImageByID = function(imageID, callback) {
 /**
  * Gets the MedImages from a user
  *
- * @param userID - id of the user
- * @param callback - callback called after getting images
+ * @param {ObjectID} userID - id of the user
+ * @param {Function} callback - callback called after getting images
  */
 module.exports.getMedImagesByUserID = function(userID, callback) {
-  MedImage.find({ _creator: userID }, function(err, images) {
-    callback(err, images);
-  });
+  MedImage.find({ _creator: userID }, callback);
 }
 
 /**
@@ -76,19 +78,18 @@ module.exports.getMedImageURLs = function(imageIDs, callback) {
  * Uploads an image by reading the path file and writing it to the 
  * new directory
  *
- * @param medImage - image file object as returned in req.files
- * @param env - environment of app
- * @param userID - id of user who uploaded image
- * @param title - title of image
- * @param callback - callback called after uploading
+ * @param {JSON} medImage - image file object as returned in req.files
+ * @param {String} env - environment of app
+ * @param {ObjectID} userID - id of user who uploaded image
+ * @param {String} title - title of image
+ * @param {Function} callback - callback called after uploading
  */
 module.exports.uploadImage = function(medImage, env, userID, title, callback) {
  //build folder path if doesn't exist
   var folderPath = getUploadFolderPath(env, userID);
   buildDirectory(folderPath, function(err) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
     //get fileName, remove spaces and .png/.jpg, shrink name <=10 chars, lowercase
@@ -109,14 +110,12 @@ module.exports.uploadImage = function(medImage, env, userID, title, callback) {
     //write file to upload path location
     fs.readFile(medImage.path, function(err, data) {
       if (err) {
-        callback(err);
-        return;
+        return callback(err);
       }
 
       fs.writeFile(uploadPath, data, function(err) {
         if (err) {
-          callback(err);
-          return;
+          return callback(err);
         }
         
         //upload image into db
@@ -127,7 +126,7 @@ module.exports.uploadImage = function(medImage, env, userID, title, callback) {
         });
 
         image.save(function(err) {
-          callback(err, {title: title, imageURL: imageURL});
+          callback(err, {_id: image._id, title: title, imageURL: imageURL});
         });
       });
     });
@@ -151,8 +150,7 @@ module.exports.deleteImage = function(medImage, env, callback) {
   //delete from directory
   fs.unlink(path.resolve(imagePath), function(err) {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
     MedImage.findOneAndRemove({ _id: medImage._id }, function(err) {

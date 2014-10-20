@@ -46,6 +46,16 @@ module.exports.removeTagFrom = function(imageId, tagname, fn){
     {_image: imageId, tag_name: tagname}, fn);
 }
 
+/**
+ * Removes all tags associated with the specified image
+ *
+ * @param {ObjectID} imageID
+ * @param {Function} fn - callback function
+ */
+module.exports.removeTagsFrom = function(imageID, fn) {
+  Tag.remove({ _image: imageID }, fn);
+}
+
 /*  
     Function to retrieve that tags associated with an image id
     Inputs:

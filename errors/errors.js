@@ -55,6 +55,12 @@ module.exports.medimages.invalidFileTypeError = {
   message: "File must be a PNG or JPEG"
 }
 
+module.exports.medimages.notFound = {
+  status: 400,
+  name: "Bad Input",
+  message: "Unable to find the image"
+}
+
 
 // Tag errors ///////////////////////////////////////////////////////
 module.exports.tags.alreadyExistsError = {

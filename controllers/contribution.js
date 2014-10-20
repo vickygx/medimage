@@ -57,3 +57,13 @@ module.exports.deleteContribution = function(contribID, callback) {
   });
 }
 
+/**
+ * Delete contributions for an image
+ *
+ * @param {ObjectID} imageID 
+ * @param callback - callback called after deleting contributions
+ */
+ module.exports.deleteContributionsForImage = function(imageID, callback) {
+  Contribution.remove({ image_id: imageID }, callback);
+ }
+
