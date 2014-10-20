@@ -53,9 +53,9 @@ module.exports = function(app){
   });
 
   // Edit an existing annotation
-  app.put('/annotations', function(req, res, next) {
+  app.put('/annotations/:id', function(req, res, next) {
 
-    var id = req.body.id
+    var id = req.params.id
     var type = req.body.type;
 
     errorChecking.invalidId(id, next);
@@ -83,7 +83,7 @@ module.exports = function(app){
   });
 
   // Delete an annotation
-  app.del('/annotations', function(req, res, next) {
+  app.del('/annotations/:id', function(req, res, next) {
 
     var id = req.body.id;
     var type = req.body.type;
