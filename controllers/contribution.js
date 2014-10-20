@@ -11,8 +11,8 @@ var Contribution = require('../data/models/contribution');
 module.exports.hasAccess = function(userID, imageID, callback) {
   Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
     callback(err, {
-      hasAccess: (contribution) ? true : false, 
-      id: (contribution) ? contribution._id : ""
+      has_access: (contribution) ? true : false, 
+      contribution_id: (contribution) ? contribution._id : ""
     });
   });
 }
@@ -29,7 +29,7 @@ module.exports.createContribution = function(userID, imageID, callback) {
   module.exports.hasAccess(userID, imageID, function(err, data) {
     if (err) {
       return callback(err);
-    } else if (data.hasAccess) {
+    } else if (data.has_access) {
       return callback(undefined, {});
     }
     
@@ -39,11 +39,9 @@ module.exports.createContribution = function(userID, imageID, callback) {
       image_id: imageID
     });
 
-    /*newContrib.save(function(err) {
+    newContrib.save(function(err) {
       callback(err, {userID: newContrib.user_id, imageID: newContrib.image_id})
-    });*/
-
-    callback(undefined, {userID: newContrib.user_id, imageID: newContrib.image_id})
+    });
   });
 }
 

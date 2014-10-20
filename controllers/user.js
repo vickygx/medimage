@@ -3,6 +3,16 @@ var errors = require('../errors/errors');
 var errorChecking = require('../errors/errorChecking');
 
 /**
+ * Gets the user by its ID
+ *
+ * @param {ObjectID} userID - id of user
+ * @param {function} callback - callback called after getting user
+ */
+module.exports.getUserByID = function(userID, callback) {
+  User.findById(userID, callback);
+}
+
+/**
  * Retrieves all users present in the database
  * @param {Function} callback: function to call after users are
  *   retrieved.  Retrieved users are passed into this function

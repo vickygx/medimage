@@ -17,6 +17,7 @@ module.exports = function(app){
       return;
     }
 
+    //Check if image exists
     MedImageController.getMedImageByID(imageID, function(err, image) {
       if (err) {
         //TODO: FIX THIS
@@ -33,15 +34,33 @@ module.exports = function(app){
         return;
       }
 
-      //TODO: Check if userID is correct
-      ContriController.createContribution(userID, imageID, function(err, data) {
+      //Check if user exists
+      UserController.getUserByID(userID, function(err, user) {
         if (err) {
-          //TODO FIX THIS
+          //TODO: Fix this
+          res.json(500, err);
+          return;
+        } else if (!user) {
+        //TODO: FIX THIS
+          err = {
+            status: 500,
+            name: "Bad Input",
+            message: "User does not exist"
+          }
           res.json(500, err);
           return;
         }
 
-        res.json(data);
+        //Create contribution, if not made already
+        ContriController.createContribution(userID, imageID, function(err, data) {
+          if (err) {
+            //TODO FIX THIS
+            res.json(500, err);
+            return;
+          }
+
+          res.json(data);
+        });
       });
     });
   });
@@ -105,7 +124,5 @@ module.exports = function(app){
       }
       res.json(data);
     });
-
-    
   });
 };
