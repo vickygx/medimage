@@ -62,6 +62,10 @@ module.exports.getMedImagesByUserID = function(userID, callback) {
   });
 }
 
+module.exports.getMedImageURLs = function(imageIDs, callback) {
+  MedImage.find({ _id: {$in: imageIds}}, callback);
+}
+
 /**
  * Uploads an image by reading the path file and writing it to the 
  * new directory
