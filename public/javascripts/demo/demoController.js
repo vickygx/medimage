@@ -190,8 +190,8 @@ var DemoController = function() {
         var image_id = $('#tagGetForm input[name="image_id"]').val();
 
         ajaxController.get('/tag/' + image_id)
-          .done(function(res) {
-            $("#tagsGet").text(res.text);
+          .always(function(res) {
+            $("#tagsGet").text(JSON.stringify(res));
         });
       });
 
@@ -202,8 +202,8 @@ var DemoController = function() {
         var image_id = $('#tagAddForm input[name="image_id"]').val();
 
         ajaxController.post('/tag/' + image_id, data)
-          .done(function(res) {
-            $("#tagsAdd").text(res.text);
+          .always(function(res) {
+            $("#tagsAdd").text(JSON.stringify(res));
         });
       });
 
@@ -215,8 +215,8 @@ var DemoController = function() {
         var image_id = $('#tagRemoveForm input[name="image_id"]').val();
 
         ajaxController.del('/tag/' + image_id, data)
-          .done(function(res) {
-            $("#tagsRemove").text(res.text);
+          .always(function(res) {
+            $("#tagsRemove").text(JSON.stringify(res));
         });
       });
 
@@ -231,7 +231,7 @@ var DemoController = function() {
         }
 
         ajaxController.get('/search?' + tagString, null)
-          .done(function(res) {
+          .always(function(res) {
             $("#tagsPhotoGet").text(JSON.stringify(res));
         });
       });

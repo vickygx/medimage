@@ -2,6 +2,7 @@
     from the tag database
 */
 var Tag = require('../data/models/tag');
+var errors = require('../errors/errors');
 module.exports = {}
 
 
@@ -12,14 +13,24 @@ module.exports = {}
       fn - callback function 
 */
 module.exports.addTagTo = function(imageId, tagname, fn){
-  // Create new tag relationship 
-  var tag = new Tag({
-    _image: imageId,
-    tag_name: tagname.trim()
-  });
+  // Check if tag already associated with imageId
+  Tag.find({_image: imageId, tag_name: tagname.trim()}, function(err, tag){
+    if (err)
+      fn(err);
+    else if (tag && tag.length > 0){
+      return fn(errors.tags.alreadyExistsError);
+    }
+    else {
+      // Create new tag relationship 
+      var tag = new Tag({
+        _image: imageId,
+        tag_name: tagname.trim()
+      });
 
-  // Add to database
-  tag.save(fn);
+      // Add to database
+      tag.save(fn);
+    }
+  });
 }
 
 

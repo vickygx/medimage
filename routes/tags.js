@@ -1,41 +1,10 @@
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
 var ObjectId = require('mongoose').Types.ObjectId;
+var errors = require('../errors/errors');
+var errorChecking = require('../errors/errorChecking');
 
 module.exports = function(app){
-
-  var errors = {
-    missingTypeError: {
-      status: 500, 
-      name: "Missing input", 
-      message: "You must provide the type of annotation to create"
-    }, 
-    invalidIdError: {
-      status: 500, 
-      name: "Bad Input", 
-      message: "The given id is not a valid ObjectId"
-    }
-  }
-
-  var errorChecking = (function() {
-    
-    var missingType = function(type, next) {
-      if (!type) {
-        return next(errors.missingTypeError);
-      }
-    }
-
-    var invalidId = function(id, next) {
-      if (!ObjectId.isValid(id)) {
-        return next(errors.invalidIdError);
-      }
-    }
-
-    return {
-      missingType: missingType, 
-      invalidId: invalidId
-    }
-  })();
 
   // Get all the tags of the medical image with given id
   app.get('/tag/:imageid', function(req, res, next) {
@@ -52,7 +21,8 @@ module.exports = function(app){
           if (err)
             return next(err);
           else {
-            res.send(tags);
+            res.json(tags);
+            res.end();
           }
         });
       }
@@ -63,6 +33,8 @@ module.exports = function(app){
   app.post('/tag/:imageid', function(req, res, next){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
+
+    errorChecking.invalidId(imageId, next);
 
     TagController.addTagTo(imageId, tagName, function(err, tag){
       if (err)
@@ -78,7 +50,10 @@ module.exports = function(app){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
+    errorChecking.invalidId(imageId, next);
+
     TagController.removeTagFrom(imageId, tagName, function(err, tag){
+      console.log(tag);
       if (err)
         return next(err);
       else {
@@ -96,7 +71,8 @@ module.exports = function(app){
     TagController.searchPhotosWithTags(tags, 10, function(err, photos){
       if (err)
         return next(err);
-      res.send({photos});  
+      res.json(photos);  
+      res.end();
     });
     
   });
