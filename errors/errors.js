@@ -4,6 +4,7 @@ module.exports.annotations = {};
 module.exports.contributions = {};
 module.exports.medImage = {};
 module.exports.tags = {};
+module.exports.search = {};
 module.exports.uploads = {};
 module.exports.users = {};
 
@@ -42,6 +43,13 @@ module.exports.tags.alreadyExistsError = {
   status: 403, 
   name: "Already exists", 
   message: "This tag is already associated with this Image"
+}
+
+// Search errors ///////////////////////////////////////////////////////
+module.exports.search.invalidLimitValue = {
+  status: 400, 
+  name: "Limit Value is not a nonnegative integer", 
+  message: "Limit must be defined by a nonnegative integer"
 }
 
 // Upload errors ////////////////////////////////////////////////////

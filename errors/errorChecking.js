@@ -8,6 +8,7 @@ module.exports.medImage = {};
 module.exports.tags = {};
 module.exports.uploads = {};
 module.exports.users = {};
+module.exports.search = {};
 
 /////////////////////////////////////////////////////////////////////
 // Global error functions
@@ -25,4 +26,11 @@ module.exports.annotations.missingType = function(type, next) {
   if (!type) {
     return next(errors.annotations.missingTypeError);
   }
+}
+
+// Search error functions
+
+module.exports.search.isValidLimitType = function(limitString, next){
+  var limit = ~~Number(limitString);
+  return String(limit) === limitString && limit >= 0;
 }

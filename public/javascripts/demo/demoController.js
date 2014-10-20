@@ -274,7 +274,7 @@ var DemoController = function() {
           tagString += 'tag=' + tags[i].trim() + '&';
         }
 
-        ajaxController.get('/search?' + tagString, null)
+        ajaxController.get('/search/tags?' + tagString, null)
           .always(function(res) {
             $("#tagsPhotoGet").text(JSON.stringify(res));
         });

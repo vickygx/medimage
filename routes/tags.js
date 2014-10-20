@@ -1,6 +1,5 @@
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
-var ObjectId = require('mongoose').Types.ObjectId;
 var errors = require('../errors/errors');
 var errorChecking = require('../errors/errorChecking');
 
@@ -62,19 +61,5 @@ module.exports = function(app){
     });
     
   });
-
- 
-  //  Get all the photos that have these tags
-  app.get('/search', function(req, res, next) {
-    var tags = Array.isArray(req.query.tag) ? req.query.tag : [req.query.tag];
-
-    TagController.searchPhotosWithTags(tags, 10, function(err, photos){
-      if (err)
-        return next(err);
-      res.json(photos);  
-      res.end();
-    });
     
-  });
-  
 };
