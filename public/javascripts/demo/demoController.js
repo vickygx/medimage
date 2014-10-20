@@ -51,7 +51,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.put('/users', data).always(function(res) {
+        ajaxController.put('/users/' + data[0].value, data).always(function(res) {
           $("#usersEdit").text(JSON.stringify(res));
         });
       });
@@ -62,7 +62,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.del('/users', data).always(function(res) {
+        ajaxController.del('/users/' + data[0].value, data).always(function(res) {
           $("#usersDelete").text(JSON.stringify(res));
         });
       });
@@ -113,7 +113,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.put('/annotations', data).always(function(res) {
+        ajaxController.put('/annotations/' + data[0].value, data).always(function(res) {
           $("#annotationsEdit").text(JSON.stringify(res));
         });
       });
@@ -124,7 +124,7 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.del('/annotations', data).always(function(res) {
+        ajaxController.del('/annotations/' + data[0].value, data).always(function(res) {
           $("#annotationsDelete").text(JSON.stringify(res));
         });
       });
