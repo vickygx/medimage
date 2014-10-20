@@ -30,3 +30,29 @@ module.exports.annotations.notFound = {
   name: "Bad input", 
   message: "Unable to find the annotation with the given id"
 }
+
+// Contributions errors /////////////////////////////////////////////
+
+
+// MedImage errors //////////////////////////////////////////////////
+
+
+// Tag errors ///////////////////////////////////////////////////////
+
+
+// Upload errors ////////////////////////////////////////////////////
+
+
+// User errors //////////////////////////////////////////////////////
+
+module.exports.users.alreadyExistsError = {
+  status: 500, 
+  name: "Bad input", 
+  message: "A user with this username already exists"
+}
+
+module.exports.users.notFound = {
+  status: 500, 
+  name: "Bad input", 
+  message: "Unable to find the user with the given username"
+}
