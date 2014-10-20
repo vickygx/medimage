@@ -52,7 +52,6 @@ module.exports = function(app){
     errorChecking.invalidId(imageId, next);
 
     TagController.removeTagFrom(imageId, tagName, function(err, tag){
-      console.log(tag);
       if (err)
         return next(err);
       else {
