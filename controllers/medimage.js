@@ -10,17 +10,17 @@ var MedImage = require('../data/models/medimage');
  * Returns the folder path for MedImage
  *
  * @param {String} env - environment of app
- * @param {ObjectID} userID - userID for user-specific folder
+ * @param {String} username - username for user-specific folder
  * @return {String}
  */
-var getUploadFolderPath = function(env, userID) {
+var getUploadFolderPath = function(env, username) {
   var folderPath = __dirname + "/..";
   if (env === "development") {
     folderPath += "/public/local";
   } else {
     folderPath += "/public/prod";
   }
-  folderPath += "/uploads/" + userID;
+  folderPath += "/uploads/" + username;
 
   return path.resolve(folderPath);
 }
@@ -55,6 +55,16 @@ module.exports.getMedImageByID = function(imageID, callback) {
 }
 
 /**
+ * Gets the medImage by ID with creator field populated
+ *
+ * @param {ObjectID} imageID - id of image
+ * @param {Function} callback - callback called after getting images
+ */
+module.exports.getMedImageByIDPopulated = function(imageID, callback) {
+  MedImage.findById(imageID).populate('_creator').exec(callback);
+}
+
+/**
  * Gets the MedImages from a user
  *
  * @param {ObjectID} userID - id of the user
@@ -80,13 +90,16 @@ module.exports.getMedImageURLs = function(imageIDs, callback) {
  *
  * @param {JSON} medImage - image file object as returned in req.files
  * @param {String} env - environment of app
- * @param {ObjectID} userID - id of user who uploaded image
+ * @param {JSON} user - user document from database
  * @param {String} title - title of image
  * @param {Function} callback - callback called after uploading
  */
-module.exports.uploadImage = function(medImage, env, userID, title, callback) {
+module.exports.uploadImage = function(medImage, env, user, title, callback) {
+  var userID = user._id;
+  var username = user.username;
+
  //build folder path if doesn't exist
-  var folderPath = getUploadFolderPath(env, userID);
+  var folderPath = getUploadFolderPath(env, username);
   buildDirectory(folderPath, function(err) {
     if (err) {
       return callback(err);
@@ -105,7 +118,7 @@ module.exports.uploadImage = function(medImage, env, userID, title, callback) {
     uploadPath = path.resolve(uploadPath);
 
     //set imageURL
-    var imageURL = '/uploads/images/' + userID + "/" + fileName + fileType;
+    var imageURL = '/uploads/images/' + username + "/" + fileName + fileType;
 
     //write file to upload path location
     fs.readFile(medImage.path, function(err, data) {
@@ -126,7 +139,7 @@ module.exports.uploadImage = function(medImage, env, userID, title, callback) {
         });
 
         image.save(function(err) {
-          callback(err, {_id: image._id, title: title, imageURL: imageURL});
+          callback(err, {_id: image._id});
         });
       });
     });
@@ -136,13 +149,13 @@ module.exports.uploadImage = function(medImage, env, userID, title, callback) {
 /**
  * Delete medImage from mongo and file associated with it
  *
- * @param medImage - image doc from db to delete
+ * @param medImage - image doc from db to delete (with creator populated)
  * @param env - environment of app
  * @param callback - callback called after deleting
  */
 module.exports.deleteImage = function(medImage, env, callback) {
   //get image path
-  var folderPath = getUploadFolderPath(env, medImage._creator);
+  var folderPath = getUploadFolderPath(env, medImage._creator.username);
   var parseURLList = medImage.image_url.split("/");
   var fileName = parseURLList[parseURLList.length - 1];
   var imagePath = folderPath + "/" + fileName;

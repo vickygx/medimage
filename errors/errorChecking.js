@@ -64,7 +64,22 @@ module.exports.annotations.missingType = function(type, next) {
  * @return {Boolean}
  */
 module.exports.medimages.invalidFileType = function(type) {
-  return (type !== "image/jpeg" && type !== "image/png")
+  return (type !== "image/jpeg" && type !== "image/png");
+}
+
+// Upload error functions
+
+/**
+ * Returns true if request is not a PNG or JPEG, false otherwise
+ *
+ * @param {String} imageName - imageName in the request path
+ * @return {Boolean}
+ */
+module.exports.uploads.invalidImageRequest = function(imageName) {
+  var indexOfPNG = imageName.indexOf(".png");
+  var indexOfJPG = imageName.indexOf(".jpg");
+  var correctIndex = imageName.length - 4;
+  return (indexOfPNG !== correctIndex && indexOfJPG !== correctIndex);
 }
 
 // Search error functions

@@ -77,7 +77,17 @@ module.exports.search.invalidLimitValue = {
 }
 
 // Upload errors ////////////////////////////////////////////////////
+module.exports.uploads.invalidImageRequestError = {
+  status: 400,
+  name: "Invalid Image URL",
+  message: "The URL does not specify an image"
+}
 
+module.exports.uploads.imageNotFoundError = {
+  status: 400,
+  name: "Bad Input",
+  message: "Unable to find the user's image"
+}
 
 // User errors //////////////////////////////////////////////////////
 

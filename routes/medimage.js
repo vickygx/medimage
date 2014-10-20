@@ -36,7 +36,7 @@ module.exports = function(app) {
 
   // Creates a medical image
   app.post('/medimages', function(req, res, next) {
-    var userID = req.body.user_id;
+    var username = req.body.username;
     var title = req.body.title.trim();
     var medImage = req.files.medImage;
 
@@ -50,18 +50,13 @@ module.exports = function(app) {
       return next(Errors.invalidAppEnvError);
     }
 
-    //check if userID is valid ObjectID
-    if (ErrorChecking.invalidId(userID)) {
-      return next(Errors.invalidIdError);
-    }
-
     //check if title (trimmed) is nonempty
     if (ErrorChecking.emptyString(title)) {
       return next(Errors.invalidStringError);
     }
 
     //check if user exists in database
-    UserController.getUserByID(userID, function(err, user) {
+    UserController.getUserByUsername(username, function(err, user) {
       if (err) {
         return next(err);
       } else if (!user) {
@@ -69,13 +64,13 @@ module.exports = function(app) {
       }
 
       //upload image
-      MedImageController.uploadImage(medImage, app.settings.env, userID, title, function(err, data) {
+      MedImageController.uploadImage(medImage, app.settings.env, user, title, function(err, data) {
         if (err) {
           return next(err);
         }
 
         //Create contribution for user with image
-        ContribController.createContribution(userID, data._id, function(err) {
+        ContribController.createContribution(user._id, data._id, function(err) {
           if (err) {
             return next(err);
           }
@@ -95,7 +90,7 @@ module.exports = function(app) {
     }
 
     //get image details for deleting
-    MedImageController.getMedImageByID(imageID, function(err, medImage) {
+    MedImageController.getMedImageByIDPopulated(imageID, function(err, medImage) {
       if (err) {
         return next(err);
       } else if (!medImage) {
