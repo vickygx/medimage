@@ -21,7 +21,7 @@ module.exports.invalidIdError = {
 module.exports.invalidStringError = {
   status: 400,
   name: "Bad Input",
-  message: "A given input has an empty/whitespace string"
+  message: "A given input is empty or only whitespace"
 }
 
 module.exports.invalidAppEnvError = {

@@ -1,4 +1,9 @@
+//Controller Modules
 var UserController = require('../controllers/user');
+
+//Error Modules
+var Errors = require('../errors/errors');
+var ErrorChecking = require('../errors/errorChecking');
 
 module.exports = function(app) {
 
@@ -17,8 +22,24 @@ module.exports = function(app) {
 
   // Create a new user
   app.post('/users', function(req, res, next) {
+    //check if any of the parameters are empty strings or whitespace
+    var emptyParams = ErrorChecking.emptyString(req.body.first_name);
+    emptyParams = emptyParams || ErrorChecking.emptyString(req.body.last_name);
+    emptyParams = emptyParams || ErrorChecking.emptyString(req.body.username);
+    emptyParams = emptyParams || ErrorChecking.emptyString(req.body.password);
+    if (emptyParams) {
+      return next(Errors.invalidStringError);
+    }
 
-    UserController.createUser(req.body, function(err) {
+    //trim whitespace for elements but password
+    var createData = {
+      first_name: req.body.first_name.trim(),
+      last_name: req.body.last_name.trim(),
+      username: req.body.username.trim(),
+      password: req.body.password
+    }
+
+    UserController.createUser(createData, function(err) {
       if (err) {
         return next(err);
       }
@@ -44,20 +65,6 @@ module.exports = function(app) {
     }
 
     UserController.editUser(req.params.username, updateData, function(err) {
-      if (err) {
-        return next(err);
-      }
-
-      res.end();
-    });
-  });
-
-  // Delete an user
-  app.del('/users/:username', function(req, res, next) {
-
-    var username = req.params.username;
-
-    UserController.deleteUser(username, function(err) {
       if (err) {
         return next(err);
       }

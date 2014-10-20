@@ -55,17 +55,6 @@ var DemoController = function() {
           $("#usersEdit").text(JSON.stringify(res));
         });
       });
-
-      // Delete an user
-      $("#usersDeleteForm").on("submit", function(e) {
-
-        e.preventDefault();
-        var data = $(this).serializeArray();
-
-        ajaxController.del('/users/' + data[0].value, data).always(function(res) {
-          $("#usersDelete").text(JSON.stringify(res));
-        });
-      });
     })();
 
     /////////////////////////////////////////////////////////////////
