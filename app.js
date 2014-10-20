@@ -31,9 +31,9 @@ app.configure(function(){
   // Handling 404 and 500 errors
   app.use(function(err, req, res, next) {
     if (err.status === 404) {
-      res.send(404, "404 error: " + err.message);
+      res.send(404, err.message);
     } else if (err.status === 500) {
-      res.send(500, "500 error: " + err.message);
+      res.send(500, err.message);
     } else {
       return next(err);
     }
