@@ -205,7 +205,6 @@ var DemoController = function() {
           url: "/medimages",
           type: "POST",
           data: formData,
-          dataType: "json",
           contentType: false,
           processData: false,
         }).always(function(res) {

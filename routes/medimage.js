@@ -75,7 +75,6 @@ module.exports = function(app) {
             return next(err);
           }
 
-          res.json(data);
           res.end();        
         });
       });
@@ -99,7 +98,7 @@ module.exports = function(app) {
       }
 
       //Delete image
-      MedImageController.deleteImage(medImage, app.settings.env, function(err, data) {
+      MedImageController.deleteImage(medImage, app.settings.env, function(err) {
         if (err) {
           return next(err);
         }
@@ -122,7 +121,6 @@ module.exports = function(app) {
                 return next(err);
               }
               
-              res.json(data);
               res.end();
             });
           })

@@ -153,8 +153,7 @@ module.exports.deleteImage = function(medImage, env, callback) {
       return callback(err);
     }
 
-    MedImage.findOneAndRemove({ _id: medImage._id }, function(err) {
-      callback(err, {});
-    });
+    //remove from database
+    MedImage.findOneAndRemove({ _id: medImage._id }, callback);
   });
 }
