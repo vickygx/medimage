@@ -1,6 +1,8 @@
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
 var RangeAnnotation = require('../data/models/annotation/rangeAnnotation');
 
+var errors = require('../errors/errors');
+
 /**
  * Returns the correct annotation model based on the given type
  * @param {String} type: type of annotation to get
@@ -16,9 +18,11 @@ var getAnnotationModel = module.exports.getAnnotationModel = function(type) {
 }
 
 /**
- * Gets all annotations for the medical image with the image_id that is 
- * req.params.id
- * Then performs the given callback, passing in the found annotations
+ * Gets all annotations for the medical image with the given image id
+ * @param {ObjectId} imageId: _id of MedImage to get annotations from
+ * @param {Function} callback: function to call after annotations 
+ *   successfully gathered, or in case of error.  Found annotations
+ *   are passed into this function
  */
 module.exports.getMedImageAnnotations = function(imageId, callback) {
 
@@ -41,11 +45,10 @@ module.exports.getMedImageAnnotations = function(imageId, callback) {
 }
 
 /**
- * Creates a new annotation based on the fields given in req.body
- * req.body keys should match annotations schema keys
- * Creates a point annotation if req.body.type == "point"
- *   or a range annotation if req.body type == "range"
- * Performs the given callback after the annotation is created
+ * Creates an annotation of the given type, with the info passed in data
+ * @param {String} type: "point" || "range", type of annotation to create
+ * @param {JSON} data: information to create annotation from
+ * @param {Function} callback: function to call after annotation is created
  */
 module.exports.createAnnotation = function(type, data, callback) {
   
@@ -60,10 +63,12 @@ module.exports.createAnnotation = function(type, data, callback) {
 }
 
 /**
- * Updates the annotation with _id given by req.body.id
- * Can update text, start_point, and end_point
- * start_point and end_point only updated if x and y are given
- * The performs given callback
+ * Updates the annotation with the given id of the given type with 
+ * the given data
+ * @param {ObjectId} id: _id of annotation to update
+ * @param {String} type: "point" || "range", type of annotation to update
+ * @param {JSON} data: info to update annotation with
+ * @param {Function} callback: function to call after annotation is updated
  */
 module.exports.updateAnnotation = function(id, type, data, callback) {
   
@@ -80,19 +85,16 @@ module.exports.updateAnnotation = function(id, type, data, callback) {
       annotation.save();
       callback();
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the annotation with the given id"
-      };
-      return callback(err);
+      return callback(errors.annotations.notFound);
     }
   });
 }
 
 /**
- * Deletes the annotation with _id given by req.body.id
- * Then performs the given callback
+ * Deletes the annotation with the given id of the given type
+ * @param {ObjectId} id: _id of annotation to delete
+ * @param {String} type: "point" || "range", type of annotation to delete 
+ * @param {Function} callback: function to call after annotation is deleted
  */
 module.exports.deleteAnnotation = function(id, type, callback) {
   
@@ -111,12 +113,7 @@ module.exports.deleteAnnotation = function(id, type, callback) {
         callback();
       });
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the annotation with the given id"
-      }
-      return callback(err);
+      return callback(errors.annotations.notFound);
     }
   });
 }

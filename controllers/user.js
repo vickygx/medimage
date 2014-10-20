@@ -1,5 +1,12 @@
 var User = require('../data/models/user');
+var errors = require('../errors/errors');
+var errorChecking = require('../errors/errorChecking');
 
+/**
+ * Retrieves all users present in the database
+ * @param {Function} callback: function to call after users are
+ *   retrieved.  Retrieved users are passed into this function
+ */
 module.exports.getAllUsers = function(callback) {
   User.find({}, function(err, users) {
     if (err) {
@@ -10,6 +17,11 @@ module.exports.getAllUsers = function(callback) {
   });
 }
 
+/**
+ * Creates a new user based on the info passed in the data parameter
+ * @param {JSON} data: info used to create user
+ * @param {Function} callback: function to call after user is created
+ */
 module.exports.createUser = function(data, callback) {
 
   User.findOne({username: data.username}, function(err, user) {
@@ -18,12 +30,7 @@ module.exports.createUser = function(data, callback) {
     }
 
     if (user) {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "A user with this username already exists"
-      }
-      return callback(err);
+      return callback(errors.users.alreadyExistsError);
     }
 
     User.create(data, function(err) {
@@ -36,6 +43,12 @@ module.exports.createUser = function(data, callback) {
   });
 }
 
+/**
+ * Edits the user with the given username, with the info passed in data
+ * @param {String} username: username of user to edit
+ * @param {JSON} data: info used to edit user
+ * @param {Function} callback: function to call after user is edited
+ */
 module.exports.editUser = function(username, data, callback) {
   
   User.findOne({username: username}, function(err, user) {
@@ -51,16 +64,16 @@ module.exports.editUser = function(username, data, callback) {
       user.save();
       callback();
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the user with the given username"
-      };
-      return callback(err);
+      return callback(errors.users.notFound);
     }
   });
 }
 
+/**
+ * Deletes the user with the given username
+ * @param {String} username: username of user to delete
+ * @param {Function} callback: function to call after user is deleted
+ */
 module.exports.deleteUser = function(username, callback) {
 
   User.findOne({username: username}, function(err, user) {
@@ -75,12 +88,7 @@ module.exports.deleteUser = function(username, callback) {
         callback();
       });
     } else {
-      var err = {
-        status: 500, 
-        name: "Bad input", 
-        message: "Unable to find the user with the given username"
-      };
-      return callback(err);
+      return callback(errors.users.notFound);
     }
   });
 }
