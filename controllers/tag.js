@@ -19,9 +19,7 @@ module.exports.addTagTo = function(imageId, tagname, fn){
   });
 
   // Add to database
-  tag.save(function(err, tg){
-    fn(err, tg);
-  });
+  tag.save(fn);
 }
 
 
@@ -34,10 +32,7 @@ module.exports.addTagTo = function(imageId, tagname, fn){
 module.exports.removeTagFrom = function(imageId, tagname, fn){
   // Finds and removes the tag relationship object
   Tag.findOneAndRemove(
-    {_image: imageId, tag_name: tagname},
-    function(err, tg){
-      fn(err, tg);
-    });
+    {_image: imageId, tag_name: tagname}, fn);
 }
 
 /*  
@@ -47,12 +42,9 @@ module.exports.removeTagFrom = function(imageId, tagname, fn){
 */
 module.exports.getTagsOf = function(imageId, fn){
   // Finds all tags associated with the image id
-  Tag.find(
-    {_image: imageId}, 
-    'tag_name',
-    function(err, tags){
-      fn(err, tags);
-    });
+  Tag.find( {_image: imageId}, 
+             'tag_name',
+             fn);
 }
 
 
@@ -60,9 +52,11 @@ module.exports.getTagsOf = function(imageId, fn){
     Function that retrieves all the photos that have all the tags
     in the tags list.
     Inputs:
+      tags: a list of tag names (all strings)
       fn - callback function 
 */
 module.exports.getPhotosWithEveryTag = function(tags, fn){
+  Tag.find({tag_name: {$in: tags }}, fn);
 }
 
 /*  
