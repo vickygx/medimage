@@ -186,7 +186,7 @@ var DemoController = function() {
         //prevent reload
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
+        var userID = $(this)[0].elements["_creator"].value;
         ajaxController.get("/users/" + userID + "/medimages").done(function(res) {
           $("#medImageForUser").text(JSON.stringify(res));
         });

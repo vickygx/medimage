@@ -57,11 +57,17 @@ module.exports.getMedImageByID = function(imageID, callback) {
  * @param callback - callback called after getting images
  */
 module.exports.getMedImagesByUserID = function(userID, callback) {
-  MedImage.find({ user_id: userID }, function(err, images) {
+  MedImage.find({ _creator: userID }, function(err, images) {
     callback(err, images);
   });
 }
 
+/**
+ * Get medImages given a list of imageIDs
+ *
+ * @param {[ObjectIDs]} imageIDs - list of imageIDs
+ * @param {function} callback - callback called after getting images
+ */
 module.exports.getMedImageURLs = function(imageIDs, callback) {
   MedImage.find({ _id: {$in: imageIds}}, callback);
 }
@@ -73,9 +79,10 @@ module.exports.getMedImageURLs = function(imageIDs, callback) {
  * @param medImage - image file object as returned in req.files
  * @param env - environment of app
  * @param userID - id of user who uploaded image
+ * @param title - title of image
  * @param callback - callback called after uploading
  */
-module.exports.uploadImage = function(medImage, env, userID, callback) {
+module.exports.uploadImage = function(medImage, env, userID, title, callback) {
  //build folder path if doesn't exist
   var folderPath = getUploadFolderPath(env, userID);
   buildDirectory(folderPath, function(err) {
@@ -114,12 +121,13 @@ module.exports.uploadImage = function(medImage, env, userID, callback) {
         
         //upload image into db
         var image = new MedImage({
-          user_id: userID,
+          _creator: userID,
+          title: title,
           image_url: imageURL
         });
 
         image.save(function(err) {
-          callback(err, {imageURL: imageURL});
+          callback(err, {title: title, imageURL: imageURL});
         });
       });
     });
@@ -135,7 +143,7 @@ module.exports.uploadImage = function(medImage, env, userID, callback) {
  */
 module.exports.deleteImage = function(medImage, env, callback) {
   //get image path
-  var folderPath = getUploadFolderPath(env, medImage.user_id);
+  var folderPath = getUploadFolderPath(env, medImage._creator);
   var parseURLList = medImage.image_url.split("/");
   var fileName = parseURLList[parseURLList.length - 1];
   var imagePath = folderPath + "/" + fileName;

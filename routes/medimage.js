@@ -1,5 +1,6 @@
 module.exports = function(app){
   var MedImageController = require('../controllers/medimage');
+  var UserController = require('../controllers/user');
   var ObjectId = require('mongoose').Types.ObjectId;
 
   // Gets the medical images for a user
@@ -23,8 +24,9 @@ module.exports = function(app){
 
   // Creates a medical image
   app.post('/medimages', function(req, res) {
-    var medImage = req.files.medImage;
     var userID = req.body.user_id;
+    var title = req.body.title.trim();
+    var medImage = req.files.medImage;
 
     //check file type
     if (medImage.type !== "image/jpeg" && medImage.type !== "image/png") {
@@ -38,20 +40,37 @@ module.exports = function(app){
       return;
     }
 
-    //check if userID is valid
+    //check if userID is valid ObjectID
     if (!ObjectId.isValid(userID)) {
       res.send(500, "Server Error: Invalid userID given");
       return;
     }
 
-    //upload image
-    MedImageController.uploadImage(medImage, app.settings.env, userID, function(err, data) {
+    //check if title (trimmed) is nonempty
+    if (title.length === 0) {
+      res.send(500, "Server Error: Title must be a non empty string (ignoring whitespace)");
+      return;
+    }
+
+    //check if user exists in database
+    UserController.getUserByID(userID, function(err, user) {
       if (err) {
-        res.json(500, err);
+        res.send(500, "blah");
+        return;
+      } else if (!user) {
+        res.send(500, "User doesn't exist");
         return;
       }
 
-      res.json(data);
+      //upload image
+      MedImageController.uploadImage(medImage, app.settings.env, userID, title, function(err, data) {
+        if (err) {
+          res.json(500, err);
+          return;
+        }
+
+        res.json(data);
+      });
     });
   });
 
