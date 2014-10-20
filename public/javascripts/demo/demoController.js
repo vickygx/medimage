@@ -201,6 +201,18 @@ var DemoController = function() {
         });
       });
 
+      //Edit title of MedImage
+      $("#editImageForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var imageID = $(this)[0].elements["image_id"].value;
+        var data = { title: $(this)[0].elements["title"].value };
+        ajaxController.put("/medimages/" + imageID, data).always(function(res) {
+          $("#medImageEdit").text(JSON.stringify(res));
+        });
+      });
+
+      //Delete MedImage
       $("#deleteImageForm").on("submit", function(e) {
         e.preventDefault();
 

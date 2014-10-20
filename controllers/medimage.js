@@ -147,11 +147,22 @@ module.exports.uploadImage = function(medImage, env, user, title, callback) {
 }
 
 /**
+ * Changes the title of the med image
+ *
+ * @param {ObjectID} imageID - id of image being chagned
+ * @param {String} title - title to change to
+ * @param {Function} callback - callback called after editting
+ */
+module.exports.editMedImageTitle = function(imageID, title, callback) {
+  MedImage.findByIdAndUpdate(imageID, {title: title}, callback);
+}
+
+/**
  * Delete medImage from mongo and file associated with it
  *
- * @param medImage - image doc from db to delete (with creator populated)
- * @param env - environment of app
- * @param callback - callback called after deleting
+ * @param {JSON} medImage - image doc from db to delete (with creator populated)
+ * @param {String} env - environment of app
+ * @param {Function} callback - callback called after deleting
  */
 module.exports.deleteImage = function(medImage, env, callback) {
   //get image path

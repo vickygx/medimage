@@ -215,6 +215,17 @@ block content
           legend
             div Response: 
             div.responseDiv#medImageCreate
+        li Edit a medical image
+          form#editImageForm
+            input(type="text", name="image_id", placeholder="Image ID", required)
+            br
+            input(type="text" name="title", placeholder="Image Title", required)
+            br
+            input(type="submit")
+            br
+          legend
+            div Response:
+            div.responseDiv#medImageEdit
         li Delete an image
           legend
             form#deleteImageForm

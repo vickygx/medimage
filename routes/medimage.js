@@ -81,6 +81,33 @@ module.exports = function(app) {
     });
   });
 
+  //Editing a medical image (only title field)
+  app.put('/medimages/:id', function(req, res, next) {
+    var imageID = req.params.id;
+    var title = req.body.title;
+
+    //Check if id is a valid objectID
+    if (ErrorChecking.invalidId(imageID)) {
+      return next(Errors.invalidIdError);
+    }
+
+    //Check if title is empty or whitespace
+    if (ErrorChecking.emptyString(title)) {
+      return next(Errors.invalidStringError);
+    }
+
+    MedImageController.editMedImageTitle(imageID, title, function(err, image) {
+      if (err) {
+        return next(err);
+      }
+      if (!image) {
+        return next(Errors.medimages.notFound);
+      }
+
+      res.end();
+    });
+  });
+
   // Deletes a medical image
   app.del('/medimages/:id', function(req, res, next) {
     //Check if valid id
