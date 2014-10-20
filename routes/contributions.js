@@ -48,7 +48,27 @@ module.exports = function(app){
 
   // Removes user from collaboration on medical image with given id
   app.del('/contributions/:id', function(req, res) {
-    //TODO
+    var contribID = req.params.id;
+
+    //Check if valid objectID
+    if (!ObjectId.isValid(contribID)) {
+      //TODO FIX
+      res.json(500, {
+        status: 500,
+        name: "Bad Request",
+        message: "Invalid user ID"
+      });
+      return;
+    }
+
+    ContriController.deleteContribution(contribID, function(err, data) {
+      if (err) {
+        res.json(500, err);
+        return;
+      }
+      res.json(data);
+    });
+
   });
 
   // Sees if user has access to edit medical image with given id

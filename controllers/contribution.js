@@ -47,3 +47,15 @@ module.exports.createContribution = function(userID, imageID, callback) {
   });
 }
 
+/**
+ * Deletes contribution from database
+ *
+ * @param {ObjectID} contribID - id of contribution
+ * @param {function} callback - callback called after deleting contribution
+ */
+module.exports.deleteContribution = function(contribID, callback) {
+  Contribution.findOneAndRemove({ _id: contribID }, function(err) {
+    callback(err, {});
+  });
+}
+

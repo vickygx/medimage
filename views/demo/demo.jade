@@ -191,10 +191,15 @@ block content
             div Response: 
             div.responseDiv#contributionCreate
         li Delete a contributor from an image
-          button Submit
+          legend
+            form#deleteContributionForm
+              input(type="text", name="contribution_id", placeholder="Contribution ID" required)
+              br
+              input(type="submit")
+              br
           legend
             div Response: 
-            div.responseDiv#contributorsDelete
+            div.responseDiv#contributionDelete
     li MedImages
       ul
         li Get medical images for a user

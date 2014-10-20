@@ -164,6 +164,16 @@ var DemoController = function() {
           $("#contributionCreate").text(JSON.stringify(res));
         });
       });
+
+      // Delete Contribution
+      $("#deleteContributionForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var contributionID = $(this)[0].elements["contribution_id"].value;
+        ajaxController.del('/contributions/' + contributionID).always(function(res) {
+          $("#contributionDelete").text(JSON.stringify(res));
+        });
+      });
     })();
 
     /////////////////////////////////////////////////////////////////
