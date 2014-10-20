@@ -85,7 +85,7 @@ module.exports = function(app){
   // Delete an annotation
   app.del('/annotations/:id', function(req, res, next) {
 
-    var id = req.body.id;
+    var id = req.params.id;
     var type = req.body.type;
 
     errorChecking.annotations.missingType(req.body.type, next);
