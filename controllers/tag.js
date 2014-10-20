@@ -69,9 +69,8 @@ module.exports.getPhotosWithEitherTag = function(tags, fn){
 }
 
 /*  Function that searches for images with the listed tags
-    and returns a list of JSON containing the MedImage id and the tags
-    matched with the image, along with the count of the number of matches. 
-    params: 
+    and returns a sorted list of JSON containing the MedImage id and the tags
+    matched with the image. This is sorted by number of tags.
       limit: integer indicicator how many photos passed into fn
       tags: list of strings of tag names
 */ 

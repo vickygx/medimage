@@ -273,6 +273,8 @@ block content
             form#tagSearchForm(name="tagSearchForm")
               input#tags(name="tag", placeholder="Tag name's separated by a comma", required) 
               br
+              input(name='limit', placeholder="Number of results")
+              br
               input(type="submit") 
             div Response: 
             div.responseDiv#tagsPhotoGet

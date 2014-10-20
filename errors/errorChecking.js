@@ -1,3 +1,4 @@
+//TODO REMOVE
 var errors = require('./errors');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -8,40 +9,42 @@ module.exports.medimages = {};
 module.exports.tags = {};
 module.exports.uploads = {};
 module.exports.users = {};
+module.exports.search = {};
 
 /////////////////////////////////////////////////////////////////////
 // Global error functions
 /////////////////////////////////////////////////////////////////////
 
-module.exports.invalidId = function(id, next) {
-  if (!ObjectId.isValid(id)) {
-    return next(errors.invalidIdError);
-  }
+/**
+ * Returns true if the id is a improper ObjectID, false otherwise
+ *
+ * @param {String} id
+ * @return {Boolean}
+ */
+module.exports.invalidId = function(id) {
+  return !ObjectId.isValid(id);
 }
 
 /**
- * Checks if an input field is an empty string (after trimming white space off 
- * the front and end)
+ * Returns true if an input field is an empty string (after trimming white space off 
+ * the front and end), false otherwise
  *
  * @param {String} str - input field value for a model
- * @param next - next function called to deal with error, if necessary
+ * @return {Boolean}
  */
-module.exports.emptyString = function(str, next) {
-  if (str.trim().length === 0) {
-    return next(errors.invalidStringError);
-  }
+module.exports.emptyString = function(str) {
+  return (str.trim().length === 0);
 }
 
 /**
- * Checks if the app is in a valid environment (development or production)
+ * Returns true if the app is in a invalid environment (not development or production),
+ * false otherwise
  *
  * @param {String} env - environment of app given by app variable
- * @param {Function} next - next function called to deal with error, if necessary
+ * @return {Boolean}
  */
-module.exports.validAppEnv = function(env, next) {
-  if (env !== "development" && env !== "production") {
-    return next(errors.invalidAppEnvError);
-  }
+module.exports.invalidAppEnv = function(env) {
+  return (env !== "development" && env !== "production");
 }
 
 // Annotation error functions
@@ -55,13 +58,18 @@ module.exports.annotations.missingType = function(type, next) {
 // MedImages error functions
 
 /**
- * Checks if image is the correct type
+ * Returns true if image is an invalid filetype, false otherwise
  *
  * @param {String} type - type of image, as given in image file object in req
- * @param {Function} next - next function called to deal with error, if necessary
+ * @return {Boolean}
  */
-module.exports.medimages.correctType = function(type, next) {
-  if (type !== "image/jpeg" && type !== "image/png") {
-    return next(errors.medimages.invalidFileTypeError);
-  }
+module.exports.medimages.invalidFileType = function(type) {
+  return (type !== "image/jpeg" && type !== "image/png")
+}
+
+// Search error functions
+
+module.exports.search.isValidLimitType = function(limitString, next){
+  var limit = ~~Number(limitString);
+  return String(limit) === limitString && limit >= 0;
 }
