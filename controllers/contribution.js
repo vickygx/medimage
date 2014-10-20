@@ -10,7 +10,10 @@ var Contribution = require('../data/models/contribution');
  */
 module.exports.hasAccess = function(userID, imageID, callback) {
   Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
-    callback(err, {hasAccess: (contribution) ? true : false});
+    callback(err, {
+      hasAccess: (contribution) ? true : false, 
+      id: (contribution) ? contribution._id : ""
+    });
   });
 }
 
