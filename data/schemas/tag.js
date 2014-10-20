@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var TagSchema = new mongoose.Schema({
-	image_id: Number, 
+	_image: {type: mongoose.Schema.Types.ObjectId, ref: 'MedImage'},
 	tag_name: String
 });
 

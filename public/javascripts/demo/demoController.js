@@ -29,8 +29,8 @@ var DemoController = function() {
 
         e.preventDefault();
 
-        ajaxController.get('/users').done(function(res) {
-          $("#usersGet").text(res);
+        ajaxController.get('/users').always(function(res) {
+          $("#usersGet").text(JSON.stringify(res));
         });
       });
 
@@ -40,8 +40,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.post('/users', data).done(function(res) {
-          $("#usersCreate").text(res);
+        ajaxController.post('/users', data).always(function(res) {
+          $("#usersCreate").text(JSON.stringify(res));
         });
       });
 
@@ -51,8 +51,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.put('/users', data).done(function(res) {
-          $("#usersEdit").text(res);
+        ajaxController.put('/users/' + data[0].value, data).always(function(res) {
+          $("#usersEdit").text(JSON.stringify(res));
         });
       });
 
@@ -62,8 +62,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.del('/users', data).done(function(res) {
-          $("#usersDelete").text(res);
+        ajaxController.del('/users/' + data[0].value, data).always(function(res) {
+          $("#usersDelete").text(JSON.stringify(res));
         });
       });
     })();
@@ -80,8 +80,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.get('/medImages/' + data[0].value + '/annotations').done(function(res) {
-          $("#annotationsGet").text(res);
+        ajaxController.get('/medImages/' + data[0].value + '/annotations').always(function(res) {
+          $("#annotationsGet").text(JSON.stringify(res));
         });
       });
 
@@ -91,8 +91,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.post('/annotations', data).done(function(res) {
-          $("#pointAnnotationsCreate").text(res);
+        ajaxController.post('/annotations', data).always(function(res) {
+          $("#pointAnnotationsCreate").text(JSON.stringify(res));
         });
       });
 
@@ -102,8 +102,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.post('/annotations', data).done(function(res) {
-          $("#rangeAnnotationsCreate").text(res);
+        ajaxController.post('/annotations', data).always(function(res) {
+          $("#rangeAnnotationsCreate").text(JSON.stringify(res));
         });
       });
 
@@ -113,8 +113,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.put('/annotations', data).done(function(res) {
-          $("#annotationsEdit").text(res);
+        ajaxController.put('/annotations/' + data[0].value, data).always(function(res) {
+          $("#annotationsEdit").text(JSON.stringify(res));
         });
       });
 
@@ -124,8 +124,8 @@ var DemoController = function() {
         e.preventDefault();
         var data = $(this).serializeArray();
 
-        ajaxController.del('/annotations', data).done(function(res) {
-          $("#annotationsDelete").text(res);
+        ajaxController.del('/annotations/' + data[0].value, data).always(function(res) {
+          $("#annotationsDelete").text(JSON.stringify(res));
         });
       });
     })();
@@ -212,17 +212,16 @@ var DemoController = function() {
           $("#medImageCreate").text(JSON.stringify(res));
         });
       });
-    })();
 
-    // Delete MedImage
-    $("#deleteImageForm").on("submit", function(e) {
-      e.preventDefault();
+      $("#deleteImageForm").on("submit", function(e) {
+        e.preventDefault();
 
-      var imageID = $(this)[0].elements["image_id"].value;
-      ajaxController.del("/medimages/" + imageID).always(function(res) {
-        $("#medImageDelete").text(JSON.stringify(res));
+        var imageID = $(this)[0].elements["image_id"].value;
+        ajaxController.del("/medimages/" + imageID).always(function(res) {
+          $("#medImageDelete").text(JSON.stringify(res));
+        });
       });
-    });
+    })();
 
     /////////////////////////////////////////////////////////////////
     // Tags
@@ -235,8 +234,8 @@ var DemoController = function() {
         var image_id = $('#tagGetForm input[name="image_id"]').val();
 
         ajaxController.get('/tag/' + image_id)
-          .done(function(res) {
-            $("#tagsGet").text(res.text);
+          .always(function(res) {
+            $("#tagsGet").text(JSON.stringify(res));
         });
       });
 
@@ -247,8 +246,8 @@ var DemoController = function() {
         var image_id = $('#tagAddForm input[name="image_id"]').val();
 
         ajaxController.post('/tag/' + image_id, data)
-          .done(function(res) {
-            $("#tagsAdd").text(res.text);
+          .always(function(res) {
+            $("#tagsAdd").text(JSON.stringify(res));
         });
       });
 
@@ -260,8 +259,8 @@ var DemoController = function() {
         var image_id = $('#tagRemoveForm input[name="image_id"]').val();
 
         ajaxController.del('/tag/' + image_id, data)
-          .done(function(res) {
-            $("#tagsRemove").text(res.text);
+          .always(function(res) {
+            $("#tagsRemove").text(JSON.stringify(res));
         });
       });
 
@@ -276,8 +275,8 @@ var DemoController = function() {
         }
 
         ajaxController.get('/search?' + tagString, null)
-          .done(function(res) {
-            $("#tagsPhotoGet").text(res.text);
+          .always(function(res) {
+            $("#tagsPhotoGet").text(JSON.stringify(res));
         });
       });
     })();

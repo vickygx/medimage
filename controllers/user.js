@@ -1,78 +1,94 @@
 var User = require('../data/models/user');
+var errors = require('../errors/errors');
+var errorChecking = require('../errors/errorChecking');
 
-module.exports.getAllUsers = function(req, res, next, callback) {
+/**
+ * Retrieves all users present in the database
+ * @param {Function} callback: function to call after users are
+ *   retrieved.  Retrieved users are passed into this function
+ */
+module.exports.getAllUsers = function(callback) {
   User.find({}, function(err, users) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
 
-    if (callback) {
-      callback(req, res, users);
-    }
+    callback(null, users);
   });
 }
 
-module.exports.createUser = function(req, res, next, callback) {
+/**
+ * Creates a new user based on the info passed in the data parameter
+ * @param {JSON} data: info used to create user
+ * @param {Function} callback: function to call after user is created
+ */
+module.exports.createUser = function(data, callback) {
+
+  User.findOne({username: data.username}, function(err, user) {
+    if (err) {
+      return callback(err);
+    }
+
+    if (user) {
+      return callback(errors.users.alreadyExistsError);
+    }
+
+    User.create(data, function(err) {
+      if (err) {
+        return callback(err);
+      }
+
+      callback();
+    });
+  });
+}
+
+/**
+ * Edits the user with the given username, with the info passed in data
+ * @param {String} username: username of user to edit
+ * @param {JSON} data: info used to edit user
+ * @param {Function} callback: function to call after user is edited
+ */
+module.exports.editUser = function(username, data, callback) {
   
-  res.write(" with data :" + JSON.stringify(req.body));
+  User.findOne({username: username}, function(err, user) {
 
-  User.create(req.body, function(err) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
-    if (callback) {
-      callback(req, res);
+
+    if (user) {
+      for (var key in data) {
+        user[key] = data[key];
+      }
+      user.save();
+      callback();
+    } else {
+      return callback(errors.users.notFound);
     }
   });
 }
 
-module.exports.editUser = function(req, res, next, callback) {
-  // Empty inputs are not considered
-  var updateData = {};
-  if (req.body.first_name && req.body.first_name.length != 0) {
-    updateData.first_name = req.body.first_name;
-  } 
-  if (req.body.last_name && req.body.last_name.length != 0) {
-    updateData.last_name = req.body.last_name;
-  } 
-  if (req.body.password && req.body.password.length != 0) {
-    updateData.password = req.body.password;
-  }
+/**
+ * Deletes the user with the given username
+ * @param {String} username: username of user to delete
+ * @param {Function} callback: function to call after user is deleted
+ */
+module.exports.deleteUser = function(username, callback) {
 
-  res.write(" with data: " + JSON.stringify(updateData));
-
-  User.update({username: req.body.username}, 
-  {
-    $set: updateData
-  }, function(err) {
+  User.findOne({username: username}, function(err, user) {
     if (err) {
-      return next(err);
-    }
-    if (callback) {
-      callback(req, res);
-    }
-  });
-}
-
-module.exports.deleteUser = function(req, res, next, callback) {
-  
-  res.write(" to the user with username: " + req.body.username);
-
-  User.findOne({username: req.body.username}, function(err, user) {
-    if (err) {
-      return next(err);
+      return callback(err);
     }
     if (user) {
       user.remove(function(err) {
         if (err) {
-          return next(err);
+          return callback(err);
         }
-        if (callback) {
-          callback(req, res);
-        }
+        callback();
       });
     } else {
-      res.end("Unable to find user: " + req.body.username);
+      return callback(errors.users.notFound);
     }
   });
 }

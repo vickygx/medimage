@@ -1,44 +1,63 @@
 var TagController = require('../controllers/tag');
+var MedImageController = require('../controllers/medimage');
+var ObjectId = require('mongoose').Types.ObjectId;
+var errors = require('../errors/errors');
+var errorChecking = require('../errors/errorChecking');
 
 module.exports = function(app){
+
   // Get all the tags of the medical image with given id
-  app.get('/tag/:imageid', function(req, res) {
+  app.get('/tag/:imageid', function(req, res, next) {
     var imageId = req.params.imageid;
-    TagController.getTagsOf(imageId, function(err, tags){
+
+    errorChecking.invalidId(imageId, next);
+
+    // Checking if imageId exists
+    MedImageController.getMedImageByID(imageId, function(err, image){
       if (err)
-        res.send({text: 'Error'});
+        return next(err);
       else {
-        res.send({text: 'imageId given is:' + imageId
-                      + 'with tags: ' + tags});
+        TagController.getTagsOf(imageId, function(err, tags){
+          if (err)
+            return next(err);
+          else {
+            res.json(tags);
+            res.end();
+          }
+        });
       }
-    });
-    
+    });  
   });
 
   // Create or add tag for photo with given id
-  app.post('/tag/:imageid', function(req, res){
+  app.post('/tag/:imageid', function(req, res, next){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
+    errorChecking.invalidId(imageId, next);
+
     TagController.addTagTo(imageId, tagName, function(err, tag){
       if (err)
-        res.send({text: 'Error'});
+        return next(err);
       else {
-         res.send({text: 'Adding tag: ' + tagName + ' to ' + imageId});
+         res.end();
       }
     });
   });
 
   // Remove tag off of photo with given id
-  app.del('/tag/:imageid', function(req, res){
+  app.del('/tag/:imageid', function(req, res, next){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
+    errorChecking.invalidId(imageId, next);
+
     TagController.removeTagFrom(imageId, tagName, function(err, tag){
+      console.log(tag);
       if (err)
-        res.send({text: 'Error'});
+        return next(err);
       else {
-        res.send({text: 'Removing tag: ' + tagName + ' from ' + imageId});
+        res.end();
       }
     });
     
@@ -46,8 +65,16 @@ module.exports = function(app){
 
  
   //  Get all the photos that have these tags
-  app.get('/search', function(req, res) {
-    res.send({text: 'data given is:' + JSON.stringify(req.query.tag)});
+  app.get('/search', function(req, res, next) {
+    var tags = Array.isArray(req.query.tag) ? req.query.tag : [req.query.tag];
+
+    TagController.searchPhotosWithTags(tags, 10, function(err, photos){
+      if (err)
+        return next(err);
+      res.json(photos);  
+      res.end();
+    });
+    
   });
   
 };

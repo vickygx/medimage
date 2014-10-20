@@ -2,6 +2,7 @@
     from the tag database
 */
 var Tag = require('../data/models/tag');
+var errors = require('../errors/errors');
 module.exports = {}
 
 
@@ -12,18 +13,24 @@ module.exports = {}
       fn - callback function 
 */
 module.exports.addTagTo = function(imageId, tagname, fn){
-  // Check if imageId exists
+  // Check if tag already associated with imageId
+  Tag.find({_image: imageId, tag_name: tagname.trim()}, function(err, tag){
+    if (err)
+      fn(err);
+    else if (tag && tag.length > 0){
+      return fn(errors.tags.alreadyExistsError);
+    }
+    else {
+      // Create new tag relationship 
+      var tag = new Tag({
+        _image: imageId,
+        tag_name: tagname.trim()
+      });
 
-  // Create new tag relationship and add to database
-  var tag = new Tag({
-    image_id: imageId,
-    tag_name: tagname.trim()
+      // Add to database
+      tag.save(fn);
+    }
   });
-
-  tag.save(function(err, tg){
-    fn(err, tg);
-  });
-
 }
 
 
@@ -36,10 +43,7 @@ module.exports.addTagTo = function(imageId, tagname, fn){
 module.exports.removeTagFrom = function(imageId, tagname, fn){
   // Finds and removes the tag relationship object
   Tag.findOneAndRemove(
-    {image_id: imageId, tag_name: tagname},
-    function(err, tg){
-      fn(err, tg);
-    });
+    {_image: imageId, tag_name: tagname}, fn);
 }
 
 /*  
@@ -49,22 +53,9 @@ module.exports.removeTagFrom = function(imageId, tagname, fn){
 */
 module.exports.getTagsOf = function(imageId, fn){
   // Finds all tags associated with the image id
-  Tag.find(
-    {image_id: imageId}, 
-    'tag_name',
-    function(err, tags){
-      fn(err, tags);
-    });
-}
-
-
-/*  
-    Function that retrieves all the photos that have all the tags
-    in the tags list.
-    Inputs:
-      fn - callback function 
-*/
-module.exports.getPhotosWithEveryTag = function(tags, fn){
+  Tag.find( {_image: imageId}, 
+             'tag_name',
+             fn);
 }
 
 /*  
@@ -74,4 +65,28 @@ module.exports.getPhotosWithEveryTag = function(tags, fn){
       fn - callback function 
 */
 module.exports.getPhotosWithEitherTag = function(tags, fn){
+  Tag.find({tag_name: {$in: tags }}, fn);
+}
+
+/*  Function that searches for images with the listed tags
+    and returns a list of JSON containing the MedImage id and the tags
+    matched with the image, along with the count of the number of matches. 
+    params: 
+      limit: integer indicicator how many photos passed into fn
+      tags: list of strings of tag names
+*/ 
+module.exports.searchPhotosWithTags = function(tags, limit, fn){
+  Tag.aggregate(
+    [
+      { $match: {
+          tag_name: {$in: tags}
+      }},
+      { $group: {
+          _id: "$_image",
+          count: { $sum: 1 },
+          tags: {$addToSet: '$tag_name'}
+      }},
+      { $sort : { count: -1 }},
+      { $limit : limit }
+    ], fn);
 }
