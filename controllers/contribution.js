@@ -6,9 +6,9 @@ var Contribution = require('../data/models/contribution');
  *
  * @param {ObjectID} userID - id of user
  * @param {ObjectID} imageID - id of image
- * @param {function} callback - callback called with true/false json
+ * @param {Function} callback - callback called with true/false json
  */
-module.exports.hasAccess = function(userID, imageID, callback) {
+var hasAccess = module.exports.hasAccess = function(userID, imageID, callback) {
   Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
     callback(err, {
       has_access: (contribution) ? true : false, 
@@ -22,15 +22,15 @@ module.exports.hasAccess = function(userID, imageID, callback) {
  * 
  * @param {ObjectID} userID - id of user as contributor
  * @param {ObjectID} imageID - id of image user has contribution rights to
- * @param {function} callback - callback called after creating contribution
+ * @param {Function} callback - callback called after creating contribution
  */
 module.exports.createContribution = function(userID, imageID, callback) {
   //Check if created in DB already
-  module.exports.hasAccess(userID, imageID, function(err, data) {
+  hasAccess(userID, imageID, function(err, data) {
     if (err) {
       return callback(err);
     } else if (data.has_access) {
-      return callback(undefined, {});
+      return callback(undefined);
     }
     
     //Create new contribution in database
@@ -40,7 +40,7 @@ module.exports.createContribution = function(userID, imageID, callback) {
     });
 
     newContrib.save(function(err) {
-      callback(err, {userID: newContrib.user_id, imageID: newContrib.image_id})
+      callback(err, {user_id: newContrib.user_id, image_id: newContrib.image_id});
     });
   });
 }
@@ -49,19 +49,17 @@ module.exports.createContribution = function(userID, imageID, callback) {
  * Deletes contribution from database
  *
  * @param {ObjectID} contribID - id of contribution
- * @param {function} callback - callback called after deleting contribution
+ * @param {Function} callback - callback called after deleting contribution
  */
 module.exports.deleteContribution = function(contribID, callback) {
-  Contribution.findOneAndRemove({ _id: contribID }, function(err) {
-    callback(err, {});
-  });
+  Contribution.findOneAndRemove({ _id: contribID }, callback);
 }
 
 /**
  * Delete contributions for an image
  *
  * @param {ObjectID} imageID 
- * @param callback - callback called after deleting contributions
+ * @param {Function} callback - callback called after deleting contributions
  */
  module.exports.deleteContributionsForImage = function(imageID, callback) {
   Contribution.remove({ image_id: imageID }, callback);

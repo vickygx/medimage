@@ -129,9 +129,9 @@ var DemoController = function() {
       $("#accessToImageForm").on("submit", function(e) {
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
+        var username = $(this)[0].elements["username"].value;
         var imageID = $(this)[0].elements["image_id"].value;
-        var accessUrl = "/contributions/access?userID=" + encodeURIComponent(userID)
+        var accessUrl = "/contributions/access?username=" + encodeURIComponent(username)
                       + "&imageID=" + encodeURIComponent(imageID);
         ajaxController.get(accessUrl).always(function(res) {
           $("#contributionAccess").text(JSON.stringify(res));
@@ -142,11 +142,9 @@ var DemoController = function() {
       $("#createContributionForm").on("submit", function(e) {
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
-        var imageID = $(this)[0].elements["image_id"].value;
         var data = {
-          user_id: userID,
-          image_id: imageID
+          username: $(this)[0].elements["username"].value,
+          image_id: $(this)[0].elements["image_id"].value
         };
 
         ajaxController.post('/contributions', data).always(function(res) {

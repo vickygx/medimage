@@ -45,7 +45,11 @@ module.exports.annotations.notFound = {
 }
 
 // Contributions errors /////////////////////////////////////////////
-
+module.exports.contributions.accessRequestError = {
+  status: 400,
+  name: "Bad Request",
+  message: "Request requires a Username and an Image ID"
+}
 
 // MedImage errors //////////////////////////////////////////////////
 

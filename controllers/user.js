@@ -13,6 +13,9 @@ module.exports.getUserByID = function(userID, callback) {
 
 /**
  * Gets the user by its username
+ *
+ * @param {String} username - username of user
+ * @param {Function} callback - callback called after getting user
  */
 module.exports.getUserByUsername = function(username, callback) {
   User.findOne({ username: username }, callback);
