@@ -12,20 +12,25 @@ Errors = require('../errors/errors');
 module.exports = function(app) {
 
   // Gets the medical images for a user
-  app.get('/users/:id/medimages', function(req, res, next) {
-    //check if proper userID format
-    var userID = req.params.id;
-    if (ErrorChecking.invalidId(userID, next)) {
-      return next(Errors.invalidIdError);
-    }
+  app.get('/users/:username/medimages', function(req, res, next) {
+    var username = req.params.username;
 
-    //get images for user
-    MedImageController.getMedImagesByUserID(userID, function(err, images) {
+    //get user
+    UserController.getUserByUsername(username, function(err, user) {
       if (err) {
         return next(err);
+      } else if (!user) {
+        return next(Errors.users.notFound);
       }
-      res.json(images);
-      res.end();
+
+      //get images for user
+      MedImageController.getMedImagesByUserID(user._id, function(err, images) {
+        if (err) {
+          return next(err);
+        }
+        res.json(images);
+        res.end();
+      });
     });
   });
 

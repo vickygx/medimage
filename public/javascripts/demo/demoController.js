@@ -175,8 +175,8 @@ var DemoController = function() {
         //prevent reload
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
-        ajaxController.get("/users/" + userID + "/medimages").always(function(res) {
+        var username = $(this)[0].elements["username"].value;
+        ajaxController.get("/users/" + username + "/medimages").always(function(res) {
           $("#medImageForUser").text(JSON.stringify(res));
         });
       });
