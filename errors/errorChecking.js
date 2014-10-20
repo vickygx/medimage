@@ -49,12 +49,6 @@ module.exports.invalidAppEnv = function(env) {
 
 // Annotation error functions
 
-module.exports.annotations.missingType = function(type, next) {
-  if (!type) {
-    return next(errors.annotations.missingTypeError);
-  }
-}
-
 // MedImages error functions
 
 /**
