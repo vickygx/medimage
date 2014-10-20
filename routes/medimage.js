@@ -1,14 +1,15 @@
-module.exports = function(app){
-  //Controllers
-  var MedImageController = require('../controllers/medimage');
-  var UserController = require('../controllers/user');
-  var ContribController = require('../controllers/contribution');
-  var AnnotationController = require('../controllers/annotation');
-  var TagController = require('../controllers/tag');
+//Controllers
+var MedImageController = require('../controllers/medimage');
+var UserController = require('../controllers/user');
+var ContribController = require('../controllers/contribution');
+var AnnotationController = require('../controllers/annotation');
+var TagController = require('../controllers/tag');
 
-  //Error Modules
-  ErrorChecking = require('../errors/errorChecking');
-  Errors = require('../errors/errors');
+//Error Modules
+ErrorChecking = require('../errors/errorChecking');
+Errors = require('../errors/errors');
+
+module.exports = function(app) {
 
   // Gets the medical images for a user
   app.get('/users/:id/medimages', function(req, res, next) {
