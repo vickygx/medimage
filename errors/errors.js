@@ -2,7 +2,7 @@
 // Any specific errors go into their own object
 module.exports.annotations = {};
 module.exports.contributions = {};
-module.exports.medImage = {};
+module.exports.medimages = {};
 module.exports.tags = {};
 module.exports.uploads = {};
 module.exports.users = {};
@@ -15,6 +15,18 @@ module.exports.invalidIdError = {
   status: 400, 
   name: "Bad Input", 
   message: "The given id is not a valid ObjectId"
+}
+
+module.exports.invalidStringError = {
+  status: 400,
+  name: "Bad Input",
+  message: "A given input has an empty/whitespace string"
+}
+
+module.exports.invalidAppEnvError = {
+  status: 500,
+  name: "Invalid Server State",
+  message: "Unexpected app environment"
 }
 
 // Annotation errors ////////////////////////////////////////////////
@@ -35,6 +47,12 @@ module.exports.annotations.notFound = {
 
 
 // MedImage errors //////////////////////////////////////////////////
+
+module.exports.medimages.invalidFileTypeError = {
+  status: 400,
+  name: "Invalid File Type",
+  message: "File must be a PNG or JPEG"
+}
 
 
 // Tag errors ///////////////////////////////////////////////////////
@@ -58,5 +76,5 @@ module.exports.users.alreadyExistsError = {
 module.exports.users.notFound = {
   status: 400, 
   name: "Bad input", 
-  message: "Unable to find the user with the given username"
+  message: "Unable to find the user"
 }
