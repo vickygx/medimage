@@ -58,6 +58,8 @@ module.exports = function(app){
       if (err) {
         return next(err);
       }
+
+      res.json({});
       res.end();
     });
   });
@@ -95,6 +97,8 @@ module.exports = function(app){
       if (err) {
         return next(err);
       }
+
+      res.json({});
       res.end();
     });
   });
@@ -120,6 +124,7 @@ module.exports = function(app){
         return next(err);
       }
 
+      res.json({});
       res.end();
     });
   });
