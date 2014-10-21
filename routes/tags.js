@@ -43,7 +43,8 @@ module.exports = function(app){
       if (err)
         return next(err);
       else {
-         res.end();
+        res.json({});
+        res.end();
       }
     });
   });
@@ -61,6 +62,7 @@ module.exports = function(app){
       if (err)
         return next(err);
       else {
+        res.json({});
         res.end();
       }
     });
