@@ -1,5 +1,17 @@
+.collectionDiv {
+  border: 1px solid #ccc;
+  min-width: 1024px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.responseLegend {
+  width: 95%;
+}
+
 .responseDiv {
   border: 1px solid #ccc;
-  width: 400px;
+  min-width: 954px;
   padding: 10px;
 }

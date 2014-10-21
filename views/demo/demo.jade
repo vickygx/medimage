@@ -13,269 +13,277 @@ block content
       demoController.init();
     });
   
-  ul
-    li Users
-      ul
-        li Get all users
-          legend
-            form#usersGetForm(name="usersGetForm")
-              input(type="submit")
+  div.collectionDiv 
+    h1.collectionTitle Users
+    ul
+      li Get all users
+        legend
+          form#usersGetForm(name="usersGetForm")
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#usersGet
+      li Create a new user
+        legend
+          form#usersCreateForm(name="usersCreateForm")
+            input(name="first_name", placeholder="First name", required) 
+            br
+            input(name="last_name", placeholder="Last name", required) 
+            br
+            input(name="username", placeholder="Username", required) 
+            br
+            input(name="password", placeholder="Password", type="password", required) 
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#usersCreate
+      li Edit an existing user
+        legend
+          form#usersEditForm(name="usersEditForm")
+            legend
+              div User to edit
+              input(name="username", placeholder="Username", required)
               br
-          legend
-            div Response: 
-            div.responseDiv#usersGet
-        li Create a new user
-          legend
-            form#usersCreateForm(name="usersCreateForm")
-              input(name="first_name", placeholder="First name", required) 
-              br
-              input(name="last_name", placeholder="Last name", required) 
-              br
-              input(name="username", placeholder="Username", required) 
-              br
-              input(name="password", placeholder="Password", type="password", required) 
-              br
-              input(type="submit") 
-              br
-          legend
-            div Response: 
-            div.responseDiv#usersCreate
-        li Edit an existing user
-          legend
-            form#usersEditForm(name="usersEditForm")
-              legend
-                div User to edit
-                input(name="username", placeholder="Username", required)
-                br
-              input(name="first_name", placeholder="First name") 
-              br
-              input(name="last_name", placeholder="Last name") 
-              br
-              input(name="password", placeholder="Password", type="password") 
-              br
-              input(type="submit")
-          legend
-            div Response: 
-            div.responseDiv#usersEdit
-    li Annotations
-      ul
-        li Get all annotations for a medical image
-          legend
-            form#annotationsGetForm(name="annotationsGetForm")
-              input(name="image_id", placeholder="Image id", required)
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#annotationsGet
-        li Create a new annotation
-          legend
-            div Point annotation
-            form#pointAnnotationsCreateForm(name="pointAnnotationsCreateForm")
-              input(name="text", placeholder="Annotation text", required) 
-              br
-              input(name="image_id", placeholder="Image id", required) 
-              br
-              input(name="start_x", placeholder="Start X", required) 
-              br
-              input(name="start_y", placeholder="Start Y", required) 
-              br
-              input(name="type", value="point", type="hidden") 
-              input(type="submit") 
-              br
-
-          legend
-            div Response: 
-            div.responseDiv#pointAnnotationsCreate
-
-          legend
-            div Range annotation
-            form#rangeAnnotationsCreateForm(name="rangeAnnotationsCreateForm")
-              input(name="text", placeholder="Annotation text", required) 
-              br
-              input(name="image_id", placeholder="Image id", required) 
-              br
-              input(name="start_x", placeholder="Start X", required) 
-              br
-              input(name="start_y", placeholder="Start Y", required) 
-              br
-              input(name="end_x", placeholder="End X", required) 
-              br
-              input(name="end_y", placeholder="End Y", required) 
-              br
-              input(name="type", value="range", type="hidden") 
-              input(type="submit") 
-              br
-          legend
-            div Response: 
-            div.responseDiv#rangeAnnotationsCreate
-        li Edit an existing annotation
-          legend
-            form#annotationsEditForm(name="annotationsEditForm")
-              input(name="id", placeholder="Annotation id", required) 
-              br
-              input(name="text", placeholder="Annotation text")
-              br
-              input(name="start_x", placeholder="Start X")
-              br
-              input(name="start_y", placeholder="Start Y")
-              br
-              input(name="end_x", placeholder="End X")
-              br
-              input(name="end_y", placeholder="End Y")
-              br
-              input(type="radio", name="type", value="point", required)
-              span Point
-              br
-              input(type="radio", name="type", value="range", required) 
-              span Range 
-              br
-              input(type="submit") 
-              br
-          legend
-            div Response: 
-            div.responseDiv#annotationsEdit
-        li Delete an annotation
-          legend
-            form#annotationsDeleteForm(name="annotationsDeleteForm")
-              span Annotation id: 
-              input(name="id", placeholder="Annotation id", required) 
-              br
-              input(type="radio", name="type", value="point", required) 
-              span Point
-              br
-              input(type="radio", name="type", value="range", required) 
-              span Range
-              br
-              br
-              input(type="submit") 
-              br
-          legend
-            div Response: 
-            div.responseDiv#annotationsDelete
-    li Contributions
-      ul
-        li Check if user has access to an image
-          legend
-            form#accessToImageForm
-              input(type="text", name="username", placeholder="Username")
-              br
-              input(type="text", name="image_id", placeholder="Image ID")
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#contributionAccess
-        li Add a new contributor from an image
-          legend
-            form#createContributionForm
-              input(type="text", name="username", placeholder="Username", required)
-              br
-              input(type="text", name="image_id", placeholder="Image ID", required)
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#contributionCreate
-        li Delete a contributor from an image
-          legend
-            form#deleteContributionForm
-              input(type="text", name="contribution_id", placeholder="Contribution ID" required)
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#contributionDelete
-    li MedImages
-      ul
-        li Get medical images for a user
-          legend
-            form#medImageForUserForm
-              input(type="text", name="username", placeholder="Username", required)
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#medImageForUser
-        li Create a medical image
-          form#uploadImageForm
+            input(name="first_name", placeholder="First name") 
+            br
+            input(name="last_name", placeholder="Last name") 
+            br
+            input(name="password", placeholder="Password", type="password") 
+            br
+            input(type="submit")
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#usersEdit
+  div.collectionDiv 
+    h1.collectionTitle MedImages
+    ul
+      li Get medical images for a user
+        legend
+          form#medImageForUserForm
             input(type="text", name="username", placeholder="Username", required)
             br
-            input(type="text", name="title", placeholder="Image Title", required)
-            br
-            input(type="file", name="medImage", required)
-            br
             input(type="submit")
             br
-          legend
-            div Response: 
-            div.responseDiv#medImageCreate
-        li Edit a medical image
-          form#editImageForm
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#medImageForUser
+      li Create a medical image
+        form#uploadImageForm
+          input(type="text", name="username", placeholder="Username", required)
+          br
+          input(type="text", name="title", placeholder="Image Title", required)
+          br
+          input(type="file", name="medImage", required)
+          br
+          input(type="submit")
+          br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#medImageCreate
+      li Edit a medical image
+        form#editImageForm
+          input(type="text", name="image_id", placeholder="Image ID", required)
+          br
+          input(type="text" name="title", placeholder="Image Title", required)
+          br
+          input(type="submit")
+          br
+        legend.responseLegend
+          div Response:
+          div.responseDiv#medImageEdit
+      li Delete an image
+        legend
+          form#deleteImageForm
             input(type="text", name="image_id", placeholder="Image ID", required)
             br
-            input(type="text" name="title", placeholder="Image Title", required)
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#medImageDelete
+  div.collectionDiv 
+    h1.collectionTitle Annotations
+    ul
+      li Get all annotations for a medical image
+        legend
+          form#annotationsGetForm(name="annotationsGetForm")
+            input(name="image_id", placeholder="Image id", required)
             br
             input(type="submit")
             br
-          legend
-            div Response:
-            div.responseDiv#medImageEdit
-        li Delete an image
-          legend
-            form#deleteImageForm
-              input(type="text", name="image_id", placeholder="Image ID", required)
-              br
-              input(type="submit")
-              br
-          legend
-            div Response: 
-            div.responseDiv#medImageDelete
-    li Tags
-      ul
-        li Get all tags for a medical image
-          legend
-            form#tagGetForm(name="tagGetForm")
-              input(name="image_id", placeholder="Image id", required) 
-              br
-              input(type="submit") 
-              br
-            div Response: 
-            div.responseDiv#tagsGet
-        li Add a new tag to an image
-          legend
-            form#tagAddForm(name="tagAddForm")
-              input(name="tag", placeholder="Tag", required) 
-              br
-              input(name="image_id", placeholder="Image id", required) 
-              br
-              input(type="submit") 
-              br
-            div Response: 
-            div.responseDiv#tagsAdd
-        li Remove an existing tag from an image
-          legend
-            form#tagRemoveForm(name="tagRemoveForm")
-              input(name="tag", placeholder="Tag", required) 
-              br
-              input(name="image_id", placeholder="Image id", required) 
-              br
-              input(type="submit") 
-              br
-            div Response: 
-            div.responseDiv#tagsRemove
-        li Get images with the following tags
-          legend
-            form#tagSearchForm(name="tagSearchForm")
-              input#tags(name="tag", placeholder="Tag name's separated by a comma", required) 
-              br
-              input(name='limit', placeholder="Number of results")
-              br
-              input(type="submit") 
-            div Response: 
-            div.responseDiv#tagsPhotoGet
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#annotationsGet
+      li Create a new annotation
+        legend
+          div Point annotation
+          form#pointAnnotationsCreateForm(name="pointAnnotationsCreateForm")
+            input(name="text", placeholder="Annotation text", required) 
+            br
+            input(name="image_id", placeholder="Image id", required) 
+            br
+            input(name="start_x", placeholder="Start X", required) 
+            br
+            input(name="start_y", placeholder="Start Y", required) 
+            br
+            input(name="type", value="point", type="hidden") 
+            input(type="submit") 
+            br
+
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#pointAnnotationsCreate
+
+        legend
+          div Range annotation
+          form#rangeAnnotationsCreateForm(name="rangeAnnotationsCreateForm")
+            input(name="text", placeholder="Annotation text", required) 
+            br
+            input(name="image_id", placeholder="Image id", required) 
+            br
+            input(name="start_x", placeholder="Start X", required) 
+            br
+            input(name="start_y", placeholder="Start Y", required) 
+            br
+            input(name="end_x", placeholder="End X", required) 
+            br
+            input(name="end_y", placeholder="End Y", required) 
+            br
+            input(name="type", value="range", type="hidden") 
+            input(type="submit") 
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#rangeAnnotationsCreate
+      li Edit an existing annotation
+        legend
+          form#annotationsEditForm(name="annotationsEditForm")
+            input(name="id", placeholder="Annotation id", required) 
+            br
+            input(name="text", placeholder="Annotation text")
+            br
+            input(name="start_x", placeholder="Start X")
+            br
+            input(name="start_y", placeholder="Start Y")
+            br
+            input(name="end_x", placeholder="End X")
+            br
+            input(name="end_y", placeholder="End Y")
+            br
+            input(type="radio", name="type", value="point", required)
+            span Point
+            br
+            input(type="radio", name="type", value="range", required) 
+            span Range 
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#annotationsEdit
+      li Delete an annotation
+        legend
+          form#annotationsDeleteForm(name="annotationsDeleteForm")
+            span Annotation id: 
+            input(name="id", placeholder="Annotation id", required) 
+            br
+            input(type="radio", name="type", value="point", required) 
+            span Point
+            br
+            input(type="radio", name="type", value="range", required) 
+            span Range
+            br
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#annotationsDelete
+  div.collectionDiv 
+    h1.collectionTitle Contributions
+    ul
+      li Check if user has access to an image
+        legend
+          form#accessToImageForm
+            input(type="text", name="username", placeholder="Username")
+            br
+            input(type="text", name="image_id", placeholder="Image ID")
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#contributionAccess
+      li Add a new contributor from an image
+        legend
+          form#createContributionForm
+            input(type="text", name="username", placeholder="Username", required)
+            br
+            input(type="text", name="image_id", placeholder="Image ID", required)
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#contributionCreate
+      li Delete a contributor from an image
+        legend
+          form#deleteContributionForm
+            input(type="text", name="contribution_id", placeholder="Contribution ID" required)
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#contributionDelete
+  div.collectionDiv 
+    h1.collectionTitle Tags
+    ul
+      li Get all tags for a medical image
+        legend
+          form#tagGetForm(name="tagGetForm")
+            input(name="image_id", placeholder="Image id", required) 
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend  
+          div Response: 
+          div.responseDiv#tagsGet
+      li Add a new tag to an image
+        legend
+          form#tagAddForm(name="tagAddForm")
+            input(name="tag", placeholder="Tag", required) 
+            br
+            input(name="image_id", placeholder="Image id", required) 
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend  
+          div Response: 
+          div.responseDiv#tagsAdd
+      li Remove an existing tag from an image
+        legend
+          form#tagRemoveForm(name="tagRemoveForm")
+            input(name="tag", placeholder="Tag", required) 
+            br
+            input(name="image_id", placeholder="Image id", required) 
+            br
+            input(type="submit") 
+            br
+        legend.responseLegend  
+          div Response: 
+          div.responseDiv#tagsRemove
+      li Get images with the following tags
+        legend
+          form#tagSearchForm(name="tagSearchForm")
+            input#tags(name="tag", placeholder="Tag name's separated by a comma", required) 
+            br
+            input(name='limit', placeholder="Number of results")
+            br
+            input(type="submit") 
+        legend.responseLegend  
+          div Response: 
+          div.responseDiv#tagsPhotoGet
