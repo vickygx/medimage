@@ -346,3 +346,21 @@ Note: we didn’t consider the option of having ImageMed have a list of users th
 
 
 ---
+
+**Team Contributions**
+----------------------
+
+**Daniel Sanchez**
+  - Annotations
+  - Users
+
+**Calvin Li**
+  - Images
+    - Uploading images
+  - Contributions
+
+** Victoria Gong**
+  - Tags 
+  - Searching
+
+---
