@@ -251,19 +251,45 @@ API Specification
 
 - GET */uploads/images/{user_id}/{image_name}
   - **Description: ** Gets an image file for a MedImage based off the url in MedImage
-  - **Parameters: **
+  - **Parameters: ** None
   - **Response: **
-    - **Success: **
+    - **Success: ** Image File
     - **Failure: **
+      - Invalid Image Request (type of image not png or jpg)
+      - Image not found
+      - App environment invalid
 
 ---
 
 **Users**
 
----
-
-  - **Description: **
-  - **Parameters: **
+- GET */users*
+  - **Description: ** Gets all existing users
+  - **Parameters: ** None
   - **Response: **
-    - **Success: **
-    - **Failure: **
+    - **Success: ** Array[User]
+    - **Failure: ** Mongoose error only
+- POST */users*
+  - **Description: ** Creates a new user
+  - **Parameters: ** 
+    - **first_name** *Required: * First name of user
+    - **last_name** *Required: * Last name of user
+    - **username** *Required: * Username of user
+    - **password** *Required: * Account password
+  - **Response: **
+    - **Success: ** None
+    - **Failure: ** 
+      - One of the parameters was empty
+      - User already exists
+- PUT */users/{username}*
+  - **Description: ** Edit an existing user
+  - **Parameters: **
+    - **first_name: ** *Optional:* First name of user
+    - **last_name: ** *Optional:* Last name of user
+    - **password: ** *Optional:* Account password
+  - **Response: **
+    - **Success: ** None
+    - **Failure: ** 
+      - User could not be found
+
+---

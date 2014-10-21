@@ -47,9 +47,9 @@ module.exports.invalidAppEnv = function(env) {
   return (env !== "development" && env !== "production");
 }
 
-// Annotation error functions
+// Annotation error functions ///////////////////////////////////////
 
-// MedImages error functions
+// MedImages error functions ////////////////////////////////////////
 
 /**
  * Returns true if image is an invalid filetype, false otherwise
@@ -61,7 +61,7 @@ module.exports.medimages.invalidFileType = function(type) {
   return (type !== "image/jpeg" && type !== "image/png");
 }
 
-// Upload error functions
+// Upload error functions ///////////////////////////////////////////
 
 /**
  * Returns true if request is not a PNG or JPEG, false otherwise
@@ -76,7 +76,7 @@ module.exports.uploads.invalidImageRequest = function(imageName) {
   return (indexOfPNG !== correctIndex && indexOfJPG !== correctIndex);
 }
 
-// Search error functions
+// Search error functions ///////////////////////////////////////////
 
 module.exports.search.isValidLimitType = function(limitString, next){
   var limit = ~~Number(limitString);
