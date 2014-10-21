@@ -87,7 +87,6 @@ module.exports = function(app){
       }
       res.json(data);
     });
-
   });
 
   // Sees if user has access to edit medical image with given id

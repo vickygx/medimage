@@ -8,7 +8,7 @@ var Contribution = require('../data/models/contribution');
  * @param {ObjectID} imageID - id of image
  * @param {function} callback - callback called with true/false json
  */
-module.exports.hasAccess = function(userID, imageID, callback) {
+var hasAccess = module.exports.hasAccess = function(userID, imageID, callback) {
   Contribution.findOne({ user_id: userID, image_id: imageID }, function(err, contribution) {
     callback(err, {
       has_access: (contribution) ? true : false, 
@@ -26,7 +26,7 @@ module.exports.hasAccess = function(userID, imageID, callback) {
  */
 module.exports.createContribution = function(userID, imageID, callback) {
   //Check if created in DB already
-  module.exports.hasAccess(userID, imageID, function(err, data) {
+  hasAccess(userID, imageID, function(err, data) {
     if (err) {
       return callback(err);
     } else if (data.has_access) {

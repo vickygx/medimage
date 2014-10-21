@@ -1,0 +1,269 @@
+**URL**: TODO
+
+---
+
+API Specification
+-----------------
+
+*Response Models*
+
+- **Point annotation**
+
+
+
+    | Key         | Format   | Description                                                |
+    |-------------|----------|------------------------------------------------------------|
+    | text        | String   | Text in the annotation                                     |
+    | image_id    | ObjectId | _id of the associated MedImage                             |
+    | start_point | JSON     | {x: Number, y: Number} - coordinate of annotation on image |
+    
+- **Range annotation**
+
+
+
+    | Key         | Format   | Description                                                    |
+    |-------------|----------|----------------------------------------------------------------|
+    | text        | String   | Text in the annotation                                         |
+    | image_id    | ObjectId | _id of the associated MedImage                                 |
+    | start_point | JSON     | {x: Number, y: Number} - coordinate of annotation on image     |
+    | end_point   | JSON     | {x: Number, y: Number} - coordinate of end point of annotation |
+
+- **Contribution**
+
+
+
+    | Key      | Format   | Description                    |
+    |----------|----------|--------------------------------|
+    | image_id | ObjectId | _id of the associated MedImage |
+    | user_id  | ObjectId | _id of the associated MedImage |
+    
+- **Contribution Access**
+
+
+
+    | Key             | Format   | Description                                      |
+    |-----------------|----------|--------------------------------------------------|
+    | has_access      | Boolean  | Whether the uesr has access to edit the MedImage |
+    | contribution_id | ObjectId | _id of associated contribution                   |
+
+- **MedImage**
+
+
+
+    | Key       | Format   | Description                      |
+    |-----------|----------|----------------------------------|
+    | _creator  | ObjectId | _id of user who created MedImage |
+    | title     | String   | title of image to display        |
+    | image_url | String   | url of actual image file         |
+
+- **MedImage Response**
+
+
+
+    | Key       | Format   | Description                      |
+    |-----------|----------|----------------------------------|
+    | title     | String   | title of image to display        |
+    | image_url | String   | url of actual image file         |
+
+- **User Model: **
+  
+
+    | Key        | Format     | Description                  |
+    |------------|------------|------------------------------|
+    | _id        | ObjectId   | Default Mongoose Id          |
+    | first_name | String     | First name of user           |
+    | last_name  | String     | Last name of user            |
+    | username   | String     | Username of user             |
+    | password   | String     | Password of user             |
+    | __v        | versionKey | Default Mongoose version key |
+       
+- **Tag**
+
+
+
+    | Key      | Format   | Description                               |
+    |----------|----------|-------------------------------------------|
+    | _image   | ObjectId | _id of image to which this tag is applied |
+    | tag_name | String   | name of tag to display                    |
+
+- **Default Error: **
+
+
+
+    | Key     | Format | Description               |
+    |---------|--------|---------------------------|
+    | status  | Number | HTTP status code of error |
+    | name    | String | name of error             |
+    | message | String | description of error      |
+    
+- **Mongoose Error: ** Defined by Mongoose
+
+- **None: ** Empty JSON
+
+*API Endpoints*
+
+*Note: * All endpoints can have a Mongoose Failure, which always returns a Mongoose Error response model.  All other errors will return the Default Error response model.  The responses listed below **Failure** are simply the reasons that a failure could occur, and each returns a Default Error.
+
+**Annotations**
+
+- GET */medimages/{image_id}/annotations/*
+  - **Description: ** Gets all the annotations of the medical image with the given image_id
+  - **Response: ** 
+    - **Success: ** Array[Point Annotation, Range Annotation]
+    - **Failure: ** 
+      - Invalid Id
+- POST */annotations*
+  - **Description: ** Creates a new annotation
+  - **Parameters: ** 
+    - **text** *(Required):* Text to display in annotation
+    - **image_id** *(Required):* _id of image where annotation was created
+    - **type** *(Required):* "point" || "range", designates the type of annotation to be created
+    - **start_point** *(Required):* Coordinates of start point of annotation
+    - **end_point** *(Required if type == range):* Coordinates of end point of annotation
+  - **Response: **
+    - **Success: ** None
+    - **Failure: ** 
+      - Invalid image_id
+      - type not given
+- PUT */annotations/{annotation_id}*
+  - **Description: ** Edits the annotation with the given _id
+  - **Parameters: **
+    - **type** *Required:* "point" || "range", designates type of annotation to edit
+    - **text** *(Optional):* Text to display in annotation
+    - **start_point** *(Optional):* Coordinates of start point of annotation
+    - **end_point** *(Optional):* Coordinates of end point of annotation
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid annotation _id
+      - type not given:
+- DELETE */annotations/{annotation_id}*
+  - **Description: ** Deletes the annotation with the given _id
+  - **Parameters: **
+    - **type** *Required:* "point" || "range", designates type of annotation to delete
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid annotation _id
+      - type not given
+
+---
+
+**Contributions**
+
+- GET */contributions/access*
+  - **Description: ** Sees if user has access to edit medical image with the given id
+  - **Parameters: **
+    - **user_id** *Required:* _id of User to check
+    - **image_id** *Required:* _id of MedImage to check
+  - **Response: **
+    - **Success: ** Contribution Access
+    - **Failure: **
+      - Invalid user_id
+      - Invalid image_id
+- POST */contributions*
+  - **Description: ** Adds user to collaboration on medical image with given id
+  - **Parameters: **
+    - **user_id:** *Required:* _id of User to add
+    - **image_id:** *Required:* _id of MedImage to add user to
+  - **Response: **
+    - **Success: ** 
+      - **Contribution exists:** None
+      - **Contribution does not already exist:** Contribution
+    - **Failure: **
+      - Invalid user_id
+      - Invalid image_id
+      - image does not exist
+      - user does not exist
+- DELETE */contributions/{contribution_id}*
+  - **Description: ** Deletes contribution with given _id
+  - **Parameters: ** None
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid contribution_id
+
+---
+
+**MedImages**
+
+- GET */users/{user_id}/medimages*
+  - **Description: ** Gets the MedImages for a user
+  - **Parameters: ** None
+  - **Response: **
+    - **Success: ** Array[MedImage]
+    - **Failure: ** 
+      - Invalid user _id
+- POST */medimages*
+  - **Description: ** Creates a MedImage
+  - **Parameters: **
+    - **user_id** *Required:* _id of user who created image
+    - **title** *Required:* Title to display for MedImage
+    - **medImage** *Required:* Actual image file to created MedImage from
+  - **Response: **
+    - **Success: ** MedImage Response
+    - **Failure: **
+      - File type not jpeg or png
+      - Invalid user_id
+      - title not non empty
+      - Given user does not exist
+- DELETE *medimages/{image_id}*
+  - **Description: ** Deletes a MedImage
+  - **Parameters: ** None
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid image _id
+      - Medimage does not exist
+
+---
+
+**Tags**
+
+- GET */tag/{image_id}*
+  - **Description: ** Get all the tags of the medical image with the given id
+  - **Parameters: ** None
+  - **Response: **
+    - **Success: ** Array[Tag]
+    - **Failure: **
+      - Invalid image _id
+- POST */tag/{image_id}*
+  - **Description: ** Create or add tag for photo with given id
+  - **Parameters: **
+    - **tag** *Required: * Name of tag
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid image _id
+      - Tag already exists for the image
+- DELETE */tag/{image_id}*
+  - **Description: ** Remove tag off of photo with given id
+  - **Parameters: **
+    - **tag** *Required:* Name of tag
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid image _id
+
+---
+
+**Uploads**
+
+- GET */uploads/images/{user_id}/{image_name}
+  - **Description: ** Gets an image file for a MedImage based off the url in MedImage
+  - **Parameters: **
+  - **Response: **
+    - **Success: **
+    - **Failure: **
+
+---
+
+**Users**
+
+---
+
+  - **Description: **
+  - **Parameters: **
+  - **Response: **
+    - **Success: **
+    - **Failure: **
