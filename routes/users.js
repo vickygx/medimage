@@ -55,13 +55,13 @@ module.exports = function(app) {
     var updateData = {};
   
     // Empty inputs are not considered
-    if (req.body.first_name && req.body.first_name.length != 0) {
-      updateData.first_name = req.body.first_name;
+    if (req.body.first_name && req.body.first_name.trim().length != 0) {
+      updateData.first_name = req.body.first_name.trim();
     } 
-    if (req.body.last_name && req.body.last_name.length != 0) {
-      updateData.last_name = req.body.last_name;
+    if (req.body.last_name && req.body.last_name.trim().length != 0) {
+      updateData.last_name = req.body.last_name.trim();
     } 
-    if (req.body.password && req.body.password.length != 0) {
+    if (req.body.password && req.body.password.trim().length != 0) {
       updateData.password = req.body.password;
     }
 
