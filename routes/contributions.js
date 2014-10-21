@@ -14,6 +14,11 @@ module.exports = function(app) {
     var username = req.body.username;
     var imageID = req.body.image_id;
 
+    //Check if imageID is valid ObjectId
+    if (ErrorChecking.invalidId(imageID)) {
+      return next(Errors.invalidIdError);
+    }
+
     //Check if image exists
     MedImageController.getMedImageByID(imageID, function(err, image) {
       if (err) {
