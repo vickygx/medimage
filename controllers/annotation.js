@@ -117,3 +117,19 @@ module.exports.deleteAnnotation = function(id, type, callback) {
     }
   });
 }
+
+/**
+ * Delete all annotations associated with an image
+ *
+ * @param {ObjectID} imageID - id of image
+ * @param {Function} callback - callback called after deleting all objects
+ */
+ module.exports.deleteAnnotationsForImage = function(imageID, callback) {
+  PointAnnotation.remove({ image_id: imageID }, function(err) {
+    if (err) {
+      callback(err);
+    }
+
+    RangeAnnotation.remove({ image_id: imageID }, callback);
+  });
+}

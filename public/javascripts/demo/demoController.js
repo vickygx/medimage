@@ -55,17 +55,6 @@ var DemoController = function() {
           $("#usersEdit").text(JSON.stringify(res));
         });
       });
-
-      // Delete an user
-      $("#usersDeleteForm").on("submit", function(e) {
-
-        e.preventDefault();
-        var data = $(this).serializeArray();
-
-        ajaxController.del('/users/' + data[0].value, data).always(function(res) {
-          $("#usersDelete").text(JSON.stringify(res));
-        });
-      });
     })();
 
     /////////////////////////////////////////////////////////////////
@@ -140,9 +129,9 @@ var DemoController = function() {
       $("#accessToImageForm").on("submit", function(e) {
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
+        var username = $(this)[0].elements["username"].value;
         var imageID = $(this)[0].elements["image_id"].value;
-        var accessUrl = "/contributions/access?userID=" + encodeURIComponent(userID)
+        var accessUrl = "/contributions/access?username=" + encodeURIComponent(username)
                       + "&imageID=" + encodeURIComponent(imageID);
         ajaxController.get(accessUrl).always(function(res) {
           $("#contributionAccess").text(JSON.stringify(res));
@@ -153,11 +142,9 @@ var DemoController = function() {
       $("#createContributionForm").on("submit", function(e) {
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
-        var imageID = $(this)[0].elements["image_id"].value;
         var data = {
-          user_id: userID,
-          image_id: imageID
+          username: $(this)[0].elements["username"].value,
+          image_id: $(this)[0].elements["image_id"].value
         };
 
         ajaxController.post('/contributions', data).always(function(res) {
@@ -186,8 +173,8 @@ var DemoController = function() {
         //prevent reload
         e.preventDefault();
 
-        var userID = $(this)[0].elements["user_id"].value;
-        ajaxController.get("/users/" + userID + "/medimages").always(function(res) {
+        var username = $(this)[0].elements["username"].value;
+        ajaxController.get("/users/" + username + "/medimages").always(function(res) {
           $("#medImageForUser").text(JSON.stringify(res));
         });
       });
@@ -205,7 +192,6 @@ var DemoController = function() {
           url: "/medimages",
           type: "POST",
           data: formData,
-          dataType: "json",
           contentType: false,
           processData: false,
         }).always(function(res) {
@@ -213,6 +199,18 @@ var DemoController = function() {
         });
       });
 
+      //Edit title of MedImage
+      $("#editImageForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var imageID = $(this)[0].elements["image_id"].value;
+        var data = { title: $(this)[0].elements["title"].value };
+        ajaxController.put("/medimages/" + imageID, data).always(function(res) {
+          $("#medImageEdit").text(JSON.stringify(res));
+        });
+      });
+
+      //Delete MedImage
       $("#deleteImageForm").on("submit", function(e) {
         e.preventDefault();
 

@@ -9,7 +9,9 @@ module.exports = function(app){
   app.get('/tag/:imageid', function(req, res, next) {
     var imageId = req.params.imageid;
 
-    errorChecking.invalidId(imageId, next);
+    if (errorChecking.invalidId(imageId)) {
+      return next(errors.invalidIdError);
+    }
 
     // Checking if imageId exists
     MedImageController.getMedImageByID(imageId, function(err, image){
@@ -33,7 +35,9 @@ module.exports = function(app){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
-    errorChecking.invalidId(imageId, next);
+    if (errorChecking.invalidId(imageId)) {
+      return next(errors.invalidIdError);
+    }
 
     TagController.addTagTo(imageId, tagName, function(err, tag){
       if (err)
@@ -49,7 +53,9 @@ module.exports = function(app){
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
-    errorChecking.invalidId(imageId, next);
+    if (errorChecking.invalidId(imageId)) {
+      return next(errors.invalidIdError);
+    }
 
     TagController.removeTagFrom(imageId, tagName, function(err, tag){
       if (err)

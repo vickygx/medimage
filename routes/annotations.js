@@ -14,7 +14,10 @@ module.exports = function(app){
 
     var id = req.params.id;
 
-    errorChecking.invalidId(id, next);
+    //check if id is valid objectiD
+    if (errorChecking.invalidId(id)) {
+      return next(errors.invalidIdError);
+    }
 
     AnnotationController.getMedImageAnnotations(id, function(err, data) {
       if (err) {
@@ -31,8 +34,15 @@ module.exports = function(app){
 
     var data = req.body;
 
-    errorChecking.invalidId(data.image_id, next);
-    errorChecking.annotations.missingType(data.type, next);
+    //Check if imageID is valid objectID
+    if (errorChecking.invalidId(data.image_id)) {
+      return next(errors.invalidIdError);
+    }
+
+    //Check if missing type field
+    if (!data.type) {
+      return next(errors.annotations.missingTypeError);
+    }
 
     data.start_point = {x: data.start_x, y: data.start_y};
     delete data.start_x;
@@ -58,8 +68,15 @@ module.exports = function(app){
     var id = req.params.id
     var type = req.body.type;
 
-    errorChecking.invalidId(id, next);
-    errorChecking.annotations.missingType(type, next);
+    //Check if imageID is valid objectID
+    if (errorChecking.invalidId(id)) {
+      return next(errors.invalidIdError);
+    }
+
+    //Check if missing type field
+    if (!type) {
+      return next(errors.annotations.missingTypeError);
+    }
 
     var data = {};
     if (req.body.text && req.body.text.length != 0) {
@@ -88,8 +105,15 @@ module.exports = function(app){
     var id = req.params.id;
     var type = req.body.type;
 
-    errorChecking.annotations.missingType(req.body.type, next);
-    errorChecking.invalidId(id, next);
+    //Check if imageID is valid objectID
+    if (errorChecking.invalidId(id)) {
+      return next(errors.invalidIdError);
+    }
+
+    //Check if missing type field
+    if (!type) {
+      return next(errors.annotations.missingTypeError);
+    }
 
     AnnotationController.deleteAnnotation(id, type, function(err) {
       if (err) {

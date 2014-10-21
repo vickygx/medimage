@@ -1,127 +1,96 @@
-module.exports = function(app){
-  var mongoose = require('mongoose');
-  var ObjectId = mongoose.Types.ObjectId;
-  var ContriController = require('../controllers/contribution');
-  var MedImageController = require('../controllers/medimage');
-  var UserController = require('../controllers/user');
+//Controller Modules
+var ContriController = require('../controllers/contribution');
+var MedImageController = require('../controllers/medimage');
+var UserController = require('../controllers/user');
+
+//Error modules
+var ErrorChecking = require('../errors/errorChecking');
+var Errors = require('../errors/errors');
+
+module.exports = function(app) {
 
   // Adds user to collaboration on medical image with given id
-  app.post('/contributions', function(req, res) {
-    var userID = req.body.user_id;
+  app.post('/contributions', function(req, res, next) {
+    var username = req.body.username;
     var imageID = req.body.image_id;
-
-    //Check if valid ObjectIDs
-    if (!ObjectId.isValid(userID) || !ObjectId.isValid(imageID)) {
-      //TODO: Standardize error message handling
-      res.json(500, {msg: "Invalid IDs"});
-      return;
-    }
 
     //Check if image exists
     MedImageController.getMedImageByID(imageID, function(err, image) {
       if (err) {
-        //TODO: FIX THIS
-        res.json(500, err);
-        return;
+        return next(err);
       } else if (!image) {
-        //TODO: FIX THIS
-        err = {
-          status: 500,
-          name: "Bad Input",
-          message: "Image does not exist"
-        }
-        res.json(500, err);
-        return;
+        return next(Errors.medimages.notFound);
       }
 
       //Check if user exists
-      UserController.getUserByID(userID, function(err, user) {
+      UserController.getUserByUsername(username, function(err, user) {
         if (err) {
-          //TODO: Fix this
-          res.json(500, err);
-          return;
+          return next(err);
         } else if (!user) {
-        //TODO: FIX THIS
-          err = {
-            status: 500,
-            name: "Bad Input",
-            message: "User does not exist"
-          }
-          res.json(500, err);
-          return;
+          return next(Errors.users.notFound);
         }
 
         //Create contribution, if not made already
-        ContriController.createContribution(userID, imageID, function(err, data) {
-          if (err) {
-            //TODO FIX THIS
-            res.json(500, err);
-            return;
+        ContriController.createContribution(user._id, imageID, function(err) {
+          if (err) { 
+            return next(err);
           }
 
-          res.json(data);
+          res.end();
         });
       });
     });
   });
 
-  // Removes user from collaboration on medical image with given id
-  app.del('/contributions/:id', function(req, res) {
+  // Delete contribution relationship
+  app.del('/contributions/:id', function(req, res, next) {
     var contribID = req.params.id;
 
     //Check if valid objectID
-    if (!ObjectId.isValid(contribID)) {
-      //TODO FIX
-      res.json(500, {
-        status: 500,
-        name: "Bad Request",
-        message: "Invalid user ID"
-      });
-      return;
+    if (ErrorChecking.invalidId(contribID)) {
+      return next(Errors.invalidIdError);
     }
 
-    ContriController.deleteContribution(contribID, function(err, data) {
+    ContriController.deleteContribution(contribID, function(err) {
       if (err) {
-        res.json(500, err);
-        return;
+        return next(err);
       }
-      res.json(data);
+
+      res.end();
     });
   });
 
   // Sees if user has access to edit medical image with given id
-  app.get('/contributions/access', function(req, res) {
-    var userID = req.query.userID;
+  app.get('/contributions/access', function(req, res, next) {
+    var username = req.query.username;
     var imageID = req.query.imageID;
 
     //Check if userID and imageID are inputted
-    if (userID.length === 0 || imageID.length === 0) {
-      //TODO: FIX THIS
-      var err = {
-        status: 400,
-        name: "Bad Request",
-        message: "Request requires a User ID and an Image ID"
-      }
-      res.json(400, err);
-      return;
+    if (username.length === 0 || imageID.length === 0) {
+      return next(Errors.contributions.accessRequestError);
     }
 
-    //Check if userID and imageID are valid IDs
-    if (!ObjectId.isValid(userID) || !ObjectId.isValid(imageID)) {
-      res.json(400, {
-        status: 400,
-        name: "Bad Input",
-        message: "Invalid User ID or Image ID given"
-      });
-      return;
+    //Check if imageID are valid IDs
+    if (ErrorChecking.invalidId(imageID)) {
+      return next(Errors.invalidIdError);
     }
 
-    ContriController.hasAccess(userID, imageID, function(err, data) {
+    UserController.getUserByUsername(username, function(err, user) {
       if (err) {
-        res.json(500, err);
-        return;
+        return next(err);
       }
-      res.json(data);
+      if (!user) {
+        return next(Errors.users.notFound);
+      }
+
+      ContriController.hasAccess(user._id, imageID, function(err, data) {
+        if (err) {
+          return next(err);
+        }
+
+        res.json(data);
+        res.end();
+      });
     });
   });
 };

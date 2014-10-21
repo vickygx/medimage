@@ -1,6 +1,5 @@
 var User = require('../data/models/user');
 var errors = require('../errors/errors');
-var errorChecking = require('../errors/errorChecking');
 
 /**
  * Gets the user by its ID
@@ -10,6 +9,16 @@ var errorChecking = require('../errors/errorChecking');
  */
 module.exports.getUserByID = function(userID, callback) {
   User.findById(userID, callback);
+}
+
+/**
+ * Gets the user by its username
+ *
+ * @param {String} username - username of user
+ * @param {Function} callback - callback called after getting user
+ */
+module.exports.getUserByUsername = function(username, callback) {
+  User.findOne({ username: username }, callback);
 }
 
 /**
@@ -73,30 +82,6 @@ module.exports.editUser = function(username, data, callback) {
       }
       user.save();
       callback();
-    } else {
-      return callback(errors.users.notFound);
-    }
-  });
-}
-
-/**
- * Deletes the user with the given username
- * @param {String} username: username of user to delete
- * @param {Function} callback: function to call after user is deleted
- */
-module.exports.deleteUser = function(username, callback) {
-
-  User.findOne({username: username}, function(err, user) {
-    if (err) {
-      return callback(err);
-    }
-    if (user) {
-      user.remove(function(err) {
-        if (err) {
-          return callback(err);
-        }
-        callback();
-      });
     } else {
       return callback(errors.users.notFound);
     }

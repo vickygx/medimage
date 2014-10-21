@@ -2,7 +2,7 @@
 // Any specific errors go into their own object
 module.exports.annotations = {};
 module.exports.contributions = {};
-module.exports.medImage = {};
+module.exports.medimages = {};
 module.exports.tags = {};
 module.exports.search = {};
 module.exports.uploads = {};
@@ -16,6 +16,18 @@ module.exports.invalidIdError = {
   status: 400, 
   name: "Bad Input", 
   message: "The given id is not a valid ObjectId"
+}
+
+module.exports.invalidStringError = {
+  status: 400,
+  name: "Bad Input",
+  message: "A given input is empty or only whitespace"
+}
+
+module.exports.invalidAppEnvError = {
+  status: 500,
+  name: "Invalid Server State",
+  message: "Unexpected app environment"
 }
 
 // Annotation errors ////////////////////////////////////////////////
@@ -33,9 +45,25 @@ module.exports.annotations.notFound = {
 }
 
 // Contributions errors /////////////////////////////////////////////
-
+module.exports.contributions.accessRequestError = {
+  status: 400,
+  name: "Bad Request",
+  message: "Request requires a Username and an Image ID"
+}
 
 // MedImage errors //////////////////////////////////////////////////
+
+module.exports.medimages.invalidFileTypeError = {
+  status: 400,
+  name: "Invalid File Type",
+  message: "File must be a PNG or JPEG"
+}
+
+module.exports.medimages.notFound = {
+  status: 400,
+  name: "Bad Input",
+  message: "Unable to find the image"
+}
 
 
 // Tag errors ///////////////////////////////////////////////////////
@@ -53,7 +81,17 @@ module.exports.search.invalidLimitValue = {
 }
 
 // Upload errors ////////////////////////////////////////////////////
+module.exports.uploads.invalidImageRequestError = {
+  status: 400,
+  name: "Invalid Image URL",
+  message: "The URL does not specify an image"
+}
 
+module.exports.uploads.imageNotFoundError = {
+  status: 400,
+  name: "Bad Input",
+  message: "Unable to find the user's image"
+}
 
 // User errors //////////////////////////////////////////////////////
 
@@ -66,5 +104,5 @@ module.exports.users.alreadyExistsError = {
 module.exports.users.notFound = {
   status: 400, 
   name: "Bad input", 
-  message: "Unable to find the user with the given username"
+  message: "Unable to find the user"
 }

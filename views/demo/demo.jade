@@ -57,16 +57,6 @@ block content
           legend
             div Response: 
             div.responseDiv#usersEdit
-        li Delete an user
-          legend
-            form#usersDeleteForm(name="usersDeleteForm")
-              input(name="username", placeholder="Username", required) 
-              br
-              input(type="submit") 
-              br
-          legend
-            div Response: 
-            div.responseDiv#usersDelete
     li Annotations
       ul
         li Get all annotations for a medical image
@@ -169,7 +159,7 @@ block content
         li Check if user has access to an image
           legend
             form#accessToImageForm
-              input(type="text", name="user_id", placeholder="User ID")
+              input(type="text", name="username", placeholder="Username")
               br
               input(type="text", name="image_id", placeholder="Image ID")
               br
@@ -181,7 +171,7 @@ block content
         li Add a new contributor from an image
           legend
             form#createContributionForm
-              input(type="text", name="user_id", placeholder="User ID", required)
+              input(type="text", name="username", placeholder="Username", required)
               br
               input(type="text", name="image_id", placeholder="Image ID", required)
               br
@@ -205,7 +195,7 @@ block content
         li Get medical images for a user
           legend
             form#medImageForUserForm
-              input(type="text", name="user_id", placeholder="User ID", required)
+              input(type="text", name="username", placeholder="Username", required)
               br
               input(type="submit")
               br
@@ -214,7 +204,7 @@ block content
             div.responseDiv#medImageForUser
         li Create a medical image
           form#uploadImageForm
-            input(type="text", name="user_id", placeholder="User ID", required)
+            input(type="text", name="username", placeholder="Username", required)
             br
             input(type="text", name="title", placeholder="Image Title", required)
             br
@@ -225,6 +215,17 @@ block content
           legend
             div Response: 
             div.responseDiv#medImageCreate
+        li Edit a medical image
+          form#editImageForm
+            input(type="text", name="image_id", placeholder="Image ID", required)
+            br
+            input(type="text" name="title", placeholder="Image Title", required)
+            br
+            input(type="submit")
+            br
+          legend
+            div Response:
+            div.responseDiv#medImageEdit
         li Delete an image
           legend
             form#deleteImageForm
