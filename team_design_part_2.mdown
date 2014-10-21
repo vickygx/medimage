@@ -207,6 +207,16 @@ API Specification
       - Invalid user_id
       - title not non empty
       - Given user does not exist
+- PUT */medimages/{image_id}
+  - **Description: ** Edits a MedImage
+  - **Parameters: **
+    - **title** *Required: * Title to display for MedImage
+  - **Response: **
+    - **Success: ** None
+    - **Failure: **
+      - Invalid MedImage _id
+      - Invalid title (empty or whitespace)
+      - MedImage not found
 - DELETE *medimages/{image_id}*
   - **Description: ** Deletes a MedImage
   - **Parameters: ** None
