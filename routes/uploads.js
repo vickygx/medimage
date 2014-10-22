@@ -35,7 +35,6 @@ module.exports = function(app) {
       var envFolder = (app.settings.env === "production") ? "prod" : "local";
       var imagePath = "./public/" + envFolder + "/uploads/" + username + "/" + imageName;
       res.sendfile(path.resolve(imagePath));
-      res.end();
     });
   });
 };
