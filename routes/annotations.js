@@ -1,4 +1,4 @@
-var MedImage = require('../data/models/medImage');
+var MedImage = require('../data/models/medimage');
 var AnnotationController = require('../controllers/annotation');
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
 var RangeAnnotation = require('../data/models/annotation/rangeAnnotation');
