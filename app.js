@@ -13,7 +13,7 @@ if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   dbURL = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ':' +
           process.env.OPENSHIFT_MONGODB_DB_PASSWORD + '@' +
           process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
-          process.env.OPENSHIFT_MONGODB_DB_PORT + '/' + dbName;
+          process.env.OPENSHIFT_MONGODB_DB_PORT + '/medimage';
 }
 var db = require('mongoose').connect(dbURL, function() {
   console.log("Successfully connected to MongoDB at: \n", dbURL);
