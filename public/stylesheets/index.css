@@ -1,0 +1,9 @@
+.formContainer {
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  width: 400px;
+  padding: 20px;
+}
+.formContainer input {
+  display: block;
+}

@@ -1,7 +1,4 @@
-
-/**
- * Rendering pages
- */
+var isLoggedIn = require('./middleware/isLoggedIn');
 
 module.exports = function(app){
   app.get('/', function(req ,res) {
@@ -12,7 +9,7 @@ module.exports = function(app){
     res.render('demo/demo', { title: 'API Demo' });
   });
 
-  app.get('/main', function(req, res){
+  app.get('/main', isLoggedIn, function(req, res) {
     res.render('main', {title: 'Testing Grid' });
   });
 };

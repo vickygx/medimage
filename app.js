@@ -25,6 +25,12 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.cookieParser());
+  app.use(express.session({secret: "super secret string 3000"}));
+  app.use(function(req, res, next) {
+    res.locals.session = req.session;
+    next();
+  });
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 
@@ -54,6 +60,7 @@ app.configure('production', function(){
 
 // Routes
 require('./routes/index')(app);
+require('./routes/sessions')(app);
 require('./routes/annotations')(app);
 require('./routes/medimage')(app);
 require('./routes/tags')(app);
