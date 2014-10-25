@@ -1,3 +1,6 @@
+block head
+  script(type="text/javascript", src="javascripts/mixins/gridItemController.js")
+
 mixin gridItem(itemId)
-  div.gridItem(id=itemId)
+  div.gridItem(id=itemId, data-ng-controller="gridItemController")
 

@@ -1,6 +1,9 @@
 include ./gridItem.jade
 
+block head
+  script(type="text/javascript", src="/javascripts/mixins/gridController.js")
+
 mixin grid(id, ...items)
-  div(id=id)
+  div(id=id, data-ng-controller="gridController")
     each item in items
       +gridItem(item)
