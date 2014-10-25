@@ -1,9 +1,10 @@
 extends layout
 
 block head
-  link(rel='stylesheet', href='/stylesheets/grid/gridItem.css')
+  include mixins/css.jade
+  +css('grid')
 
-block content
   include mixins/grid.jade
 
-  +grid('GridId', 'vicky')
+block content
+  +grid('gridContainer', 'vicky')
