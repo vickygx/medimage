@@ -1,6 +1,10 @@
 include ./gridItem.jade
 
-mixin grid(id, ...items)
+//- Each item represents a single medical image
+//- And should be in the following format: 
+//- {Id: W, Title: X, ImageUrl: Y, Tags: Z }
+
+mixin grid(id, ...images)
   div(id=id)
-    each item in items
-      +gridItem(item)
+    each image in images
+      +gridItem(image)
