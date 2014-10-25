@@ -1,7 +1,10 @@
 include ./tag.jade
 
+block head
+  script(type="text/javascript", src="javascripts/mixins/gridItemController.js")
+
 mixin gridItem(item)
-  div.gridItem(id=item.id)
+  div.gridItem(id=item.id, data-ng-controller="gridItemController")
     div.image
       p item.imageUrl
     div.title

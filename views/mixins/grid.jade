@@ -4,7 +4,10 @@ include ./gridItem.jade
 //- And should be in the following format: 
 //- {Id: W, Title: X, ImageUrl: Y, Tags: Z }
 
+block head
+  script(type="text/javascript", src="/javascripts/mixins/gridController.js")
+
 mixin grid(id, ...images)
-  div(id=id)
+  div(id=id, data-ng-controller="gridController")
     each image in images
       +gridItem(image)
