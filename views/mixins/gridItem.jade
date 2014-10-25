@@ -1,6 +1,15 @@
+include ./tag.jade
+
 block head
   script(type="text/javascript", src="javascripts/mixins/gridItemController.js")
 
-mixin gridItem(itemId)
-  div.gridItem(id=itemId, data-ng-controller="gridItemController")
+mixin gridItem(item)
+  div.gridItem(id=item.id, data-ng-controller="gridItemController")
+    div.image
+      p item.imageUrl
+    div.title
+      p item.title
+    div.tags
+      each tag in item.tags
+        +tag(tag)
 

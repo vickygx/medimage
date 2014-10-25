@@ -3,8 +3,9 @@ extends layout
 block head
   include mixins/css.jade
   +css('grid')
+  +css('tag')
 
   include mixins/grid.jade
 
 block content
-  +grid('gridContainer', 'vicky')
+  +grid('gridContainer', images})

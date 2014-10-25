@@ -1,9 +1,13 @@
 include ./gridItem.jade
 
+//- Each item represents a single medical image
+//- And should be in the following format: 
+//- {Id: W, Title: X, ImageUrl: Y, Tags: Z }
+
 block head
   script(type="text/javascript", src="/javascripts/mixins/gridController.js")
 
-mixin grid(id, ...items)
+mixin grid(id, ...images)
   div(id=id, data-ng-controller="gridController")
-    each item in items
-      +gridItem(item)
+    each image in images
+      +gridItem(image)
