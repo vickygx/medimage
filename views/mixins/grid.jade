@@ -1,0 +1,6 @@
+include ./gridItem.jade
+
+mixin grid(id, ...items)
+  div(id=id)
+    each item in items
+      +gridItem(item)
