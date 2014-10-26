@@ -42,7 +42,6 @@ module.exports = function(app) {
           }
 
           res.json({});
-          res.end();
         });
       });
     });
@@ -63,7 +62,6 @@ module.exports = function(app) {
       }
 
       res.json({});
-      res.end();
     });
   });
 
@@ -96,7 +94,6 @@ module.exports = function(app) {
         }
 
         res.json(data);
-        res.end();
       });
     });
   });

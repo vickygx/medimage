@@ -11,10 +11,11 @@ var EditorController = function() {
   var private = {};
 
   // Occurs after document.ready
-  var setPrivate = function(imgUrl, helpers) {
+  var setPrivate = function(imgUrl, image_id) {
     private.ctx = $("#imageCanvas")[0].getContext('2d');
     private.img = new Image();
     private.img.src = imgUrl;
+    private.image_id = image_id;
     private.editorImg = new EditorImg(private.img, 
                                       new Coord(0, 0), 
                                       1, 
@@ -128,22 +129,55 @@ var EditorController = function() {
   })();
 
   // Starts all processes
-  var init = function(imgUrl) {
-    setPrivate(imgUrl, helpers);
-    imgInit();
+  var init = function(imgUrl, image_id) {
+    setPrivate(imgUrl, image_id);
+    imgInit(image_id);
     eventListeners();
   }
 
-  var imgInit = function() {
+  var imgInit = function(image_id) {
     
     var img = private.img;
 
     img.onload = function() {
       helpers.drawImg();
+      ajaxController.get('/medImages/' + image_id + '/annotations').done(function(res) {
+        for (var i = 0; i < res.length; i++) {
+          var annotation = res[i];
+          if (annotation.__t == "PointAnnotation") {
+            private.pointAnnotations.push(createPointAnnotation(annotation));
+          } else if (annotation.__t == "RangeAnnotation") {
+            private.rangeAnnotations.push(createRangeAnnotation(annotation));
+          }
+        }
+
+        helpers.drawAnnotations();
+      });
     }
 
     $("#imageCanvas")[0].width = $("#imageCanvas").parent().width();
     $("#imageCanvas")[0].height = $("#imageCanvas").parent().height();
+  }
+
+  var createPointAnnotation = function(dbAnnotation) {
+    return new PointAnnotation(dbAnnotation.text, 
+                               new Coord(dbAnnotation.start_point.x, 
+                                         dbAnnotation.start_point.y), 
+                               private.ctx, 
+                               private.editorImg, 
+                               private.image_id, 
+                               private.circleRadius);
+  }
+
+  var createRangeAnnotation = function(dbAnnotation) {
+    return new RangeAnnotation(dbAnnotation.text, 
+                               new Coord(dbAnnotation.start_point.x, 
+                                         dbAnnotation.start_point.y), 
+                               new Coord(dbAnnotation.end_point.x, 
+                                         dbAnnotation.end_point.y), 
+                               private.ctx, 
+                               private.editorImg, 
+                               private.image_id)
   }
 
   var eventListeners = function() {
@@ -239,11 +273,15 @@ var EditorController = function() {
             if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
                 Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
               
-              private.annotation = new PointAnnotation("", endCoord, private.ctx, private.editorImg, private.circleRadius);
+              private.annotation = new PointAnnotation("", endCoord, private.ctx, 
+                                                       private.editorImg, private.image_id, 
+                                                       private.circleRadius);
               private.pointAnnotations.push(private.annotation);
             } else {
               
-              private.annotation = new RangeAnnotation("", startCoord, endCoord, private.ctx, private.editorImg);
+              private.annotation = new RangeAnnotation("", startCoord, endCoord, 
+                                                       private.ctx, private.editorImg, 
+                                                       private.image_id);
               private.rangeAnnotations.push(private.annotation);
             }
 
@@ -287,12 +325,23 @@ var EditorController = function() {
 
 
       // Zoom
-      $("#zoomInBtn").on("click", function(e) {
+      $("#zoomInBtn").on("click", function() {
         helpers.zoomIn(0.2);
       });
 
-      $("#zoomOutBtn").on("click", function(e) {
+      $("#zoomOutBtn").on("click", function() {
         helpers.zoomOut(0.2);
+      });
+
+      // Annotations submission
+      $("#annotationsSubmit").on("click", function() {
+        for (var i = 0; i < private.pointAnnotations.length; i++) {
+          private.pointAnnotations[i].submit();
+        }
+
+        for (var i = 0; i < private.rangeAnnotations.length; i++) {
+          private.rangeAnnotations[i].submit();
+        }
       });
     })();
 

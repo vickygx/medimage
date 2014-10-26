@@ -23,7 +23,6 @@ module.exports = function(app){
             return next(err);
           else {
             res.json(tags);
-            res.end();
           }
         });
       }
@@ -44,7 +43,6 @@ module.exports = function(app){
         return next(err);
       else {
         res.json({});
-        res.end();
       }
     });
   });
@@ -63,7 +61,6 @@ module.exports = function(app){
         return next(err);
       else {
         res.json({});
-        res.end();
       }
     });
   });

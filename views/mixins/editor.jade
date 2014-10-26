@@ -1,4 +1,5 @@
 block head
+  script(type="text/javascript", src="javascripts/AjaxController.js")
   script(type="text/javascript", src="javascripts/helpers/helpers.js")
   script(type="text/javascript", src="javascripts/helpers/circle.js")
   script(type="text/javascript", src="javascripts/helpers/rectangle.js")
@@ -11,16 +12,16 @@ block head
   script(type="text/javascript", src="javascripts/mixins/editorController.js")
   link(rel="stylesheet", href="stylesheets/editor.css")
 
-mixin editor(imgUrl)
+mixin editor(imgUrl, image_id)
   script.
     var editorController = new EditorController();
     $(document).ready(function() {
-      editorController.init("#{imgUrl}");
+      editorController.init("#{imgUrl}", "#{image_id}");
     });
 
   div#annotationInputCont
     input#annotationInput.form-control(name="annotationNote", 
-                                  placeholder="Describe this annotation")
+                                       placeholder="Describe this annotation")
 
   table#editorTable
     tbody
@@ -47,4 +48,8 @@ mixin editor(imgUrl)
                     span.glyphicon.glyphicon-record
                   button(id="moveBtn", class="btn btn-default editTypeBtn")
                     span.glyphicon.glyphicon-move
+            legend
+              div
+                h2 Submit annotations
+                button(id="annotationsSubmit", class="btn btn-success") Submit
                 

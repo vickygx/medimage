@@ -1,6 +1,6 @@
 var RangeAnnotation = (function() {
 
-  var RangeAnnotation = function(text, startCoord, endCoord, ctx, img) {
+  var RangeAnnotation = function(text, startCoord, endCoord, ctx, img, image_id) {
 
     // Pass inheritance variables (Allows use of Annotation methods)
     Annotation.call(this, text);
@@ -11,6 +11,7 @@ var RangeAnnotation = (function() {
 
     this.ctx = ctx;
     this.img = img;
+    this.image_id = image_id;
   }
 
   // Inherit Annotation
@@ -32,6 +33,22 @@ var RangeAnnotation = (function() {
 
   RangeAnnotation.prototype.draw = function() {
     this.rectangle.draw(this.ctx, this.img);
+  }
+
+  RangeAnnotation.prototype.submit = function() {
+    var data = {
+      text: this.text, 
+      image_id: this.image_id, 
+      type: "range", 
+      start_x: this.startCoord.x, 
+      start_y: this.startCoord.y, 
+      end_x: this.endCoord.x,
+      end_y: this.endCoord.y
+    }
+
+    ajaxController.post('/annotations', data).fail(function(e) {
+      alert("Error:" + JSON.stringify(e));
+    });
   }
 
   return RangeAnnotation;

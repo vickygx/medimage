@@ -1,6 +1,6 @@
 var PointAnnotation = (function() {
 
-  var PointAnnotation = function(text, coord, ctx, img, radius) {
+  var PointAnnotation = function(text, coord, ctx, img, image_id, radius) {
     
     // Pass inheritance variables (Allows use of Annotation methods)
     Annotation.call(this, text);
@@ -10,6 +10,7 @@ var PointAnnotation = (function() {
 
     this.ctx = ctx;
     this.img = img;
+    this.image_id = image_id;
   }
 
   // Inherit Annotation
@@ -23,6 +24,20 @@ var PointAnnotation = (function() {
 
   PointAnnotation.prototype.draw = function() {
     this.circle.draw(this.ctx, this.img);
+  }
+
+  PointAnnotation.prototype.submit = function() {
+    var data = {
+      text: this.text, 
+      image_id: this.image_id, 
+      type: "point", 
+      start_x: this.coord.x, 
+      start_y: this.coord.y
+    }
+
+    ajaxController.post('/annotations', data).fail(function(e) {
+      alert("Error:" + JSON.stringify(e));
+    });
   }
 
   return PointAnnotation;

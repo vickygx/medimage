@@ -25,7 +25,6 @@ module.exports = function(app){
       }
 
       res.json(data);
-      res.end();
     });
   });
 
@@ -33,6 +32,8 @@ module.exports = function(app){
   app.post('/annotations', function(req, res, next) {
 
     var data = req.body;
+
+    console.log("data: ", JSON.stringify(data));
 
     //Check if imageID is valid objectID
     if (errorChecking.invalidId(data.image_id)) {
@@ -60,7 +61,6 @@ module.exports = function(app){
       }
 
       res.json({});
-      res.end();
     });
   });
 
@@ -99,7 +99,6 @@ module.exports = function(app){
       }
 
       res.json({});
-      res.end();
     });
   });
 
@@ -125,7 +124,6 @@ module.exports = function(app){
       }
 
       res.json({});
-      res.end();
     });
   });
 

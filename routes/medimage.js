@@ -29,7 +29,6 @@ module.exports = function(app) {
           return next(err);
         }
         res.json(images);
-        res.end();
       });
     });
   });
@@ -75,8 +74,7 @@ module.exports = function(app) {
             return next(err);
           }
 
-          res.json({});
-          res.end();        
+          res.json({});     
         });
       });
     });
@@ -106,7 +104,6 @@ module.exports = function(app) {
       }
 
       res.json({});
-      res.end();
     });
   });
 
@@ -151,7 +148,6 @@ module.exports = function(app) {
               }
               
               res.json({});
-              res.end();
             });
           })
         });
