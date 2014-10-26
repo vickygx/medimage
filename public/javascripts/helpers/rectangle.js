@@ -25,7 +25,7 @@ var Rectangle = (function() {
 
     ctx.beginPath();
     ctx.rect(startCanvasCoord.x, startCanvasCoord.y, width, height);
-    ctx.fillStyle = "rgba(0, 128, 255, 0.3)";
+    ctx.fillStyle = "rgba(0, 128, 255, 0.2)";
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#2671B6";

@@ -14,7 +14,7 @@ var Circle = (function() {
     var canvasCoord = img.toCanvasCoord(this.coord);
     ctx.beginPath();
     ctx.arc(canvasCoord.x, canvasCoord.y, this.radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = "rgba(255, 128, 0, 0.3)";
+    ctx.fillStyle = "rgba(255, 128, 0, 0.2)";
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "orangered";

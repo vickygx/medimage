@@ -187,6 +187,8 @@ var EditorController = function() {
               var text = annotation.text;
               helpers.showAnnotationInput(e, text);
 
+              private.annotation = annotation;
+
               return;
             }
           }
@@ -197,6 +199,8 @@ var EditorController = function() {
             if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
               var text = annotation.text;
               helpers.showAnnotationInput(e, text);
+
+              private.annotation = annotation;
 
               return;
             }
