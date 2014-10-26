@@ -1,5 +1,11 @@
 block head
-  script(type="text/javascript", src="external/two.js")
+  script(type="text/javascript", src="javascripts/helpers/helpers.js")
+  script(type="text/javascript", src="javascripts/helpers/circle.js")
+  script(type="text/javascript", src="javascripts/helpers/rectangle.js")
+  script(type="text/javascript", src="javascripts/helpers/annotation.js")
+  script(type="text/javascript", src="javascripts/helpers/PointAnnotation.js")
+  script(type="text/javascript", src="javascripts/helpers/RangeAnnotation.js")
+  script(type="text/javascript", src="external/js/two.js")
   script(type="text/javascript", src="javascripts/helpers/coord.js")
   script(type="text/javascript", src="javascripts/helpers/editorImg.js")
   script(type="text/javascript", src="javascripts/mixins/editorController.js")
@@ -22,12 +28,19 @@ mixin editor(imgUrl)
             legend
               div
                 h2 Zoom
-                button(id="zoomInBtn") +
-                button(id="zoomOutBtn") -
+                div.btn-group
+                  button(id="zoomInBtn", class="btn btn-default")
+                    span.glyphicon.glyphicon-zoom-in
+                  button(id="zoomOutBtn", class="btn btn-default")
+                    span.glyphicon.glyphicon-zoom-out
             legend
               div
                 h2 Edit type
-                button(id="pointBtn", class="editTypeBtn", disabled) Point annotation
-                button(id="rangeBtn", class="editTypeBtn") Range annotation
-                button(id="moveBtn", class="editTypeBtn") Move
+                div.btn-group
+                  button(id="editBtn", class="btn btn-default editTypeBtn")
+                    span.glyphicon.glyphicon-pencil
+                  button(id="annotationBtn", class="btn btn-default editTypeBtn", disabled) 
+                    span.glyphicon.glyphicon-record
+                  button(id="moveBtn", class="btn btn-default editTypeBtn")
+                    span.glyphicon.glyphicon-move
                 

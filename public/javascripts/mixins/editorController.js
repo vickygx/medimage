@@ -19,9 +19,11 @@ var EditorController = function() {
                                       new Coord(0, 0), 
                                       1, 
                                       private.ctx, 
-                                      $("#imageCanvas")[0], 
-                                      helpers);
-    private.editType = "point";
+                                      $("#imageCanvas")[0]);
+    private.editType = "annotation";
+    private.pointAnnotations = {};
+    private.rangeAnnotations = {};
+    private.circleRadius = 7;
   }
 
   // Helper functions
@@ -32,24 +34,36 @@ var EditorController = function() {
       private.editorImg.draw(private.ctx, $("#imageCanvas"));
     }
 
-    var getEventCoord = function(e) {
-      
-      var currentX, currentY;
+    var zoomIn = function(amount) {
+      private.editorImg.zoomIn(amount);
+      drawAnnotations();
+    }
 
-      if(e.offsetX !== undefined){
-        currentX = e.offsetX;
-        currentY = e.offsetY;
-      } else { // Firefox compatibility
-        currentX = e.layerX - e.currentTarget.offsetLeft;
-        currentY = e.layerY - e.currentTarget.offsetTop;
+    var zoomOut = function(amount) {
+      private.editorImg.zoomOut(amount);
+      drawAnnotations();
+    }
+
+    var drawAnnotations = function() {
+      var pointAnnotationsKeys = Object.keys(private.pointAnnotations);
+      var rangeAnnotationsKeys = Object.keys(private.rangeAnnotations);
+
+      for (var i = 0; i < pointAnnotationsKeys.length; i++) {
+        var pointAnnotation = private.pointAnnotations[pointAnnotationsKeys[i]];
+        pointAnnotation.draw();
       }
 
-      return new Coord(currentX,currentY);
+      for (var i = 0; i < rangeAnnotationsKeys.length; i++) {
+        var rangeAnnotation = private.rangeAnnotations[rangeAnnotationsKeys[i]];
+        rangeAnnotation.draw();
+      }
     }
 
     return {
       drawImg: drawImg, 
-      getEventCoord: getEventCoord
+      zoomIn: zoomIn, 
+      zoomOut: zoomOut, 
+      drawAnnotations: drawAnnotations
     }
   })();
 
@@ -82,77 +96,115 @@ var EditorController = function() {
     (function() {
       var drawing = false;
       var lastEventCoord = new Coord();
+      var startCoord;
+      var endCoord;
 
       $("#imageCanvas").on("mousedown", function(e) {
+
+        lastEventCoord = getEventCoord(e);
+
         
-        lastEventCoord = helpers.getEventCoord(e);
+        if (private.editType == "edit") {
 
-        if (private.editType == "move") {
-          private.editorImg.draw();
+        } else if (private.editType == "move") {
           drawing = true;
-        } else if (private.editType == "point") {
-
-        } else if (private.editType == "range") {
-
+          private.editorImg.draw();
+          helpers.drawAnnotations();
+        } else if (private.editType == "annotation") {
+          drawing = true;
+          startCoord = private.editorImg.toImgCoord(lastEventCoord);
         } else {
-          throw new Error("Invalid editType");
+          throw new Error("Invalid editType:" + private.editType);
         }
       });
 
       $("#imageCanvas").on("mousemove", function(e) {
         if (drawing) {
-          if (private.editType == "move") {
-            private.editorImg.move(e, lastEventCoord);
-            lastEventCoord = helpers.getEventCoord(e);
-            private.editorImg.draw();
-          } else if (private.editType == "point") {
+          
+          if (private.editType == "edit") {
 
-          } else if (private.editType == "range") {
+          } else if (private.editType == "move") {
+            private.editorImg.move(e, lastEventCoord);
+            private.editorImg.draw();
+
+            helpers.drawAnnotations();
+          } else if (private.editType == "annotation") {
 
           } else {
-            throw new Error("Invalid editType");
+            throw new Error("Invalid editType:" + private.editType);
           }
+
+          lastEventCoord = getEventCoord(e);
         }
       });
 
-      $("#imageCanvas").on("mouseup", function(e) {
-        drawing = false;
-      })
+      $("body").on("mouseup", function(e) {
+        
+        if (drawing) {
+          if (private.editType == "edit") {
+
+          } else if (private.editType == "move") {
+            private.editorImg.draw();
+            helpers.drawAnnotations();
+          } else if (private.editType == "annotation") {
+            var annotation;
+            endCoord = private.editorImg.toImgCoord(lastEventCoord);
+            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+              annotation = new PointAnnotation("", endCoord, private.ctx, private.editorImg, private.circleRadius);
+              private.pointAnnotations[endCoord.x + "-" + endCoord.y] = annotation;
+
+              console.log("pointAnnotation");
+            } else {
+              annotation = new RangeAnnotation("", startCoord, endCoord, private.ctx, private.editorImg);
+              private.rangeAnnotations[startCoord.x + "-" + startCoord.y + "," 
+                                     + endCoord.x + "-" + endCoord.y] = annotation;
+            }
+
+            annotation.draw();
+          } else {
+            throw new Error("Invalid editType:" + private.editType);
+          }
+
+          startCoord = undefined;
+          annotation = undefined;
+          lastEventCoord = getEventCoord(e);
+          drawing = false;
+        }
+      });
     })();
 
     // Controls
     (function() {
 
       // Edit type
-      $("#pointBtn").on("click", function() {
-        private.editType = "point";
-        $("#imageCanvas").css("cursor", "crosshair");
+      var changeEditType = function(editType, mouseType, $this) {
+        private.editType = editType;
+        $("#imageCanvas").css("cursor", mouseType);
         $(".editTypeBtn").attr("disabled", false);
-        $(this).attr("disabled", true);
+        $this.attr("disabled", true);
+      }
+
+      $("#editBtn").on("click", function() {
+        changeEditType("edit", "default", $(this));
       });
 
-      $("#rangeBtn").on("click", function() {
-        private.editType = "range";
-        $("#imageCanvas").css("cursor", "crosshair");
-        $(".editTypeBtn").attr("disabled", false);
-        $(this).attr("disabled", true);
+      $("#annotationBtn").on("click", function() {
+        changeEditType("annotation", "crosshair", $(this));
       });
 
       $("#moveBtn").on("click", function() {
-        private.editType = "move";
-        $("#imageCanvas").css("cursor", "move");
-        $(".editTypeBtn").attr("disabled", false);
-        $(this).attr("disabled", true);
+        changeEditType("move", "move", $(this));
       });
 
 
       // Zoom
       $("#zoomInBtn").on("click", function(e) {
-        private.editorImg.zoomIn(0.15);
+        helpers.zoomIn(0.2);
       });
 
       $("#zoomOutBtn").on("click", function(e) {
-        private.editorImg.zoomOut(0.15);
+        helpers.zoomOut(0.2);
       });
     })();
   }
