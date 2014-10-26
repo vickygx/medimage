@@ -75,13 +75,55 @@ var EditorController = function() {
       $("#annotationInputCont").css("display", "none");
     }
 
+    var checkInsideRectangle = function(rectangle, x, y) {
+      var startCoord = private.editorImg.toCanvasCoord(rectangle.startCoord);
+      var endCoord = private.editorImg.toCanvasCoord(rectangle.endCoord);
+
+      var checkY = function(startCoord, endCoord, y) {
+        if (endCoord.y > startCoord.y) {
+          // Rectangle drawn top down
+          if (y > startCoord.y && y < endCoord.y) {
+            return true;
+          } else {
+            return false
+          }
+        } else {
+          // Rectangle drawn bottom up
+          if (y < startCoord.y && y > endCoord.y) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+
+      if (endCoord.x > startCoord.x) {
+        
+        // Rectangle drawn left to right
+        if (x > startCoord.x && x < endCoord.x) {
+          return checkY(startCoord, endCoord, y);
+        } else {
+          return false
+        }
+      } else {
+
+        // Rectangle drawn right to left
+        if (x < startCoord.x && x > endCoord.x) {
+          return checkY(startCoord, endCoord, y);
+        } else {
+          return false;
+        }
+      }
+    }
+
     return {
       drawImg: drawImg, 
       zoomIn: zoomIn, 
       zoomOut: zoomOut, 
       drawAnnotations: drawAnnotations, 
       showAnnotationInput: showAnnotationInput, 
-      hideAnnotationInput: hideAnnotationInput
+      hideAnnotationInput: hideAnnotationInput, 
+      checkInsideRectangle: checkInsideRectangle
     }
   })();
 
@@ -152,7 +194,9 @@ var EditorController = function() {
           // Then look for range annotatations
           for (var i = 0; i < private.rangeAnnotations.length; i++) {
             var annotation = private.rangeAnnotations[i];
-            if (true) {
+            if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
+              var text = annotation.text;
+              helpers.showAnnotationInput(e, text);
 
               return;
             }
