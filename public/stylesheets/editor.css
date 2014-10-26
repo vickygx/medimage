@@ -1,0 +1,20 @@
+#editorTable {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+}
+
+#editorTable td {
+  vertical-align: top;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+}
+
+#imageCanvas {
+  cursor: crosshair;
+}
+
+#editorControlsCol {
+  width: 400px;
+  padding: 10px;
+}

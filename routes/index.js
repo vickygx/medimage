@@ -15,5 +15,9 @@ module.exports = function(app){
   app.get('/main', function(req, res){
     res.render('main', {title: 'Testing Grid' });
   });
+
+  app.get('/editorTest', function(req, res) {
+    res.render('editorTest', {title: 'Editor testing page'});
+  });
 };
 

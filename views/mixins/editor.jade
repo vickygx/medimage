@@ -1,0 +1,33 @@
+block head
+  script(type="text/javascript", src="external/two.js")
+  script(type="text/javascript", src="javascripts/helpers/coord.js")
+  script(type="text/javascript", src="javascripts/helpers/editorImg.js")
+  script(type="text/javascript", src="javascripts/mixins/editorController.js")
+  link(rel="stylesheet", href="stylesheets/editor.css")
+
+mixin editor(imgUrl)
+  script.
+    var editorController = new EditorController();
+    $(document).ready(function() {
+      editorController.init("#{imgUrl}");
+    });
+
+  table#editorTable
+    tbody
+      tr
+        td
+          canvas(id="imageCanvas")
+        td#editorControlsCol
+          div
+            legend
+              div
+                h2 Zoom
+                button(id="zoomInBtn") +
+                button(id="zoomOutBtn") -
+            legend
+              div
+                h2 Edit type
+                button(id="pointBtn", class="editTypeBtn", disabled) Point annotation
+                button(id="rangeBtn", class="editTypeBtn") Range annotation
+                button(id="moveBtn", class="editTypeBtn") Move
+                
