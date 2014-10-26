@@ -21,8 +21,9 @@ var EditorController = function() {
                                       private.ctx, 
                                       $("#imageCanvas")[0]);
     private.editType = "annotation";
-    private.pointAnnotations = {};
-    private.rangeAnnotations = {};
+    private.annotation;
+    private.pointAnnotations = [];
+    private.rangeAnnotations = [];
     private.circleRadius = 7;
   }
 
@@ -45,36 +46,49 @@ var EditorController = function() {
     }
 
     var drawAnnotations = function() {
-      var pointAnnotationsKeys = Object.keys(private.pointAnnotations);
-      var rangeAnnotationsKeys = Object.keys(private.rangeAnnotations);
-
-      for (var i = 0; i < pointAnnotationsKeys.length; i++) {
-        var pointAnnotation = private.pointAnnotations[pointAnnotationsKeys[i]];
+      for (var i = 0; i < private.pointAnnotations.length; i++) {
+        var pointAnnotation = private.pointAnnotations[i];
         pointAnnotation.draw();
       }
 
-      for (var i = 0; i < rangeAnnotationsKeys.length; i++) {
-        var rangeAnnotation = private.rangeAnnotations[rangeAnnotationsKeys[i]];
+      for (var i = 0; i < private.rangeAnnotations.length; i++) {
+        var rangeAnnotation = private.rangeAnnotations[i];
         rangeAnnotation.draw();
       }
+    }
+
+    var showAnnotationInput = function(e, text) {
+      if (text !== undefined) {
+        $("#annotationInput").val(text);
+      }
+
+      $("#annotationInputCont").css("display", "block");
+
+      if (e !== undefined) {
+        $("#annotationInputCont").css("left", e.pageX + private.circleRadius + 5 + "px");
+        $("#annotationInputCont").css("top", e.pageY + "px");
+        $("#annotationInput").focus();
+      }
+    }
+
+    var hideAnnotationInput = function() {
+      $("#annotationInputCont").css("display", "none");
     }
 
     return {
       drawImg: drawImg, 
       zoomIn: zoomIn, 
       zoomOut: zoomOut, 
-      drawAnnotations: drawAnnotations
+      drawAnnotations: drawAnnotations, 
+      showAnnotationInput: showAnnotationInput, 
+      hideAnnotationInput: hideAnnotationInput
     }
   })();
 
   // Starts all processes
   var init = function(imgUrl) {
-    console.log('EditorController initialized');
-
     setPrivate(imgUrl, helpers);
-
     imgInit();
-
     eventListeners();
   }
 
@@ -119,11 +133,37 @@ var EditorController = function() {
       });
 
       $("#imageCanvas").on("mousemove", function(e) {
+        if (private.editType == "edit") {
+
+          // Look for point annotations close by first
+          for (var i = 0; i < private.pointAnnotations.length; i++) {
+            var annotation = private.pointAnnotations[i];
+            var canvasCoord = private.editorImg.toCanvasCoord(annotation.coord);
+
+            if (Math.abs(e.offsetX - canvasCoord.x) <= private.circleRadius &&
+                Math.abs(e.offsetY - canvasCoord.y) <= private.circleRadius) {
+              var text = annotation.text;
+              helpers.showAnnotationInput(e, text);
+
+              return;
+            }
+          }
+
+          // Then look for range annotatations
+          for (var i = 0; i < private.rangeAnnotations.length; i++) {
+            var annotation = private.rangeAnnotations[i];
+            if (true) {
+
+              return;
+            }
+          }
+
+          helpers.hideAnnotationInput();
+        } 
+
         if (drawing) {
           
-          if (private.editType == "edit") {
-
-          } else if (private.editType == "move") {
+          if (private.editType == "move") {
             private.editorImg.move(e, lastEventCoord);
             private.editorImg.draw();
 
@@ -147,27 +187,27 @@ var EditorController = function() {
             private.editorImg.draw();
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
-            var annotation;
             endCoord = private.editorImg.toImgCoord(lastEventCoord);
             if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
                 Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
-              annotation = new PointAnnotation("", endCoord, private.ctx, private.editorImg, private.circleRadius);
-              private.pointAnnotations[endCoord.x + "-" + endCoord.y] = annotation;
-
-              console.log("pointAnnotation");
+              
+              private.annotation = new PointAnnotation("", endCoord, private.ctx, private.editorImg, private.circleRadius);
+              private.pointAnnotations.push(private.annotation);
             } else {
-              annotation = new RangeAnnotation("", startCoord, endCoord, private.ctx, private.editorImg);
-              private.rangeAnnotations[startCoord.x + "-" + startCoord.y + "," 
-                                     + endCoord.x + "-" + endCoord.y] = annotation;
+              
+              private.annotation = new RangeAnnotation("", startCoord, endCoord, private.ctx, private.editorImg);
+              private.rangeAnnotations.push(private.annotation);
             }
 
-            annotation.draw();
+            private.annotation.draw();
+
+            // Show input box
+            helpers.showAnnotationInput(e, "");
           } else {
             throw new Error("Invalid editType:" + private.editType);
           }
 
           startCoord = undefined;
-          annotation = undefined;
           lastEventCoord = getEventCoord(e);
           drawing = false;
         }
@@ -205,6 +245,22 @@ var EditorController = function() {
 
       $("#zoomOutBtn").on("click", function(e) {
         helpers.zoomOut(0.2);
+      });
+    })();
+
+    // Input box
+    (function() {
+      $("#annotationInput").on("keyup", function(e) {
+        if (e.keyCode == 13) { // Enter
+          if (private.annotation) {
+            private.annotation.setText($(this).val());
+            helpers.hideAnnotationInput();
+            private.annotation = undefined;
+          }
+        } else if (e.keyCode == 27) { // Escape
+          helpers.hideAnnotationInput();
+          private.annotation = undefined;
+        }
       });
     })();
   }

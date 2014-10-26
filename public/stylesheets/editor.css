@@ -1,3 +1,18 @@
+#annotationInputCont {
+  z-index: 10; 
+  height: 56px; 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  display: none; 
+  position: absolute
+}
+
+#annotationInput {
+  width: 300px; 
+  border-radius: 3px;
+}
+
 #editorTable {
   height: 100%;
   width: 100%;

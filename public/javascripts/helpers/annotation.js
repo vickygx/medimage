@@ -4,6 +4,10 @@ var Annotation = (function() {
     this.text = text;
   }
 
+  Annotation.prototype.setText = function(text) {
+    this.text = text;
+  }
+
   return Annotation;
 
 })();

@@ -18,6 +18,10 @@ mixin editor(imgUrl)
       editorController.init("#{imgUrl}");
     });
 
+  div#annotationInputCont
+    input#annotationInput.form-control(name="annotationNote", 
+                                  placeholder="Describe this annotation")
+
   table#editorTable
     tbody
       tr
