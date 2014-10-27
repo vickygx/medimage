@@ -1,3 +1,11 @@
 .tag {
-  background-color: yellow;
+  background-color:white;
+  border-radius:2px;
+  display: inline-block;
+  text-align:center;
+  padding: 4px 8px;
+  border: 1px solid rgb(231, 50, 50);
+  background-image: linear-gradient(#e63d45, #c11a22);
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }

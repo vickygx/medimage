@@ -4,11 +4,12 @@ block head
   script(type="text/javascript", src="javascripts/mixins/gridItemController.js")
 
 mixin gridItem(item)
+  p=item
   div.gridItem(id=item.id, data-ng-controller="gridItemController")
     div.image
-      p item.imageUrl
+      p=item.imageUrl
     div.title
-      p item.title
+      p=item.title
     div.tags
       each tag in item.tags
         +tag(tag)

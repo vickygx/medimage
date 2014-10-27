@@ -8,4 +8,6 @@ block head
   include mixins/grid.jade
 
 block content
-  +grid('gridContainer', images})
+  div(data-ng-controller='medImageAppController')
+    +grid('gridContainer')
+//- button(id='testButton') click

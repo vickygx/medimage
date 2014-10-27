@@ -1,5 +1,4 @@
-include ./gridItem.jade
-
+include ./tag.jade
 //- Each item represents a single medical image
 //- And should be in the following format: 
 //- {Id: W, Title: X, ImageUrl: Y, Tags: Z }
@@ -7,7 +6,17 @@ include ./gridItem.jade
 block head
   script(type="text/javascript", src="/javascripts/mixins/gridController.js")
 
-mixin grid(id, ...images)
+mixin grid(id)
   div(id=id, data-ng-controller="gridController")
-    each image in images
-      +gridItem(image)
+    div(ng-init="user=#{JSON.stringify(session.user.username)}")
+    div(ng-repeat="image in viewModel.images track by $index")
+      div.gridItem(id='{{image._id}}')
+        div.image
+          p(ng-bind='image.image_url')
+        div.title
+          p(ng-bind='image.title')
+        div.tags
+          div(ng-repeat="tag in image.tags")
+            +tag('{{tag}}')
+
+    button(id="testGridButton") getUserImages
