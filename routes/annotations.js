@@ -33,8 +33,6 @@ module.exports = function(app){
 
     var data = req.body;
 
-    console.log("data: ", JSON.stringify(data));
-
     //Check if imageID is valid objectID
     if (errorChecking.invalidId(data.image_id)) {
       return next(errors.invalidIdError);

@@ -33,3 +33,11 @@
   width: 400px;
   padding: 10px;
 }
+
+.highlight {
+  color: #428bca;
+}
+
+.btn-group {
+  width: 100%;
+}

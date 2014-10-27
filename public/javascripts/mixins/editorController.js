@@ -132,6 +132,12 @@ var EditorController = function() {
   var init = function(imgUrl, image_id) {
     setPrivate(imgUrl, image_id);
     imgInit(image_id);
+
+    sizingJS();
+    $(window).resize(function() {
+      responsiveJS();
+    });
+
     eventListeners();
   }
 
@@ -154,9 +160,17 @@ var EditorController = function() {
         helpers.drawAnnotations();
       });
     }
+  }
 
+  var sizingJS = function() {
     $("#imageCanvas")[0].width = $("#imageCanvas").parent().width();
     $("#imageCanvas")[0].height = $("#imageCanvas").parent().height();
+  }
+
+  var responsiveJS = function() {
+    sizingJS();
+    helpers.drawImg();
+    helpers.drawAnnotations();
   }
 
   var createPointAnnotation = function(dbAnnotation) {
@@ -307,8 +321,9 @@ var EditorController = function() {
       var changeEditType = function(editType, mouseType, $this) {
         private.editType = editType;
         $("#imageCanvas").css("cursor", mouseType);
-        $(".editTypeBtn").attr("disabled", false);
-        $this.attr("disabled", true);
+        $(".editTypeBtn").attr("disabled", false)
+                         .removeClass("highlight");
+        $this.attr("disabled", true).addClass("highlight");
       }
 
       $("#editBtn").on("click", function() {
@@ -360,6 +375,13 @@ var EditorController = function() {
         }
       });
     })();
+
+    // Tooltips
+    $("#zoomInBtn").tooltip({placement: "bottom", title: "Zoom in"})
+    $("#zoomOutBtn").tooltip({placement: "bottom", title: "Zoom out"})
+    $("#editBtn").tooltip({placement: "bottom", title: "Edit and view annotations"})
+    $("#annotationBtn").tooltip({placement: "bottom", title: "Create annotation"})
+    $("#moveBtn").tooltip({placement: "bottom", title: "Move image"})
   }
 
   return {
