@@ -1,7 +1,7 @@
 var PointAnnotation = (function() {
 
-  var PointAnnotation = function(text, coord, ctx, img, image_id, radius) {
-    
+  var PointAnnotation = function(text, coord, ctx, img, image_id, radius, _id) {
+
     // Pass inheritance variables (Allows use of Annotation methods)
     Annotation.call(this, text);
 
@@ -11,10 +11,20 @@ var PointAnnotation = (function() {
     this.ctx = ctx;
     this.img = img;
     this.image_id = image_id;
+
+    this.id = _id;
   }
 
   // Inherit Annotation
   PointAnnotation.prototype = Object.create(new Annotation());
+
+  PointAnnotation.prototype.setId = function(newId) {
+    this.id = newId;
+  }
+
+  PointAnnotation.prototype.getId = function() {
+    return this.id;
+  }
 
   PointAnnotation.prototype.move = function(e, prev_e_coord, img) {
     this.coord = this.coord.add(getEventCoord(e).subtract(prev_e_coord)
@@ -35,9 +45,25 @@ var PointAnnotation = (function() {
       start_y: this.coord.y
     }
 
-    ajaxController.post('/annotations', data).fail(function(e) {
+    ajaxController.post('/annotations', data).done(function(res) {
+      this.id = res._id;
+    }).fail(function(e) {
       alert("Error:" + JSON.stringify(e));
     });
+  }
+
+  PointAnnotation.prototype.del = function() {
+    var data = {
+      type: "point"
+    }
+
+    ajaxController.del('/annotations/' + this.id, data).fail(function(e) {
+      alert("Error:" + JSON.stringify(e));
+    });
+  }
+
+  PointAnnotation.prototype.inDB = function() {
+    return (this.id !== undefined);
   }
 
   return PointAnnotation;

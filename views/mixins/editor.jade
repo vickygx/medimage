@@ -21,7 +21,10 @@ mixin editor(imgUrl, image_id)
 
   div#annotationInputCont
     input#annotationInput.form-control(name="annotationNote", 
-                                       placeholder="Describe this annotation")
+                                       placeholder="Leave empty and press enter to delete", 
+                                       autocomplete="off")
+    button#annotationDeleteBtn.btn.btn-danger
+      span.glyphicon.glyphicon-trash
 
   table#editorTable
     tbody
@@ -48,8 +51,4 @@ mixin editor(imgUrl, image_id)
                     span.glyphicon.glyphicon-record
                   button(id="moveBtn", class="btn btn-default editTypeBtn")
                     span.glyphicon.glyphicon-move
-            legend
-              div
-                h2 Submit annotations
-                button(id="annotationsSubmit", class="btn btn-success") Submit
                 

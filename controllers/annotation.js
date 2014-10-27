@@ -54,11 +54,12 @@ module.exports.createAnnotation = function(type, data, callback) {
   
   var Annotation = getAnnotationModel(type);
 
-  Annotation.create(data, function(err) {
+  Annotation.create(data, function(err, annotation) {
     if (err) {
       return callback(err);
     }
-    callback();
+
+    callback(null, annotation);
   });
 }
 

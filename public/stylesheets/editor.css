@@ -11,6 +11,11 @@
 #annotationInput {
   width: 300px; 
   border-radius: 3px;
+  display: inline-block;
+}
+
+#annotationDeleteBtn {
+  margin: -4px 0 0 10px;
 }
 
 #editorTable {
@@ -35,7 +40,7 @@
 }
 
 .highlight {
-  color: #428bca;
+  color: #327bba;
 }
 
 .btn-group {

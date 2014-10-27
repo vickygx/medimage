@@ -1,6 +1,6 @@
 var RangeAnnotation = (function() {
 
-  var RangeAnnotation = function(text, startCoord, endCoord, ctx, img, image_id) {
+  var RangeAnnotation = function(text, startCoord, endCoord, ctx, img, image_id, _id) {
 
     // Pass inheritance variables (Allows use of Annotation methods)
     Annotation.call(this, text);
@@ -12,10 +12,16 @@ var RangeAnnotation = (function() {
     this.ctx = ctx;
     this.img = img;
     this.image_id = image_id;
+
+    this.id = _id;
   }
 
   // Inherit Annotation
   RangeAnnotation.prototype = Object.create(new Annotation());
+
+  RangeAnnotation.prototype.setId = function(newId) {
+    this.id = newId;
+  }
 
   RangeAnnotation.prototype.moveEnd = function(e, prev_e_coord, img) {
     this.endCoord = this.endCoord.add(getEventCoord(e).subtract(prev_e_coord)
@@ -46,9 +52,25 @@ var RangeAnnotation = (function() {
       end_y: this.endCoord.y
     }
 
-    ajaxController.post('/annotations', data).fail(function(e) {
+    ajaxController.post('/annotations', data).done(function(res) {
+      this.id = res._id;
+    }).fail(function(e) {
       alert("Error:" + JSON.stringify(e));
     });
+  }
+
+  RangeAnnotation.prototype.del = function() {
+    var data = {
+      type: "range"
+    }
+
+    ajaxController.del('/annotations/' + this.id, data).fail(function(e) {
+      alert("Error:" + JSON.stringify(e));
+    });
+  }
+
+  RangeAnnotation.prototype.inDB = function() {
+    return (this.id !== undefined);
   }
 
   return RangeAnnotation;

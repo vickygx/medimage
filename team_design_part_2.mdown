@@ -118,10 +118,13 @@ API Specification
     - **text***(Required):* Text to display in annotation
     - **image_id***(Required):* _id of image where annotation was created
     - **type***(Required):* "point" || "range", designates the type of annotation to be created
-    - **start_point***(Required):* Coordinates of start point of annotation
+    - **start_x***(Required):* x coordinate of start point of annotation
+    - **start_y***(Required):* y coordinate of start point of annotation
+    - **end_x** *(Required):* x coordinates of end point of annotation
+    - **end_y** *(Required):* y coordinates of end point of annotation
     - **end_point***(Required if type == range):* Coordinates of end point of annotation
   - **Response:**
-    - **Success:**None
+    - **Success:** The created Point Annotation || Range Annotation
     - **Failure:**
       - Invalid image_id
       - type not given

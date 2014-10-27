@@ -1,9 +1,5 @@
 var EditorController = function() {
   
-  var debug = function(varName) {
-    console.log(varName + ":", eval(varName));
-  }
-
   // Public variables, available outside controller
   var public = {};
 
@@ -72,8 +68,11 @@ var EditorController = function() {
       }
     }
 
-    var hideAnnotationInput = function() {
-      $("#annotationInputCont").css("display", "none");
+    var hideAnnotationInput = function(annotationClicked) {
+      if (!annotationClicked) {
+        $("#annotationInputCont").css("display", "none");
+        annotationClicked = false;
+      }
     }
 
     var checkInsideRectangle = function(rectangle, x, y) {
@@ -117,6 +116,38 @@ var EditorController = function() {
       }
     }
 
+    var deleteAnnotation = function() {
+      var index;
+      // Check point annotations
+      index = private.pointAnnotations.indexOf(private.annotation);
+
+      if (index > -1) {
+        private.pointAnnotations.splice(index, 1);
+        drawImg();
+        drawAnnotations();
+        if (private.annotation.inDB()) {
+          private.annotation.del();
+        }
+
+        private.annotation = undefined
+        return;
+      }
+
+      // Check range annotations
+      index = private.rangeAnnotations.indexOf(private.annotation);
+      if (index > -1) {
+        private.rangeAnnotations.splice(index, 1);
+        drawImg();
+        drawAnnotations();
+        if (private.annotation.inDB()) {
+          private.annotation.del();
+        }
+
+        private.annotation = undefined
+        return;
+      }
+    }
+
     return {
       drawImg: drawImg, 
       zoomIn: zoomIn, 
@@ -124,7 +155,8 @@ var EditorController = function() {
       drawAnnotations: drawAnnotations, 
       showAnnotationInput: showAnnotationInput, 
       hideAnnotationInput: hideAnnotationInput, 
-      checkInsideRectangle: checkInsideRectangle
+      checkInsideRectangle: checkInsideRectangle, 
+      deleteAnnotation: deleteAnnotation
     }
   })();
 
@@ -180,7 +212,8 @@ var EditorController = function() {
                                private.ctx, 
                                private.editorImg, 
                                private.image_id, 
-                               private.circleRadius);
+                               private.circleRadius, 
+                               dbAnnotation._id);
   }
 
   var createRangeAnnotation = function(dbAnnotation) {
@@ -191,17 +224,30 @@ var EditorController = function() {
                                          dbAnnotation.end_point.y), 
                                private.ctx, 
                                private.editorImg, 
-                               private.image_id)
+                               private.image_id, 
+                               dbAnnotation._id)
   }
 
   var eventListeners = function() {
 
+    var annotationClicked = false;
+
     // Canvas listeners
     (function() {
       var drawing = false;
+      var overAnnotation = false;
       var lastEventCoord = new Coord();
       var startCoord;
       var endCoord;
+
+      $("#imageCanvas").on("click", function(e) {
+        if (private.editType == "edit") {
+          if (overAnnotation) {
+            helpers.showAnnotationInput(e);
+            annotationClicked = true;
+          }
+        }
+      });
 
       $("#imageCanvas").on("mousedown", function(e) {
 
@@ -224,37 +270,42 @@ var EditorController = function() {
 
       $("#imageCanvas").on("mousemove", function(e) {
         if (private.editType == "edit") {
+          if (!annotationClicked) {
+            // Look for point annotations close by first
+            for (var i = 0; i < private.pointAnnotations.length; i++) {
+              var annotation = private.pointAnnotations[i];
+              var canvasCoord = private.editorImg.toCanvasCoord(annotation.coord);
 
-          // Look for point annotations close by first
-          for (var i = 0; i < private.pointAnnotations.length; i++) {
-            var annotation = private.pointAnnotations[i];
-            var canvasCoord = private.editorImg.toCanvasCoord(annotation.coord);
+              if (Math.abs(e.offsetX - canvasCoord.x) <= private.circleRadius &&
+                  Math.abs(e.offsetY - canvasCoord.y) <= private.circleRadius) {
+                var text = annotation.text;
+                helpers.showAnnotationInput(e, text);
 
-            if (Math.abs(e.offsetX - canvasCoord.x) <= private.circleRadius &&
-                Math.abs(e.offsetY - canvasCoord.y) <= private.circleRadius) {
-              var text = annotation.text;
-              helpers.showAnnotationInput(e, text);
+                private.annotation = annotation;
 
-              private.annotation = annotation;
+                overAnnotation = true;
 
-              return;
+                return;
+              }
             }
-          }
 
-          // Then look for range annotatations
-          for (var i = 0; i < private.rangeAnnotations.length; i++) {
-            var annotation = private.rangeAnnotations[i];
-            if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
-              var text = annotation.text;
-              helpers.showAnnotationInput(e, text);
+            // Then look for range annotatations
+            for (var i = 0; i < private.rangeAnnotations.length; i++) {
+              var annotation = private.rangeAnnotations[i];
+              if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
+                var text = annotation.text;
+                helpers.showAnnotationInput(e, text);
 
-              private.annotation = annotation;
+                private.annotation = annotation;
+                overAnnotation = true;
 
-              return;
+                return;
+              }
             }
-          }
 
-          helpers.hideAnnotationInput();
+            overAnnotation = false;
+            helpers.hideAnnotationInput(annotationClicked);
+          }
         } 
 
         if (drawing) {
@@ -283,6 +334,12 @@ var EditorController = function() {
             private.editorImg.draw();
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
+            
+            if (private.annotation && private.annotation.text.trim().length == 0) {
+              helpers.deleteAnnotation();
+              return;
+            }
+
             endCoord = private.editorImg.toImgCoord(lastEventCoord);
             if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
                 Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
@@ -348,15 +405,11 @@ var EditorController = function() {
         helpers.zoomOut(0.2);
       });
 
-      // Annotations submission
-      $("#annotationsSubmit").on("click", function() {
-        for (var i = 0; i < private.pointAnnotations.length; i++) {
-          private.pointAnnotations[i].submit();
-        }
-
-        for (var i = 0; i < private.rangeAnnotations.length; i++) {
-          private.rangeAnnotations[i].submit();
-        }
+      //Annotations delete
+      $("#annotationDeleteBtn").on("click", function() {
+        helpers.deleteAnnotation();
+        annotationClicked = false;
+        helpers.hideAnnotationInput();
       });
     })();
 
@@ -365,12 +418,22 @@ var EditorController = function() {
       $("#annotationInput").on("keyup", function(e) {
         if (e.keyCode == 13) { // Enter
           if (private.annotation) {
-            private.annotation.setText($(this).val());
-            helpers.hideAnnotationInput();
-            private.annotation = undefined;
+            annotationClicked = false;
+            if ($(this).val().trim().length == 0) {
+              helpers.deleteAnnotation();
+
+            } else {
+              private.annotation.text = $(this).val();
+              private.annotation.submit();
+            }
+            helpers.hideAnnotationInput(annotationClicked);
           }
         } else if (e.keyCode == 27) { // Escape
-          helpers.hideAnnotationInput();
+          if (!private.annotation.inDB()) {
+            helpers.deleteAnnotation();
+          }
+          annotationClicked = false;
+          helpers.hideAnnotationInput(annotationClicked);
           private.annotation = undefined;
         }
       });

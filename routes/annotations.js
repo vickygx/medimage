@@ -53,12 +53,12 @@ module.exports = function(app){
       delete data.end_y;
     }
 
-    AnnotationController.createAnnotation(req.body.type, data, function(err) {
+    AnnotationController.createAnnotation(req.body.type, data, function(err, annotation) {
       if (err) {
         return next(err);
       }
 
-      res.json({});
+      res.json(annotation);
     });
   });
 
