@@ -19,10 +19,6 @@ var RangeAnnotation = (function() {
   // Inherit Annotation
   RangeAnnotation.prototype = Object.create(new Annotation());
 
-  RangeAnnotation.prototype.setId = function(newId) {
-    this.id = newId;
-  }
-
   RangeAnnotation.prototype.moveEnd = function(e, prev_e_coord, img) {
     this.endCoord = this.endCoord.add(getEventCoord(e).subtract(prev_e_coord)
                                                       .scaldiv(img.zoom));
@@ -52,11 +48,19 @@ var RangeAnnotation = (function() {
       end_y: this.endCoord.y
     }
 
-    ajaxController.post('/annotations', data).done(function(res) {
-      this.id = res._id;
-    }).fail(function(e) {
-      alert("Error:" + JSON.stringify(e));
-    });
+    if (this.inDB()) {
+      
+      ajaxController.put('/annotations/' + this.id, data).fail(function(e) {
+        alert("Error: " + e.responseText);
+      });
+    } else {
+
+      ajaxController.post('/annotations', data).done(function(res) {
+        this.id = res._id;
+      }).fail(function(e) {
+        alert("Error: " + e.responseText);
+      });
+    }
   }
 
   RangeAnnotation.prototype.del = function() {
@@ -65,7 +69,7 @@ var RangeAnnotation = (function() {
     }
 
     ajaxController.del('/annotations/' + this.id, data).fail(function(e) {
-      alert("Error:" + JSON.stringify(e));
+      alert("Error: " + e.responseText);
     });
   }
 

@@ -18,14 +18,6 @@ var PointAnnotation = (function() {
   // Inherit Annotation
   PointAnnotation.prototype = Object.create(new Annotation());
 
-  PointAnnotation.prototype.setId = function(newId) {
-    this.id = newId;
-  }
-
-  PointAnnotation.prototype.getId = function() {
-    return this.id;
-  }
-
   PointAnnotation.prototype.move = function(e, prev_e_coord, img) {
     this.coord = this.coord.add(getEventCoord(e).subtract(prev_e_coord)
                                                 .scaldiv(img.zoom));
@@ -45,11 +37,17 @@ var PointAnnotation = (function() {
       start_y: this.coord.y
     }
 
-    ajaxController.post('/annotations', data).done(function(res) {
-      this.id = res._id;
-    }).fail(function(e) {
-      alert("Error:" + JSON.stringify(e));
-    });
+    if (this.inDB()) {
+      ajaxController.put('/annotations/' + this.id, data).fail(function(e) {
+        alert("Error :" + JSON.stringify(e));
+      });
+    } else {
+      ajaxController.post('/annotations/', data).done(function(res) {
+        this.id = res._id;
+      }).fail(function(e) {
+        alert("Error :" + e.responseText);
+      });
+    }
   }
 
   PointAnnotation.prototype.del = function() {
@@ -58,7 +56,7 @@ var PointAnnotation = (function() {
     }
 
     ajaxController.del('/annotations/' + this.id, data).fail(function(e) {
-      alert("Error:" + JSON.stringify(e));
+      alert("Error: " + e.responseText);
     });
   }
 
