@@ -361,8 +361,8 @@ var EditorController = function() {
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
             endCoord = private.editorImg.toImgCoord(lastEventCoord);
-            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
-                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+            if (Math.abs(startCoord.x - endCoord.x) * private.editorImg.zoom <= private.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) * private.editorImg.zoom <= private.circleRadius) {
 
               var annotation = new PointAnnotation("", endCoord, private.ctx, 
                                                         private.editorImg, private.image_id, 
