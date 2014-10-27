@@ -16,14 +16,22 @@ html
     script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js")
     script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js")
     script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-resource.min.js") 
 
     // Main js
     script(type="text/javascript", src="javascripts/main.js")
+
+    // Service
+    script(type="text/javascript", src="javascripts/services/medImageService.js")
+
+    // AjaxController
+    script(type="text/javascript", src="javascripts/AjaxController.js")
 
     // Main css
     link(rel="stylesheet", href="stylesheets/style.css")
 
     block head
+    
 
   body(data-ng-app="medImageApp", data-ng-controller="medImageAppController")
     div#content

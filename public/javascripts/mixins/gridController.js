@@ -1,11 +1,11 @@
 var medImageApp = angular.module('medImageApp');
 
-medImageApp.controller('gridController', function($scope) {
+medImageApp.controller('gridController', function($scope, medImageService) {
 
   // Public /////////////////////////////////////////////////////////
 
   var public = $scope.viewModel = {
-
+    images: [{id: 'Vicky', image_url: 'www.google.com/', title: 'Vicky Title', tags: ['what']}]
   }
 
 
@@ -18,6 +18,29 @@ medImageApp.controller('gridController', function($scope) {
   })();
 
   var helpers = (function() {
+
+    function setAllImages(){
+      medImageService.method($scope) 
+    }
+
+    function setUserImages(){
+       ajaxController.get("/users/" + $scope.user + "/medimages")
+        .success(function(res) {
+          setImages(JSON.stringify(res));
+        })
+        .error(function(res){
+          console.log('error');
+        });
+    }
+
+    function setSearchedImages(tags){
+
+    }
+
+    function setImages(images){
+      public.images = images;
+      $scope.$apply();
+    }
  
     function sizingJS() {}
 
@@ -27,7 +50,8 @@ medImageApp.controller('gridController', function($scope) {
 
     return {
       sizingJS: sizingJS, 
-      responsiveJS: responsiveJS
+      responsiveJS: responsiveJS,
+      setImages: setImages
     }
   })();
 
@@ -42,6 +66,8 @@ medImageApp.controller('gridController', function($scope) {
   })();
 
   function eventHandlers() {
-    
+    $('#testGridButton').click(function(){
+      medImageService.setUserImages($scope);
+    });
   }
 });
