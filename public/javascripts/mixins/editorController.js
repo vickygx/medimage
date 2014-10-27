@@ -293,7 +293,6 @@ var EditorController = function() {
           // If we've started dragging, move the current annotation with the mouse
           if (private.annotation && startDrag) {
 
-            console.log(Math.abs(e.offsetX - lastEventCoord.x));
             if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) >= 0.5 ||
                              Math.abs(e.offsetY - lastEventCoord.y) >= 0.5)) {
 
