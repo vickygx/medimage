@@ -28,7 +28,9 @@ var RangeAnnotation = (function() {
   RangeAnnotation.prototype.move = function(e, prev_e_coord, img) {
     this.startCoord = this.startCoord.add(getEventCoord(e).subtract(prev_e_coord)
                                                           .scaldiv(img.zoom));
-    this.moveEnd(e, prev_e_coord, img);
+    
+    this.endCoord = this.endCoord.add(getEventCoord(e).subtract(prev_e_coord)
+                                                      .scaldiv(img.zoom));
 
     this.rectangle.move(e, prev_e_coord, img);
   }

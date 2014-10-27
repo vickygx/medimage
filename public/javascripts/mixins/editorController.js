@@ -235,6 +235,7 @@ var EditorController = function() {
     // Canvas listeners
     (function() {
       var drawing = false;
+      var dragging = false;
       var overAnnotation = false;
       var lastEventCoord = new Coord();
       var startCoord;
@@ -255,7 +256,9 @@ var EditorController = function() {
 
         
         if (private.editType == "edit") {
-
+          if (overAnnotation) {
+            dragging = true;
+          }
         } else if (private.editType == "move") {
           drawing = true;
           private.editorImg.draw();
@@ -270,7 +273,14 @@ var EditorController = function() {
 
       $("#imageCanvas").on("mousemove", function(e) {
         if (private.editType == "edit") {
-          if (!annotationClicked) {
+          if (dragging) {
+            if (private.annotation) {
+              private.annotation.move(e, lastEventCoord, private.editorImg);
+              private.editorImg.draw();
+              helpers.drawAnnotations();
+              helpers.hideAnnotationInput(annotationClicked);
+            }
+          } else if (!annotationClicked) {
             // Look for point annotations close by first
             for (var i = 0; i < private.pointAnnotations.length; i++) {
               var annotation = private.pointAnnotations[i];
@@ -306,6 +316,8 @@ var EditorController = function() {
             overAnnotation = false;
             helpers.hideAnnotationInput(annotationClicked);
           }
+
+          lastEventCoord = getEventCoord(e);
         } 
 
         if (drawing) {
@@ -337,29 +349,29 @@ var EditorController = function() {
             
             if (private.annotation && private.annotation.text.trim().length == 0) {
               helpers.deleteAnnotation();
-              return;
-            }
-
-            endCoord = private.editorImg.toImgCoord(lastEventCoord);
-            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
-                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
-              
-              private.annotation = new PointAnnotation("", endCoord, private.ctx, 
-                                                       private.editorImg, private.image_id, 
-                                                       private.circleRadius);
-              private.pointAnnotations.push(private.annotation);
             } else {
-              
-              private.annotation = new RangeAnnotation("", startCoord, endCoord, 
-                                                       private.ctx, private.editorImg, 
-                                                       private.image_id);
-              private.rangeAnnotations.push(private.annotation);
+
+              endCoord = private.editorImg.toImgCoord(lastEventCoord);
+              if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
+                  Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+                
+                private.annotation = new PointAnnotation("", endCoord, private.ctx, 
+                                                         private.editorImg, private.image_id, 
+                                                         private.circleRadius);
+                private.pointAnnotations.push(private.annotation);
+              } else {
+                
+                private.annotation = new RangeAnnotation("", startCoord, endCoord, 
+                                                         private.ctx, private.editorImg, 
+                                                         private.image_id);
+                private.rangeAnnotations.push(private.annotation);
+              }
+
+              private.annotation.draw();
+
+              // Show input box
+              helpers.showAnnotationInput(e, "");
             }
-
-            private.annotation.draw();
-
-            // Show input box
-            helpers.showAnnotationInput(e, "");
           } else {
             throw new Error("Invalid editType:" + private.editType);
           }
@@ -367,6 +379,11 @@ var EditorController = function() {
           startCoord = undefined;
           lastEventCoord = getEventCoord(e);
           drawing = false;
+        }
+
+        if (dragging) {
+          dragging = false;
+          private.annotation.submit();
         }
       });
     })();
