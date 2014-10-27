@@ -30,25 +30,28 @@ mixin editor(imgUrl, image_id)
     tbody
       tr
         td
-          canvas(id="imageCanvas")
+          div.editorSection
+            canvas(id="imageCanvas")
         td#editorControlsCol
-          div
+          div.editorSection
             legend
-              div
-                h2 Zoom
-                div.btn-group
-                  button(id="zoomInBtn", class="btn btn-default")
-                    span.glyphicon.glyphicon-zoom-in
-                  button(id="zoomOutBtn", class="btn btn-default")
-                    span.glyphicon.glyphicon-zoom-out
-            legend
-              div
-                h2 Edit type
-                div.btn-group
-                  button(id="editBtn", class="btn btn-default editTypeBtn")
-                    span.glyphicon.glyphicon-pencil
-                  button(id="annotationBtn", class="btn btn-default editTypeBtn highlight", disabled) 
-                    span.glyphicon.glyphicon-record
-                  button(id="moveBtn", class="btn btn-default editTypeBtn")
-                    span.glyphicon.glyphicon-move
+              h2 Controls
+              table
+                tbody
+                  tr
+                    td
+                      div.btn-group
+                        button(id="zoomInBtn", class="btn btn-default")
+                          span.glyphicon.glyphicon-zoom-in
+                        button(id="zoomOutBtn", class="btn btn-default")
+                          span.glyphicon.glyphicon-zoom-out
+                    td
+                      div.btn-group
+                        button(id="editBtn", class="btn btn-default editTypeBtn")
+                          span.glyphicon.glyphicon-pencil
+                        button(id="annotationBtn", class="btn btn-default editTypeBtn highlight", disabled) 
+                          span.glyphicon.glyphicon-record
+                        button(id="moveBtn", class="btn btn-default editTypeBtn")
+                          span.glyphicon.glyphicon-move
+                
                 

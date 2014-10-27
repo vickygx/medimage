@@ -116,6 +116,22 @@ var EditorController = function() {
       }
     }
 
+    var setAnnotation = function(annotation, callback) {
+      if (!private.annotation || private.annotation.mutex.state() == "resolved") {
+        private.annotation = annotation;
+        if (callback) {
+          callback(annotation);
+        }
+      } else {
+        private.annotation.mutex.done(function() {
+          private.annotation = annotation;
+          if (callback) {
+            callback(annotation);
+          }
+        });
+      }
+    }
+
     var deleteAnnotation = function() {
       var index;
       // Check point annotations
@@ -129,7 +145,7 @@ var EditorController = function() {
           private.annotation.del();
         }
 
-        private.annotation = undefined
+        helpers.setAnnotation(undefined);
         return;
       }
 
@@ -143,7 +159,7 @@ var EditorController = function() {
           private.annotation.del();
         }
 
-        private.annotation = undefined
+        helpers.setAnnotation(undefined);
         return;
       }
     }
@@ -156,6 +172,7 @@ var EditorController = function() {
       showAnnotationInput: showAnnotationInput, 
       hideAnnotationInput: hideAnnotationInput, 
       checkInsideRectangle: checkInsideRectangle, 
+      setAnnotation: setAnnotation, 
       deleteAnnotation: deleteAnnotation
     }
   })();
@@ -235,20 +252,12 @@ var EditorController = function() {
     // Canvas listeners
     (function() {
       var drawing = false;
+      var startDrag = false;
       var dragging = false;
       var overAnnotation = false;
       var lastEventCoord = new Coord();
       var startCoord;
       var endCoord;
-
-      $("#imageCanvas").on("click", function(e) {
-        if (private.editType == "edit") {
-          if (overAnnotation) {
-            helpers.showAnnotationInput(e);
-            annotationClicked = true;
-          }
-        }
-      });
 
       $("#imageCanvas").on("mousedown", function(e) {
 
@@ -257,7 +266,7 @@ var EditorController = function() {
         
         if (private.editType == "edit") {
           if (overAnnotation) {
-            dragging = true;
+            startDrag = true;
           }
         } else if (private.editType == "move") {
           drawing = true;
@@ -273,7 +282,8 @@ var EditorController = function() {
 
       $("#imageCanvas").on("mousemove", function(e) {
         if (private.editType == "edit") {
-          if (dragging) {
+          if (startDrag) {
+            dragging = true;
             if (private.annotation) {
               private.annotation.move(e, lastEventCoord, private.editorImg);
               private.editorImg.draw();
@@ -291,7 +301,7 @@ var EditorController = function() {
                 var text = annotation.text;
                 helpers.showAnnotationInput(e, text);
 
-                private.annotation = annotation;
+                helpers.setAnnotation(annotation);
 
                 overAnnotation = true;
 
@@ -306,7 +316,7 @@ var EditorController = function() {
                 var text = annotation.text;
                 helpers.showAnnotationInput(e, text);
 
-                private.annotation = annotation;
+                helpers.setAnnotation(annotation);
                 overAnnotation = true;
 
                 return;
@@ -328,7 +338,27 @@ var EditorController = function() {
 
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
+            endCoord = private.editorImg.toImgCoord(lastEventCoord);
+            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
 
+              var annotation = new PointAnnotation("", endCoord, private.ctx, 
+                                                        private.editorImg, private.image_id, 
+                                                        private.circleRadius); 
+
+              private.editorImg.draw();
+              helpers.drawAnnotations();
+              annotation.draw();                
+            } else {
+              
+              var annotation = new RangeAnnotation("", startCoord, endCoord, 
+                                                        private.ctx, private.editorImg, 
+                                                        private.image_id); 
+
+              private.editorImg.draw();
+              helpers.drawAnnotations();
+              annotation.draw();                  
+            }
           } else {
             throw new Error("Invalid editType:" + private.editType);
           }
@@ -346,31 +376,40 @@ var EditorController = function() {
             private.editorImg.draw();
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
-            
+            private.editorImg.draw();
+            helpers.drawAnnotations();
             if (private.annotation && private.annotation.text.trim().length == 0) {
               helpers.deleteAnnotation();
-            } else {
+            } else if (!private.annotation || private.annotation.mutex.state() == "resolved") {
 
               endCoord = private.editorImg.toImgCoord(lastEventCoord);
               if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
                   Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
-                
-                private.annotation = new PointAnnotation("", endCoord, private.ctx, 
-                                                         private.editorImg, private.image_id, 
-                                                         private.circleRadius);
-                private.pointAnnotations.push(private.annotation);
+
+                helpers.setAnnotation(new PointAnnotation("", endCoord, private.ctx, 
+                                                          private.editorImg, private.image_id, 
+                                                          private.circleRadius), 
+                                      function(annotation) {
+                  private.pointAnnotations.push(annotation);
+                  annotation.draw();
+
+                  // Show input box
+                  helpers.showAnnotationInput(e, "");
+                });
               } else {
                 
-                private.annotation = new RangeAnnotation("", startCoord, endCoord, 
-                                                         private.ctx, private.editorImg, 
-                                                         private.image_id);
-                private.rangeAnnotations.push(private.annotation);
+                helpers.setAnnotation(new RangeAnnotation("", startCoord, endCoord, 
+                                                          private.ctx, private.editorImg, 
+                                                          private.image_id), 
+                                      function(annotation) {
+                  private.rangeAnnotations.push(annotation);
+                  annotation.draw();
+
+                  // Show input box
+                  helpers.showAnnotationInput(e, "");
+                });
               }
 
-              private.annotation.draw();
-
-              // Show input box
-              helpers.showAnnotationInput(e, "");
             }
           } else {
             throw new Error("Invalid editType:" + private.editType);
@@ -384,7 +423,17 @@ var EditorController = function() {
         if (dragging) {
           dragging = false;
           private.annotation.submit();
+        } else {
+          if (private.editType == "edit") {
+            if (overAnnotation) {
+              helpers.showAnnotationInput(e);
+              annotationClicked = true;
+            }
+          }
         }
+
+        startDrag = false;
+
       });
     })();
 
@@ -433,6 +482,7 @@ var EditorController = function() {
     // Input box
     (function() {
       $("#annotationInput").on("keyup", function(e) {
+
         if (e.keyCode == 13) { // Enter
           if (private.annotation) {
             annotationClicked = false;
@@ -446,12 +496,25 @@ var EditorController = function() {
             helpers.hideAnnotationInput(annotationClicked);
           }
         } else if (e.keyCode == 27) { // Escape
-          if (!private.annotation.inDB()) {
-            helpers.deleteAnnotation();
+          if (private.annotation.mutex.state() == "resolved") {
+            if (!private.annotation.inDB()) {
+              helpers.deleteAnnotation();              
+              helpers.setAnnotation(undefined);
+            }
+
+            annotationClicked = false;
+            helpers.hideAnnotationInput(annotationClicked);
+          } else {
+            private.annotation.mutex.done(function() {
+              if (!private.annotation.inDB()) {
+                helpers.deleteAnnotation();               
+                helpers.setAnnotation(undefined);
+              }
+
+              annotationClicked = false;
+              helpers.hideAnnotationInput(annotationClicked);
+            });
           }
-          annotationClicked = false;
-          helpers.hideAnnotationInput(annotationClicked);
-          private.annotation = undefined;
         }
       });
     })();

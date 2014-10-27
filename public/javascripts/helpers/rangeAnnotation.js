@@ -14,6 +14,8 @@ var RangeAnnotation = (function() {
     this.image_id = image_id;
 
     this.id = _id;
+    this.mutex = $.Deferred();
+    this.mutex.resolve();
   }
 
   // Inherit Annotation
@@ -56,11 +58,15 @@ var RangeAnnotation = (function() {
         alert("Error: " + e.responseText);
       });
     } else {
+      this.mutex = $.Deferred();
 
+      var that = this;
       ajaxController.post('/annotations', data).done(function(res) {
-        this.id = res._id;
+        that.id = res._id;
+        that.mutex.resolve();
       }).fail(function(e) {
         alert("Error: " + e.responseText);
+        that.mutex.resolve();
       });
     }
   }

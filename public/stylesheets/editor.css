@@ -1,3 +1,7 @@
+table {
+  width: 100%;
+}
+
 #annotationInputCont {
   z-index: 10; 
   height: 56px; 
@@ -20,14 +24,18 @@
 
 #editorTable {
   height: 100%;
-  width: 100%;
   padding: 10px;
 }
 
 #editorTable td {
   vertical-align: top;
-  border: 1px solid #ccc;
   background-color: #fafafa;
+}
+
+.editorSection {
+  border: 1px solid #ccc;
+  height: 100%;
+  padding: 10px;
 }
 
 #imageCanvas {
@@ -36,7 +44,6 @@
 
 #editorControlsCol {
   width: 400px;
-  padding: 10px;
 }
 
 .highlight {
