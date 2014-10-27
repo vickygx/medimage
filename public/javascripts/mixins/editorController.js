@@ -252,20 +252,12 @@ var EditorController = function() {
     // Canvas listeners
     (function() {
       var drawing = false;
+      var startDrag = false;
       var dragging = false;
       var overAnnotation = false;
       var lastEventCoord = new Coord();
       var startCoord;
       var endCoord;
-
-      $("#imageCanvas").on("click", function(e) {
-        if (private.editType == "edit") {
-          if (overAnnotation) {
-            helpers.showAnnotationInput(e);
-            annotationClicked = true;
-          }
-        }
-      });
 
       $("#imageCanvas").on("mousedown", function(e) {
 
@@ -274,7 +266,7 @@ var EditorController = function() {
         
         if (private.editType == "edit") {
           if (overAnnotation) {
-            dragging = true;
+            startDrag = true;
           }
         } else if (private.editType == "move") {
           drawing = true;
@@ -290,7 +282,8 @@ var EditorController = function() {
 
       $("#imageCanvas").on("mousemove", function(e) {
         if (private.editType == "edit") {
-          if (dragging) {
+          if (startDrag) {
+            dragging = true;
             if (private.annotation) {
               private.annotation.move(e, lastEventCoord, private.editorImg);
               private.editorImg.draw();
@@ -430,7 +423,17 @@ var EditorController = function() {
         if (dragging) {
           dragging = false;
           private.annotation.submit();
+        } else {
+          if (private.editType == "edit") {
+            if (overAnnotation) {
+              helpers.showAnnotationInput(e);
+              annotationClicked = true;
+            }
+          }
         }
+
+        startDrag = false;
+
       });
     })();
 
@@ -493,22 +496,23 @@ var EditorController = function() {
             helpers.hideAnnotationInput(annotationClicked);
           }
         } else if (e.keyCode == 27) { // Escape
-
           if (private.annotation.mutex.state() == "resolved") {
             if (!private.annotation.inDB()) {
-              helpers.deleteAnnotation();
-              annotationClicked = false;
-              helpers.hideAnnotationInput(annotationClicked);
+              helpers.deleteAnnotation();              
               helpers.setAnnotation(undefined);
             }
+
+            annotationClicked = false;
+            helpers.hideAnnotationInput(annotationClicked);
           } else {
             private.annotation.mutex.done(function() {
               if (!private.annotation.inDB()) {
-                helpers.deleteAnnotation();
-                annotationClicked = false;
-                helpers.hideAnnotationInput(annotationClicked);
+                helpers.deleteAnnotation();               
                 helpers.setAnnotation(undefined);
               }
+
+              annotationClicked = false;
+              helpers.hideAnnotationInput(annotationClicked);
             });
           }
         }
