@@ -13,6 +13,10 @@ var PointAnnotation = (function() {
     this.image_id = image_id;
 
     this.id = _id;
+
+    // Mutex keeps track of if we are currently posting annotation to db
+    this.mutex = $.Deferred();
+    this.mutex.resolve();
   }
 
   // Inherit Annotation
@@ -29,6 +33,7 @@ var PointAnnotation = (function() {
   }
 
   PointAnnotation.prototype.submit = function() {
+
     var data = {
       text: this.text, 
       image_id: this.image_id, 
@@ -42,10 +47,15 @@ var PointAnnotation = (function() {
         alert("Error :" + JSON.stringify(e));
       });
     } else {
+      this.mutex = $.Deferred();
+
+      var that = this;
       ajaxController.post('/annotations/', data).done(function(res) {
-        this.id = res._id;
+        that.id = res._id;
+        that.mutex.resolve();
       }).fail(function(e) {
         alert("Error :" + e.responseText);
+        that.mutex.resolve();
       });
     }
   }
