@@ -8,13 +8,15 @@ block head
 
 mixin grid(id)
   div.grid(id=id, data-ng-controller="gridController")
+    h1.title MedImage
     div(ng-init="$root.user=#{JSON.stringify(session.user.username)}")
-    div.error
-    div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
-      div.image
-        img(ng-src='{{image.image_url}}')
-      div.title
-        p(ng-bind='image.title')
-      div.tagsContainer
-        div.tagItem(ng-repeat="tag in image.tags")
-          +tag('{{tag}}')
+    div.error(id='errorBox')
+    div.gridItemContainer
+      div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
+        div.image
+          img(ng-src='{{image.image_url}}')
+        div.title
+          p(ng-bind='image.title')
+        div.tagsContainer
+          div.tagItem(ng-repeat="tag in image.tags")
+            +tag('{{tag}}')

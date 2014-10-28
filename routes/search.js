@@ -8,7 +8,7 @@ module.exports = function(app){
   //  Request to search through images by tags
   app.get('/search/tags', function(req, res, next) {
     var tags = Array.isArray(req.query.tag) ? req.query.tag : [req.query.tag];
-    var limit = errorChecking.search.isValidLimitType(req.query.limit) ? Number(req.query.limit) : 20;
+    var limit = errorChecking.search.isValidLimitType(req.query.limit) ? Number(req.query.limit) : 50;
     
     // Retrieves a list of images and tags matched
     // sorted by number of tags
