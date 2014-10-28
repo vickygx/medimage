@@ -83,19 +83,9 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
       return result;
     }
 
-    function turnStringIntoTagQuery(tagstring){
-        var tags = tagstring.split(',');
-        var tagQuery = '';
-        for (var i = 0; i < tags.length ; i++){
-          tagQuery += 'tag=' + tags[i].trim() + '&';
-        }
-        return tagQuery;
-    }
-
     return {
       combineImageAndTagHash: combineImageAndTagHash,
       combineSortedImageAndImageHash: combineSortedImageAndImageHash,
-      turnStringIntoTagQuery: turnStringIntoTagQuery
     }
 
   })();
@@ -103,6 +93,7 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
   var service =  {
   
     images: [],
+    error: 'All is good!',
     
     // Function to display searched images
     displaySearchedImages: function(tagQuery){
@@ -112,9 +103,10 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          //TODO
-          console.log('error');
+          services.error = res.responseText ? res.responseText : 'error';
+          $rootScope.$broadcast( 'images.error' );
         });
+
     },
 
     // Function to display all images
@@ -125,8 +117,8 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          //TODO
-          console.log('error');
+          services.error = res.responseText ? res.responseText : 'error';
+          $rootScope.$broadcast( 'images.error' );
       });
     },
 
@@ -138,8 +130,8 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          //TODO
-          console.log('error');
+          services.error = res.responseText ? res.responseText : 'error';
+          $rootScope.$broadcast( 'images.error' );
       });
     },
 

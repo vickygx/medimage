@@ -10,7 +10,7 @@ mixin grid(id)
   div.grid(id=id, data-ng-controller="gridController")
     h1.title MedImage
     div(ng-init="$root.user=#{JSON.stringify(session.user.username)}")
-    div.error Oops! Cannot take in that query
+    div.error(id='errorBox')
     div.gridItemContainer
       div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
         div.image

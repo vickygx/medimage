@@ -7,14 +7,25 @@ medImageApp.controller('gridController', function($scope, gridService) {
     images: gridService.images
   }
 
+  // Updator function for images variables changing
   $scope.$on('images.update', function( event ) {
     $scope.viewModel.images = gridService.images;
     $scope.$apply();
     helpers.updateViewImages();
   });
 
+  // Updator function for error variable changing
+  $scope.$on('images.error', function( event) {
+    helpers.updateError();
+  });
+
   //////////////////////////// Helpers
   var helpers = (function() { 
+
+    var updateError = function(){
+      $('.grid .error').html(gridService.error);
+    }
+
     var displayAllImages = function(){
       gridService.displayAllImages();
     }
@@ -75,7 +86,8 @@ medImageApp.controller('gridController', function($scope, gridService) {
 
     return {
       displayAllImages: displayAllImages,
-      updateViewImages: updateViewImages
+      updateViewImages: updateViewImages,
+      updateError : updateError
     }
   })();
 

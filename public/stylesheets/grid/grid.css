@@ -1,5 +1,4 @@
-.grid .error {
-  display: none;
+#errorBox {
   width: 100%;
   background-color: rgb(121, 32, 32);
   color: rgb(234, 234, 234);
@@ -11,6 +10,11 @@
   margin: 0 auto 20px auto;
 }
 
+#errorBox:empty{
+  display: none;
+}
+
+ 
 .grid {
 }
 
