@@ -139,6 +139,7 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
       });
     },
 
+    // Clears the images
     clearImages: function(){
       service.isUserPage = false;
       service.images = [];
@@ -150,6 +151,9 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
 
 }]);
 
+/*  Directive to get searched images through a form
+    The div that contains this directive must have an input with name="tags" 
+*/
 medImageApp.directive('getSearchedImagesForm', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -166,6 +170,9 @@ medImageApp.directive('getSearchedImagesForm', ['gridService', function(gridServ
   }
 }]);
 
+/*  Directive to display searched images 
+    Requirements: innerHTML of object with directive contains the tag name 
+*/
 medImageApp.directive('displaySearchedImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -179,6 +186,8 @@ medImageApp.directive('displaySearchedImages', ['gridService', function(gridServ
   }
 }]);
 
+/*  Directive to display images of session user 
+*/
 medImageApp.directive('displayUserImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -191,6 +200,8 @@ medImageApp.directive('displayUserImages', ['gridService', function(gridService)
   }
 }]);
 
+/*  Directive to display all images 
+*/
 medImageApp.directive('displayAllImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -203,6 +214,8 @@ medImageApp.directive('displayAllImages', ['gridService', function(gridService){
   }
 }]);
 
+/*  Directive to clear all iamges from display 
+*/
 medImageApp.directive('clearImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
