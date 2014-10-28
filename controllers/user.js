@@ -22,6 +22,16 @@ module.exports.getUserByUsername = function(username, callback) {
 }
 
 /**
+ * Gets the users in the list of userIDs
+ *
+ * @param {[ObjectID]} userIDs - list of userIDs
+ * @param {Function} callback - callback called after getting users
+ */
+module.exports.getUsersByIDs = function(userIDs, callback) {
+  User.find({ _id: {$in: userIDs}}, callback);
+}
+
+/**
  * Retrieves all users present in the database
  * @param {Function} callback: function to call after users are
  *   retrieved.  Retrieved users are passed into this function

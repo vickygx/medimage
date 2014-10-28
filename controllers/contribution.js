@@ -17,6 +17,27 @@ var hasAccess = module.exports.hasAccess = function(userID, imageID, callback) {
   });
 }
 
+/**
+ * Gets list of image IDs that a user contributes to
+ *
+ * @param {ObjectID} userID - id of user as contributor
+ * @param {Function} callback - callback called after getting contributions
+ */
+module.exports.getContributionsByUserID = function(userID, callback) {
+  Contribution.find({ user_id: userID}, callback);
+}
+
+/**
+ * Gets list of user IDs for the contributors of an image
+ *
+ * @param {ObjectID} imageID - id of MedImage
+ * @param {Function} callback - callback called after getting contributions
+ */
+module.exports.getContributionsByImageID = function(imageID, callback) {
+  Contribution.find({ image_id: imageID}, callback);
+}
+
+
 /** 
  * Creates a contribution in the database
  * 

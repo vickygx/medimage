@@ -97,4 +97,72 @@ module.exports = function(app) {
       });
     });
   });
+
+  //Get all contributions for an image
+  app.get('/medimages/:id/contributions', function(req, res, next) {
+    var imageID = req.params.id;
+
+    MedImageController.getMedImageByID(imageID, function(err, image) {
+      if (err) {
+        return next(err);
+      }
+      if (!image) {
+        return next(Errors.medimages.notFound);
+      }
+
+      ContriController.getContributionsByImageID(imageID, function(err, contributions) {
+        //get list of user ids
+        var userIDs = contributions.map(function(contribution) { return contribution.user_id });
+
+        //get list of users
+        UserController.getUsersByIDs(userIDs, function(err, users) {
+          if (err) {
+            return next(err);
+          }
+
+          //make userID --> user hash
+          var userHash = users.reduce(function(hash, user) {
+            hash[user._id] = user;
+            return hash;
+          }, {})
+
+          res.json({contributions: contributions, userIDToUser: userHash});
+        });
+      });
+    });
+  });
+
+  //Get all images a user can contribute to
+  app.get('/users/:username/contributions', function(req, res, next) {
+    var username = req.params.username;
+
+    UserController.getUserByUsername(username, function(err, user) {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return next(Errors.users.notFound);
+      }
+
+      ContriController.getContributionsByUserID(user._id, function(err, contributions) {
+        //get list of image ids
+        var imageIDs = contributions.map(function(contribution) { return contribution.image_id });
+        
+        //get list of images
+        MedImageController.getMedImagesByIDs(imageIDs, function(err, images) {
+          if (err) {
+            return next(err);
+          }
+
+          //make imageID --> image hash
+          var imageHash = images.reduce(function(hash, image) {
+            hash[image._id] = image;
+            return hash;
+          }, {});
+
+          res.json({contributions: contributions, imageIDToImage: imageHash});
+        });
+      });
+    });
+  });
 };
