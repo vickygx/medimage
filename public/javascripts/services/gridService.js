@@ -102,10 +102,7 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
 
   var service =  {
   
-    images: [{id: 'Vicky', image_url: 'http://www.nist.gov/oles/forensics/images/DNA-Strand.jpg', title: 'DNA Title', 
-                tags: ['DNA', 'Science', 'Genome', 'Acid', 'Sugar']},
-                {id: 'Calvin', image_url: 'http://www.nist.gov/oles/forensics/images/DNA-Strand.jpg', title: 'DNA2 Title', 
-                tags: ['DNA', 'Deoxy', 'Genome', 'Acid']}],
+    images: [],
     
     // Function to display searched images
     displaySearchedImages: function(tagQuery){
