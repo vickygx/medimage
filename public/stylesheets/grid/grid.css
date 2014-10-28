@@ -34,6 +34,7 @@
   vertical-align: top;
   margin: 10px 5px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .gridItem .image {
@@ -81,4 +82,22 @@
 .tagsContainer .tagItem {
   display: inline-block;
   padding: 2px;
+}
+
+#uploadImageForm{
+  overflow: hidden;
+}
+
+#uploadImageForm input[type="text"] {
+  margin-top:5px;
+}
+
+#uploadImageForm input[type="submit"] {
+  padding: 3px 6px;
+  margin-top:-20px;
+  z-index: 10;
+}
+
+#uploadImageForm input[type="file"] {
+  visibility: hidden;
 }

@@ -4,12 +4,15 @@ medImageApp.controller('gridController', function($scope, gridService) {
 
   //////////////////////////// Scope Variables
   $scope.viewModel = {
-    images: gridService.images
+    images: gridService.images,
+    isUserPage: gridService.isUserPage
   }
 
   // Updator function for images variables changing
   $scope.$on('images.update', function( event ) {
     $scope.viewModel.images = gridService.images;
+    $scope.viewModel.isUserPage = gridService.isUserPage;
+
     $scope.$apply();
     helpers.updateViewImages();
   });
@@ -22,16 +25,39 @@ medImageApp.controller('gridController', function($scope, gridService) {
   //////////////////////////// Helpers
   var helpers = (function() { 
 
+    // Updates the error box
     var updateError = function(){
       $('.grid .error').html(gridService.error);
     }
 
+    // Displays all images
     var displayAllImages = function(){
       gridService.displayAllImages();
     }
 
+    // Updates the view
     var updateViewImages = function(){
       resizeImages();
+      if ($scope.viewModel.isUserPage){
+        $('#addGridImage').click(function(e){
+          $(e.currentTarget.parentElement).find('input[name="medImage"]').click();
+        });
+        $('#uploadImageForm').on("submit", function(e){
+          e.preventDefault();
+          var formData = new FormData($(this)[0]);
+
+          //upload image
+          $.ajax({
+            url: "/medimages",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+          }).always(function(res) {
+            gridService.displayUserImages();
+          });
+        });
+      }
     }
     /** 
       Resizes the images to fit in the displayed box
@@ -97,6 +123,7 @@ medImageApp.controller('gridController', function($scope, gridService) {
   })();
 
   function eventHandlers() {
+
   }
 });
 
