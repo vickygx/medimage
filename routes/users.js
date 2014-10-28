@@ -38,10 +38,12 @@ module.exports = function(app) {
       password: req.body.password
     }
 
-    UserController.createUser(createData, function(err) {
+    UserController.createUser(createData, function(err, user) {
       if (err) {
         return next(err);
       }
+
+      req.session.user = user;
 
       res.json({});
     });

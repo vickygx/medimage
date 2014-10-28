@@ -262,35 +262,56 @@ var EditorController = function() {
       $("#imageCanvas").on("mousedown", function(e) {
 
         lastEventCoord = getEventCoord(e);
-
         
         if (private.editType == "edit") {
+
+          // Notice startDrag if mouse over annotation
           if (overAnnotation) {
             startDrag = true;
           }
         } else if (private.editType == "move") {
+
+          // Draw image and annotations
           drawing = true;
           private.editorImg.draw();
           helpers.drawAnnotations();
         } else if (private.editType == "annotation") {
+
+          // set the start coordinate of our annotation
           drawing = true;
           startCoord = private.editorImg.toImgCoord(lastEventCoord);
         } else {
+
           throw new Error("Invalid editType:" + private.editType);
         }
       });
 
       $("#imageCanvas").on("mousemove", function(e) {
+
         if (private.editType == "edit") {
-          if (startDrag) {
-            dragging = true;
-            if (private.annotation) {
+
+          // If we've started dragging, move the current annotation with the mouse
+          if (private.annotation && startDrag) {
+
+            if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) >= 0.5 ||
+                             Math.abs(e.offsetY - lastEventCoord.y) >= 0.5)) {
+
+              dragging = true;
+
               private.annotation.move(e, lastEventCoord, private.editorImg);
+
               private.editorImg.draw();
               helpers.drawAnnotations();
+
               helpers.hideAnnotationInput(annotationClicked);
+            } else {
+              return;
             }
+
+          // If we haven't started dragging and have not clicked an annotation
+          // display the annotation we are hovering over
           } else if (!annotationClicked) {
+
             // Look for point annotations close by first
             for (var i = 0; i < private.pointAnnotations.length; i++) {
               var annotation = private.pointAnnotations[i];
@@ -317,6 +338,7 @@ var EditorController = function() {
                 helpers.showAnnotationInput(e, text);
 
                 helpers.setAnnotation(annotation);
+
                 overAnnotation = true;
 
                 return;
@@ -339,8 +361,8 @@ var EditorController = function() {
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
             endCoord = private.editorImg.toImgCoord(lastEventCoord);
-            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
-                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+            if (Math.abs(startCoord.x - endCoord.x) * private.editorImg.zoom <= private.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) * private.editorImg.zoom <= private.circleRadius) {
 
               var annotation = new PointAnnotation("", endCoord, private.ctx, 
                                                         private.editorImg, private.image_id, 
