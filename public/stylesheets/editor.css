@@ -33,13 +33,13 @@ table {
 }
 
 .editorSection {
-  border: 1px solid #ccc;
   height: 100%;
   padding: 10px;
 }
 
 #imageCanvas {
   cursor: crosshair;
+  border: 1px solid #ccc;
 }
 
 #editorControlsCol {

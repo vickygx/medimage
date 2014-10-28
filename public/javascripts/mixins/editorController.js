@@ -293,8 +293,8 @@ var EditorController = function() {
           // If we've started dragging, move the current annotation with the mouse
           if (private.annotation && startDrag) {
 
-            if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) > 1 &&
-                             Math.abs(e.offsetY - lastEventCoord.y) > 1)) {
+            if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) >= 0.5 ||
+                             Math.abs(e.offsetY - lastEventCoord.y) >= 0.5)) {
 
               dragging = true;
 
@@ -361,8 +361,8 @@ var EditorController = function() {
             helpers.drawAnnotations();
           } else if (private.editType == "annotation") {
             endCoord = private.editorImg.toImgCoord(lastEventCoord);
-            if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
-                Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+            if (Math.abs(startCoord.x - endCoord.x) * private.editorImg.zoom <= private.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) * private.editorImg.zoom <= private.circleRadius) {
 
               var annotation = new PointAnnotation("", endCoord, private.ctx, 
                                                         private.editorImg, private.image_id, 
