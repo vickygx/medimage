@@ -1,3 +1,11 @@
+#editor {
+  height: 100%;
+}
+
+#div-image-data {
+  display: none;
+}
+
 table {
   width: 100%;
 }
@@ -28,7 +36,6 @@ table {
 }
 
 #editorTable td {
-  vertical-align: top;
   background-color: #fafafa;
 }
 
@@ -44,6 +51,7 @@ table {
 
 #editorControlsCol {
   width: 400px;
+  vertical-align: top;
 }
 
 .highlight {
@@ -52,4 +60,19 @@ table {
 
 .btn-group {
   width: 100%;
+}
+
+.tagContainer {
+  margin: 5px;
+  display: inline-block;
+}
+
+.contributionsContainer {
+  padding: 5px 0;
+}
+
+.contributionError {
+  margin: 5px 0;
+  padding: 5px;
+  text-align: center;
 }

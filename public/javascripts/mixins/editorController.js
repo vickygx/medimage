@@ -1,27 +1,28 @@
-var EditorController = function() {
-  
-  // Public variables, available outside controller
-  var public = {};
+var medImageApp = angular.module('medImageApp');
 
-  // Private variables, 
-  var private = {};
+medImageApp.controller('editorController', function($scope) {
 
-  // Occurs after document.ready
-  var setPrivate = function(imgUrl, image_id) {
-    private.ctx = $("#imageCanvas")[0].getContext('2d');
-    private.img = new Image();
-    private.img.src = imgUrl;
-    private.image_id = image_id;
-    private.editorImg = new EditorImg(private.img, 
-                                      new Coord(0, 0), 
-                                      1, 
-                                      private.ctx, 
-                                      $("#imageCanvas")[0]);
-    private.editType = "annotation";
-    private.annotation;
-    private.pointAnnotations = [];
-    private.rangeAnnotations = [];
-    private.circleRadius = 7;
+  // Public /////////////////////////////////////////////////////////
+
+  var public = $scope.viewModel = {
+
+  }
+
+  // Private ////////////////////////////////////////////////////////
+
+  var local = {};
+
+  var setLocal = function() {
+    local.ctx = $("#imageCanvas")[0].getContext('2d');
+    local.img = new Image();
+    local.img.src = $("#div-image-data")[0].getAttribute("data-imageUrl");
+    local.image_id = $("#div-image-data")[0].getAttribute("data-image-id");
+    local.editorImg = new EditorImg(local.img, new Coord(0, 0), 1, local.ctx, $("#imageCanvas")[0]);
+    local.editType = "annotation";
+    local.annotation;
+    local.pointAnnotations = [];
+    local.rangeAnnotations = [];
+    local.circleRadius = 7;
   }
 
   // Helper functions
@@ -29,27 +30,27 @@ var EditorController = function() {
 
     var drawImg = function() {
 
-      private.editorImg.draw(private.ctx, $("#imageCanvas"));
+      local.editorImg.draw(local.ctx, $("#imageCanvas"));
     }
 
     var zoomIn = function(amount) {
-      private.editorImg.zoomIn(amount);
+      local.editorImg.zoomIn(amount);
       drawAnnotations();
     }
 
     var zoomOut = function(amount) {
-      private.editorImg.zoomOut(amount);
+      local.editorImg.zoomOut(amount);
       drawAnnotations();
     }
 
     var drawAnnotations = function() {
-      for (var i = 0; i < private.pointAnnotations.length; i++) {
-        var pointAnnotation = private.pointAnnotations[i];
+      for (var i = 0; i < local.pointAnnotations.length; i++) {
+        var pointAnnotation = local.pointAnnotations[i];
         pointAnnotation.draw();
       }
 
-      for (var i = 0; i < private.rangeAnnotations.length; i++) {
-        var rangeAnnotation = private.rangeAnnotations[i];
+      for (var i = 0; i < local.rangeAnnotations.length; i++) {
+        var rangeAnnotation = local.rangeAnnotations[i];
         rangeAnnotation.draw();
       }
     }
@@ -62,7 +63,7 @@ var EditorController = function() {
       $("#annotationInputCont").css("display", "block");
 
       if (e !== undefined) {
-        $("#annotationInputCont").css("left", e.pageX + private.circleRadius + 5 + "px");
+        $("#annotationInputCont").css("left", e.pageX + local.circleRadius + 5 + "px");
         $("#annotationInputCont").css("top", e.pageY + "px");
         $("#annotationInput").focus();
       }
@@ -76,8 +77,8 @@ var EditorController = function() {
     }
 
     var checkInsideRectangle = function(rectangle, x, y) {
-      var startCoord = private.editorImg.toCanvasCoord(rectangle.startCoord);
-      var endCoord = private.editorImg.toCanvasCoord(rectangle.endCoord);
+      var startCoord = local.editorImg.toCanvasCoord(rectangle.startCoord);
+      var endCoord = local.editorImg.toCanvasCoord(rectangle.endCoord);
 
       var checkY = function(startCoord, endCoord, y) {
         if (endCoord.y > startCoord.y) {
@@ -117,14 +118,14 @@ var EditorController = function() {
     }
 
     var setAnnotation = function(annotation, callback) {
-      if (!private.annotation || private.annotation.mutex.state() == "resolved") {
-        private.annotation = annotation;
+      if (!local.annotation || local.annotation.mutex.state() == "resolved") {
+        local.annotation = annotation;
         if (callback) {
           callback(annotation);
         }
       } else {
-        private.annotation.mutex.done(function() {
-          private.annotation = annotation;
+        local.annotation.mutex.done(function() {
+          local.annotation = annotation;
           if (callback) {
             callback(annotation);
           }
@@ -135,14 +136,14 @@ var EditorController = function() {
     var deleteAnnotation = function() {
       var index;
       // Check point annotations
-      index = private.pointAnnotations.indexOf(private.annotation);
+      index = local.pointAnnotations.indexOf(local.annotation);
 
       if (index > -1) {
-        private.pointAnnotations.splice(index, 1);
+        local.pointAnnotations.splice(index, 1);
         drawImg();
         drawAnnotations();
-        if (private.annotation.inDB()) {
-          private.annotation.del();
+        if (local.annotation.inDB()) {
+          local.annotation.del();
         }
 
         helpers.setAnnotation(undefined);
@@ -150,13 +151,13 @@ var EditorController = function() {
       }
 
       // Check range annotations
-      index = private.rangeAnnotations.indexOf(private.annotation);
+      index = local.rangeAnnotations.indexOf(local.annotation);
       if (index > -1) {
-        private.rangeAnnotations.splice(index, 1);
+        local.rangeAnnotations.splice(index, 1);
         drawImg();
         drawAnnotations();
-        if (private.annotation.inDB()) {
-          private.annotation.del();
+        if (local.annotation.inDB()) {
+          local.annotation.del();
         }
 
         helpers.setAnnotation(undefined);
@@ -177,32 +178,113 @@ var EditorController = function() {
     }
   })();
 
+  // Ajax helpers
+  var ajax = (function() {
+    var exports = {};
+
+    var deleteContributionSubmit = function(e) {
+      e.preventDefault();
+
+      var contributionID = $(this)[0].elements["contribution_id"].value;
+      ajaxController.del('/contributions/' + contributionID).done(function() {
+        for (var i = 0; i < public.contributions.contributions.length; i++) {
+          if (contributionID == public.contributions.contributions[i]._id) {
+            public.contributions.contributions.splice(i, 1);
+            break;
+          }
+        }
+
+        $scope.$apply();
+      });
+    }
+
+    exports.getTags = function() {
+      return ajaxController.get('/tag/' + local.image_id).done(function(res) {
+        public.tags = res;
+        $scope.$apply();
+      }).fail(function(e) {
+        alert(e.responseText);
+      }); 
+    }
+
+    exports.getContributors = function() {
+      return ajaxController.get('/medimages/' + local.image_id + '/contributions').done(function(res) {
+
+        public.contributions = res;
+        $scope.$apply();
+
+        // Collaborators
+        $(".deleteContributionForm").on("submit", deleteContributionSubmit);
+
+      }).fail(function(e) {
+        alert(e.responseText);
+      });
+    }
+
+    exports.addTag = function(data) {
+      return ajaxController.post('/tag/' + local.image_id, data).done(function(res) {
+        public.tagError = false;
+
+        exports.getTags();
+      }).fail(function(res) {
+        public.tagError = true;
+        public.tagErrorText = e.responseText;
+        $scope.$apply();
+      });
+    }
+
+    exports.addContributor = function(username) {
+      var data = {
+        username: username, 
+        image_id: local.image_id
+      }
+
+      return ajaxController.post('/contributions', data).done(function(res) {
+        public.contributionError = false;
+        $(".deleteContributionForm").off("submit", deleteContributionSubmit);
+
+        public.contributions = [];
+        exports.getContributors();
+      }).fail(function(e) {
+        public.contributionError = true;
+        public.contributionErrorText = e.responseText;
+        $scope.$apply();
+      });
+    }
+
+    return exports;
+  })();
+
   // Starts all processes
-  var init = function(imgUrl, image_id) {
-    setPrivate(imgUrl, image_id);
-    imgInit(image_id);
+  var init = function() {
+    setLocal();
+    imgInit();
 
     sizingJS();
     $(window).resize(function() {
       responsiveJS();
     });
 
-    eventListeners();
-  }
+    ajax.getTags();
 
-  var imgInit = function(image_id) {
+    ajax.getContributors();
+
+    eventListeners();
+  };
+
+  var imgInit = function() {
     
-    var img = private.img;
+    var img = local.img;
 
     img.onload = function() {
       helpers.drawImg();
-      ajaxController.get('/medImages/' + image_id + '/annotations').done(function(res) {
+      ajaxController.get('/medImages/' + local.image_id + '/annotations').done(function(res) {
         for (var i = 0; i < res.length; i++) {
           var annotation = res[i];
           if (annotation.__t == "PointAnnotation") {
-            private.pointAnnotations.push(createPointAnnotation(annotation));
+            local.pointAnnotations.push(createPointAnnotation(annotation));
           } else if (annotation.__t == "RangeAnnotation") {
-            private.rangeAnnotations.push(createRangeAnnotation(annotation));
+            local.rangeAnnotations.push(createRangeAnnotation(annotation));
           }
         }
 
@@ -226,10 +308,10 @@ var EditorController = function() {
     return new PointAnnotation(dbAnnotation.text, 
                                new Coord(dbAnnotation.start_point.x, 
                                          dbAnnotation.start_point.y), 
-                               private.ctx, 
-                               private.editorImg, 
-                               private.image_id, 
-                               private.circleRadius, 
+                               local.ctx, 
+                               local.editorImg, 
+                               local.image_id, 
+                               local.circleRadius, 
                                dbAnnotation._id);
   }
 
@@ -239,13 +321,15 @@ var EditorController = function() {
                                          dbAnnotation.start_point.y), 
                                new Coord(dbAnnotation.end_point.x, 
                                          dbAnnotation.end_point.y), 
-                               private.ctx, 
-                               private.editorImg, 
-                               private.image_id, 
+                               local.ctx, 
+                               local.editorImg, 
+                               local.image_id, 
                                dbAnnotation._id)
   }
 
   var eventListeners = function() {
+
+    var exports = {};
 
     var annotationClicked = false;
 
@@ -263,44 +347,44 @@ var EditorController = function() {
 
         lastEventCoord = getEventCoord(e);
         
-        if (private.editType == "edit") {
+        if (local.editType == "edit") {
 
           // Notice startDrag if mouse over annotation
           if (overAnnotation) {
             startDrag = true;
           }
-        } else if (private.editType == "move") {
+        } else if (local.editType == "move") {
 
           // Draw image and annotations
           drawing = true;
-          private.editorImg.draw();
+          local.editorImg.draw();
           helpers.drawAnnotations();
-        } else if (private.editType == "annotation") {
+        } else if (local.editType == "annotation") {
 
           // set the start coordinate of our annotation
           drawing = true;
-          startCoord = private.editorImg.toImgCoord(lastEventCoord);
+          startCoord = local.editorImg.toImgCoord(lastEventCoord);
         } else {
 
-          throw new Error("Invalid editType:" + private.editType);
+          throw new Error("Invalid editType:" + local.editType);
         }
       });
 
       $("#imageCanvas").on("mousemove", function(e) {
 
-        if (private.editType == "edit") {
+        if (local.editType == "edit") {
 
           // If we've started dragging, move the current annotation with the mouse
-          if (private.annotation && startDrag) {
+          if (local.annotation && startDrag) {
 
             if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) >= 0.5 ||
                              Math.abs(e.offsetY - lastEventCoord.y) >= 0.5)) {
 
               dragging = true;
 
-              private.annotation.move(e, lastEventCoord, private.editorImg);
+              local.annotation.move(e, lastEventCoord, local.editorImg);
 
-              private.editorImg.draw();
+              local.editorImg.draw();
               helpers.drawAnnotations();
 
               helpers.hideAnnotationInput(annotationClicked);
@@ -313,12 +397,12 @@ var EditorController = function() {
           } else if (!annotationClicked) {
 
             // Look for point annotations close by first
-            for (var i = 0; i < private.pointAnnotations.length; i++) {
-              var annotation = private.pointAnnotations[i];
-              var canvasCoord = private.editorImg.toCanvasCoord(annotation.coord);
+            for (var i = 0; i < local.pointAnnotations.length; i++) {
+              var annotation = local.pointAnnotations[i];
+              var canvasCoord = local.editorImg.toCanvasCoord(annotation.coord);
 
-              if (Math.abs(e.offsetX - canvasCoord.x) <= private.circleRadius &&
-                  Math.abs(e.offsetY - canvasCoord.y) <= private.circleRadius) {
+              if (Math.abs(e.offsetX - canvasCoord.x) <= local.circleRadius &&
+                  Math.abs(e.offsetY - canvasCoord.y) <= local.circleRadius) {
                 var text = annotation.text;
                 helpers.showAnnotationInput(e, text);
 
@@ -331,8 +415,8 @@ var EditorController = function() {
             }
 
             // Then look for range annotatations
-            for (var i = 0; i < private.rangeAnnotations.length; i++) {
-              var annotation = private.rangeAnnotations[i];
+            for (var i = 0; i < local.rangeAnnotations.length; i++) {
+              var annotation = local.rangeAnnotations[i];
               if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
                 var text = annotation.text;
                 helpers.showAnnotationInput(e, text);
@@ -354,35 +438,35 @@ var EditorController = function() {
 
         if (drawing) {
           
-          if (private.editType == "move") {
-            private.editorImg.move(e, lastEventCoord);
-            private.editorImg.draw();
+          if (local.editType == "move") {
+            local.editorImg.move(e, lastEventCoord);
+            local.editorImg.draw();
 
             helpers.drawAnnotations();
-          } else if (private.editType == "annotation") {
-            endCoord = private.editorImg.toImgCoord(lastEventCoord);
-            if (Math.abs(startCoord.x - endCoord.x) * private.editorImg.zoom <= private.circleRadius &&
-                Math.abs(startCoord.y - endCoord.y) * private.editorImg.zoom <= private.circleRadius) {
+          } else if (local.editType == "annotation") {
+            endCoord = local.editorImg.toImgCoord(lastEventCoord);
+            if (Math.abs(startCoord.x - endCoord.x) * local.editorImg.zoom <= local.circleRadius &&
+                Math.abs(startCoord.y - endCoord.y) * local.editorImg.zoom <= local.circleRadius) {
 
-              var annotation = new PointAnnotation("", endCoord, private.ctx, 
-                                                        private.editorImg, private.image_id, 
-                                                        private.circleRadius); 
+              var annotation = new PointAnnotation("", endCoord, local.ctx, 
+                                                        local.editorImg, local.image_id, 
+                                                        local.circleRadius); 
 
-              private.editorImg.draw();
+              local.editorImg.draw();
               helpers.drawAnnotations();
               annotation.draw();                
             } else {
               
               var annotation = new RangeAnnotation("", startCoord, endCoord, 
-                                                        private.ctx, private.editorImg, 
-                                                        private.image_id); 
+                                                        local.ctx, local.editorImg, 
+                                                        local.image_id); 
 
-              private.editorImg.draw();
+              local.editorImg.draw();
               helpers.drawAnnotations();
               annotation.draw();                  
             }
           } else {
-            throw new Error("Invalid editType:" + private.editType);
+            throw new Error("Invalid editType:" + local.editType);
           }
 
           lastEventCoord = getEventCoord(e);
@@ -392,27 +476,27 @@ var EditorController = function() {
       $("body").on("mouseup", function(e) {
         
         if (drawing) {
-          if (private.editType == "edit") {
+          if (local.editType == "edit") {
 
-          } else if (private.editType == "move") {
-            private.editorImg.draw();
+          } else if (local.editType == "move") {
+            local.editorImg.draw();
             helpers.drawAnnotations();
-          } else if (private.editType == "annotation") {
-            private.editorImg.draw();
+          } else if (local.editType == "annotation") {
+            local.editorImg.draw();
             helpers.drawAnnotations();
-            if (private.annotation && private.annotation.text.trim().length == 0) {
+            if (local.annotation && local.annotation.text.trim().length == 0) {
               helpers.deleteAnnotation();
-            } else if (!private.annotation || private.annotation.mutex.state() == "resolved") {
+            } else if (!local.annotation || local.annotation.mutex.state() == "resolved") {
 
-              endCoord = private.editorImg.toImgCoord(lastEventCoord);
-              if (Math.abs(startCoord.x - endCoord.x) <= private.circleRadius &&
-                  Math.abs(startCoord.y - endCoord.y) <= private.circleRadius) {
+              endCoord = local.editorImg.toImgCoord(lastEventCoord);
+              if (Math.abs(startCoord.x - endCoord.x) <= local.circleRadius &&
+                  Math.abs(startCoord.y - endCoord.y) <= local.circleRadius) {
 
-                helpers.setAnnotation(new PointAnnotation("", endCoord, private.ctx, 
-                                                          private.editorImg, private.image_id, 
-                                                          private.circleRadius), 
+                helpers.setAnnotation(new PointAnnotation("", endCoord, local.ctx, 
+                                                          local.editorImg, local.image_id, 
+                                                          local.circleRadius), 
                                       function(annotation) {
-                  private.pointAnnotations.push(annotation);
+                  local.pointAnnotations.push(annotation);
                   annotation.draw();
 
                   // Show input box
@@ -421,10 +505,10 @@ var EditorController = function() {
               } else {
                 
                 helpers.setAnnotation(new RangeAnnotation("", startCoord, endCoord, 
-                                                          private.ctx, private.editorImg, 
-                                                          private.image_id), 
+                                                          local.ctx, local.editorImg, 
+                                                          local.image_id), 
                                       function(annotation) {
-                  private.rangeAnnotations.push(annotation);
+                  local.rangeAnnotations.push(annotation);
                   annotation.draw();
 
                   // Show input box
@@ -434,7 +518,7 @@ var EditorController = function() {
 
             }
           } else {
-            throw new Error("Invalid editType:" + private.editType);
+            throw new Error("Invalid editType:" + local.editType);
           }
 
           startCoord = undefined;
@@ -444,9 +528,9 @@ var EditorController = function() {
 
         if (dragging) {
           dragging = false;
-          private.annotation.submit();
+          local.annotation.submit();
         } else {
-          if (private.editType == "edit") {
+          if (local.editType == "edit") {
             if (overAnnotation) {
               helpers.showAnnotationInput(e);
               annotationClicked = true;
@@ -464,7 +548,7 @@ var EditorController = function() {
 
       // Edit type
       var changeEditType = function(editType, mouseType, $this) {
-        private.editType = editType;
+        local.editType = editType;
         $("#imageCanvas").css("cursor", mouseType);
         $(".editTypeBtn").attr("disabled", false)
                          .removeClass("highlight");
@@ -506,20 +590,20 @@ var EditorController = function() {
       $("#annotationInput").on("keyup", function(e) {
 
         if (e.keyCode == 13) { // Enter
-          if (private.annotation) {
+          if (local.annotation) {
             annotationClicked = false;
             if ($(this).val().trim().length == 0) {
               helpers.deleteAnnotation();
 
             } else {
-              private.annotation.text = $(this).val();
-              private.annotation.submit();
+              local.annotation.text = $(this).val();
+              local.annotation.submit();
             }
             helpers.hideAnnotationInput(annotationClicked);
           }
         } else if (e.keyCode == 27) { // Escape
-          if (private.annotation.mutex.state() == "resolved") {
-            if (!private.annotation.inDB()) {
+          if (local.annotation.mutex.state() == "resolved") {
+            if (!local.annotation.inDB()) {
               helpers.deleteAnnotation();              
               helpers.setAnnotation(undefined);
             }
@@ -527,8 +611,8 @@ var EditorController = function() {
             annotationClicked = false;
             helpers.hideAnnotationInput(annotationClicked);
           } else {
-            private.annotation.mutex.done(function() {
-              if (!private.annotation.inDB()) {
+            local.annotation.mutex.done(function() {
+              if (!local.annotation.inDB()) {
                 helpers.deleteAnnotation();               
                 helpers.setAnnotation(undefined);
               }
@@ -541,16 +625,32 @@ var EditorController = function() {
       });
     })();
 
+    // Add Tags
+    $("#addTagForm").on("submit", function(e) {
+      e.preventDefault();
+
+      var data = $(this).serializeArray();
+      ajax.addTag(data);
+    });
+
+    // Add contributions
+    $("#addContributionForm").on("submit", function(e) {
+      e.preventDefault()
+
+      var username = $(this)[0].elements["username"].value;
+
+      ajax.addContributor(username);
+    });
+
     // Tooltips
-    $("#zoomInBtn").tooltip({placement: "bottom", title: "Zoom in"})
-    $("#zoomOutBtn").tooltip({placement: "bottom", title: "Zoom out"})
-    $("#editBtn").tooltip({placement: "bottom", title: "Edit and view annotations"})
-    $("#annotationBtn").tooltip({placement: "bottom", title: "Create annotation"})
-    $("#moveBtn").tooltip({placement: "bottom", title: "Move image"})
+    $("#zoomInBtn").tooltip({placement: "bottom", title: "Zoom in"});
+    $("#zoomOutBtn").tooltip({placement: "bottom", title: "Zoom out"});
+    $("#editBtn").tooltip({placement: "bottom", title: "Edit and view annotations"});
+    $("#annotationBtn").tooltip({placement: "bottom", title: "Create annotation"});
+    $("#moveBtn").tooltip({placement: "bottom", title: "Move image"});
+
+    return exports;
   }
 
-  return {
-    public: public, 
-    init: init
-  }
-}
+  init();
+});

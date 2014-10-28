@@ -10,48 +10,91 @@ block head
   script(type="text/javascript", src="javascripts/helpers/coord.js")
   script(type="text/javascript", src="javascripts/helpers/editorImg.js")
   script(type="text/javascript", src="javascripts/mixins/editorController.js")
-  link(rel="stylesheet", href="stylesheets/editor.css")
+
+  include css.jade
+  +css('editor')
+  +css('tag')
+
+  include tag.jade
 
 mixin editor(imgUrl, image_id)
-  script.
-    var editorController = new EditorController();
-    $(document).ready(function() {
-      editorController.init("#{imgUrl}", "#{image_id}");
-    });
+  div#div-image-data(data-imageUrl="#{imgUrl}", data-image-id="#{image_id}")
+  div(id="editor", data-ng-controller="editorController")
+    div#annotationInputCont
+      input#annotationInput.form-control(name="annotationNote", 
+                                         placeholder="Leave empty and press enter to delete", 
+                                         autocomplete="off")
+      button#annotationDeleteBtn.btn.btn-danger
+        span.glyphicon.glyphicon-trash
 
-  div#annotationInputCont
-    input#annotationInput.form-control(name="annotationNote", 
-                                       placeholder="Leave empty and press enter to delete", 
-                                       autocomplete="off")
-    button#annotationDeleteBtn.btn.btn-danger
-      span.glyphicon.glyphicon-trash
+    table#editorTable
+      tbody
+        tr
+          td
+            div.editorSection
+              canvas(id="imageCanvas")
+          td#editorControlsCol
+            div.editorSection
+              legend
+                h2 Controls
+                table
+                  tbody
+                    tr
+                      td
+                        div.btn-group
+                          button(id="zoomInBtn", class="btn btn-default")
+                            span.glyphicon.glyphicon-zoom-in
+                          button(id="zoomOutBtn", class="btn btn-default")
+                            span.glyphicon.glyphicon-zoom-out
+                      td
+                        div.btn-group
+                          button(id="editBtn", class="btn btn-default editTypeBtn")
+                            span.glyphicon.glyphicon-pencil
+                          button(id="annotationBtn", class="btn btn-default editTypeBtn highlight", disabled) 
+                            span.glyphicon.glyphicon-record
+                          button(id="moveBtn", class="btn btn-default editTypeBtn")
+                            span.glyphicon.glyphicon-move
+              legend
+                h2 Tags
+                table
+                  tbody
+                    tr
+                      form#addTagForm
+                        td(width="100%")
+                          input.form-control(name="tag", placeholder="Add tag")
+                        td(style="padding-left: 5px")
+                          button.btn.btn-default(type="submit")
+                            span.glyphicon.glyphicon-plus
+                span(ng-if="viewModel.tags")
+                  div(class="tagContainer", ng-repeat="tag in viewModel.tags")
+                    +tag('{{tag.tag_name}}')
 
-  table#editorTable
-    tbody
-      tr
-        td
-          div.editorSection
-            canvas(id="imageCanvas")
-        td#editorControlsCol
-          div.editorSection
-            legend
-              h2 Controls
-              table
-                tbody
-                  tr
-                    td
-                      div.btn-group
-                        button(id="zoomInBtn", class="btn btn-default")
-                          span.glyphicon.glyphicon-zoom-in
-                        button(id="zoomOutBtn", class="btn btn-default")
-                          span.glyphicon.glyphicon-zoom-out
-                    td
-                      div.btn-group
-                        button(id="editBtn", class="btn btn-default editTypeBtn")
-                          span.glyphicon.glyphicon-pencil
-                        button(id="annotationBtn", class="btn btn-default editTypeBtn highlight", disabled) 
-                          span.glyphicon.glyphicon-record
-                        button(id="moveBtn", class="btn btn-default editTypeBtn")
-                          span.glyphicon.glyphicon-move
-                
-                
+
+              legend
+                h2 Contributors
+                table
+                  tbody
+                    tr
+                      form#addContributionForm
+                        td(width="100%")
+                          input.form-control(name="username", placeholder="Add contributors")
+                        td(style="padding-left: 5px")
+                          button.btn.btn-default(type="submit")
+                            span.glyphicon.glyphicon-plus
+                div.alert.alert-danger.contributionError(ng-if="viewModel.contributionError")
+                  button(type="button" class="close" data-dismiss="alert")
+                    span(aria-hidden="true") ×
+                    span(class="sr-only") Close
+                  span(ng-bind="viewModel.contributionErrorText")
+                span(ng-if="viewModel.contributions")
+                  div(class="contributionsContainer", ng-repeat="contribution in viewModel.contributions.contributions")
+                    table
+                      tbody
+                        tr
+                          td(width="100%")
+                            span(ng-bind="viewModel.contributions.userIDToUser[contribution.user_id].username")
+                          td
+                            form.deleteContributionForm
+                              input(name="contribution_id", value="{{contribution._id}}", type="hidden")
+                              button(type="submit", class="btn btn-danger")
+                                span.glyphicon.glyphicon-trash
