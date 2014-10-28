@@ -88,7 +88,6 @@ medImageApp.service('medImageService', function() {
       [count]: <number of matched tags> }
   **/
   function turnToGridFormat(sortedPhotos, imagesIdToImage){
-    debugger;
     var result = [];
     for (var i = 0; i < sortedPhotos.length; i++){
       var imageId = sortedPhotos[i]._id;
