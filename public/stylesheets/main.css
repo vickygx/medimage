@@ -1,5 +1,50 @@
+body {
+  margin: 0;
+}
+.navBar {
+  position: fixed;
+  height: 60px;
+  width: 100%;
+  background-color: rgb(34, 34, 36);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+.navBar .navItem {
+  display: inline-block;
+  line-height: 60px;
+  margin: 0 5px;
+}
+
+#homeButton, #clearButton {
+  float: right;
+}
+
+#searchForm input{
+  height: 30px;
+  vertical-align:middle;
+  margin: 0 5px;
+  line-height: 30px;
+  width: 400px;
+}
+
+@media (max-width: 740px) {
+  #searchForm input {
+    width: 200px;
+  }
+}
+
+@media (max-width: 520px) {
+  #searchForm input {
+    display: none;
+  }
+}
+
 .gridContainer {
-  position: absolute;
-  top: 140px;
-  left: 50px;
+  position: relative;
+  margin: 60px auto 0 auto;
+  padding: 20px;
+  text-align: center;
 }

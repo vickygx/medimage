@@ -12,19 +12,23 @@ block head
 
 block content
   div(data-ng-controller='medImageAppController')
+    //- Navigation bar
+    div.navBar
+      div(class="navItem")
+        button(class="display-user-images btn btn-default") User
+      div(class="navItem")
+        form(id="searchForm")
+          input(name="tags" type="text" placeholder="tags deliminated by ','")
+          button(class="get-searched-images-form btn btn-default") search
+      div(class="navItem" id="homeButton")
+        button(class="display-all-images btn btn-default") Home
+      div(class="navItem" id="clearButton")
+        button(class="clear-images btn btn-default") clearImages
+
+    //- Grid Container
     div.gridContainer
-      h2 Images in grid
       +grid('grid')
 
-    <br>
-    button(class="display-user-images btn btn-default") getUserImages
-    <br>
-    form
-      input(name="tags" type="text" placeholder="tags")
-      button(class="get-searched-images-form btn btn-default") getSearchImages
-    <br>
-    button(class="display-all-images btn btn-default") getAllImages
-    <br>
-    button(class="clear-images btn btn-default") clearImages
+    
 
 
