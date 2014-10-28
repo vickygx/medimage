@@ -30,6 +30,11 @@ medImageApp.controller("medImageAppController", function($scope) {
   })();
 
   var eventHandlers = function() {
+    $("#logoutButton").on("click", function() {
+      ajaxController.post("/logout").always(function() {
+        window.location.replace("/");
+      });
+    });
   }
 
   var init = (function() {
