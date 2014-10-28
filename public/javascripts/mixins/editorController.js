@@ -198,10 +198,31 @@ medImageApp.controller('editorController', function($scope) {
       });
     }
 
+    var deleteTagSubmit = function(e) {
+      e.preventDefault();
+
+      var tagName = $(this)[0].elements["tag"].value;
+      var data = {
+        tag: tagName
+      }
+      ajaxController.del('/tag/' + local.image_id, data).done(function() {
+        for (var i = 0; i < public.tags.length; i++) {
+          if (tagName == public.tags[i].tag_name) {
+            public.tags.splice(i, 1);
+            break;
+          }
+        }
+
+        $scope.$apply();
+      });
+    }
+
     exports.getTags = function() {
       return ajaxController.get('/tag/' + local.image_id).done(function(res) {
         public.tags = res;
         $scope.$apply();
+
+        $(".deleteTagForm").on("submit", deleteTagSubmit);
       }).fail(function(e) {
         alert(e.responseText);
       }); 
@@ -213,9 +234,7 @@ medImageApp.controller('editorController', function($scope) {
         public.contributions = res;
         $scope.$apply();
 
-        // Collaborators
         $(".deleteContributionForm").on("submit", deleteContributionSubmit);
-
       }).fail(function(e) {
         alert(e.responseText);
       });
@@ -224,9 +243,10 @@ medImageApp.controller('editorController', function($scope) {
     exports.addTag = function(data) {
       return ajaxController.post('/tag/' + local.image_id, data).done(function(res) {
         public.tagError = false;
+        $(".deleteTagForm").off("submit", deleteContributionSubmit);
 
         exports.getTags();
-      }).fail(function(res) {
+      }).fail(function(e) {
         public.tagError = true;
         public.tagErrorText = e.responseText;
         $scope.$apply();

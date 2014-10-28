@@ -65,9 +65,19 @@ mixin editor(imgUrl, image_id)
                         td(style="padding-left: 5px")
                           button.btn.btn-default(type="submit")
                             span.glyphicon.glyphicon-plus
+                div.alert.alert-danger.error(ng-if="viewModel.tagError")
+                  button(type="button" class="close" data-dismiss="alert")
+                    span(aria-hidden="true") ×
+                    span(class="sr-only") Close
+                  span(ng-bind="viewModel.tagErrorText")
                 span(ng-if="viewModel.tags")
                   div(class="tagContainer", ng-repeat="tag in viewModel.tags")
                     +tag('{{tag.tag_name}}')
+                    form.deleteTagForm
+                      input(type="hidden", name="tag", value="{{tag.tag_name}}")
+                      button(type="submit" class="close" data-dismiss="tagContainer")
+                        span(aria-hidden="true") ×
+                        span(class="sr-only") Close
 
 
               legend
@@ -81,7 +91,7 @@ mixin editor(imgUrl, image_id)
                         td(style="padding-left: 5px")
                           button.btn.btn-default(type="submit")
                             span.glyphicon.glyphicon-plus
-                div.alert.alert-danger.contributionError(ng-if="viewModel.contributionError")
+                div.alert.alert-danger.error(ng-if="viewModel.contributionError")
                   button(type="button" class="close" data-dismiss="alert")
                     span(aria-hidden="true") ×
                     span(class="sr-only") Close
