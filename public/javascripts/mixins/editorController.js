@@ -5,7 +5,9 @@ medImageApp.controller('editorController', function($scope) {
   // Public /////////////////////////////////////////////////////////
 
   var public = $scope.viewModel = {
-
+    user: {
+      username: $("#div-user-data")[0].getAttribute("data-username")
+    }
   }
 
   // Private ////////////////////////////////////////////////////////
@@ -272,6 +274,13 @@ medImageApp.controller('editorController', function($scope) {
       });
     }
 
+    exports.getMedImage = function(image_id) {
+      ajaxController.get('/medimages/' + image_id).done(function(res) {
+        local.medImage = res;
+        public.creator = res._creator;
+      });
+    }
+
     return exports;
   })();
 
@@ -285,8 +294,8 @@ medImageApp.controller('editorController', function($scope) {
       responsiveJS();
     });
 
+    ajax.getMedImage(local.image_id);
     ajax.getTags();
-
     ajax.getContributors();
 
     eventListeners();
