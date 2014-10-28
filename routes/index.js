@@ -22,11 +22,5 @@ module.exports = function(app){
   app.get('/editorTest', function(req, res) {
     res.render('editorTest', {title: 'Editor testing page'});
   });
-
-  //TODO, REMOVE THIS
-  app.get('/userinfo', isLoggedIn, function(req, res, next) {
-    res.write("user info is: " + JSON.stringify(req.session.user));
-    res.end();
-  });
 };
 

@@ -52,13 +52,7 @@ module.exports.createUser = function(data, callback) {
       return callback(errors.users.alreadyExistsError);
     }
 
-    User.create(data, function(err) {
-      if (err) {
-        return callback(err);
-      }
-
-      callback();
-    });
+    User.create(data, callback);
   });
 }
 

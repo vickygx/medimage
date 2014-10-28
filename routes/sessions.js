@@ -1,5 +1,8 @@
 var UserController = require('../controllers/user');
 
+//Error Modules
+var Errors = require('../errors/errors');
+
 module.exports = function(app) {
 
   app.post('/login', function(req, res, next) {
@@ -12,16 +15,15 @@ module.exports = function(app) {
       }
       if (user && user.password === password) {
         req.session.user = user;
-        res.redirect('/main');
+        res.json({});
       } else {
-        //Redirect back to log in page
-        res.redirect('/');
+        return next(Errors.sessions.badLoginError);
       }
     });
   });
 
   app.post('/logout', function(req, res, next) {
     req.session.destroy();
-    res.redirect('/');
+    res.json({});
   });
 }

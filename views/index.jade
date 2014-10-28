@@ -3,20 +3,28 @@ extends layout
 block head
   link(rel="stylesheet", href="/stylesheets/index.css")
 
-block content
-  h1= title
-  div.formContainer#loginContainer
-    h3 Login in here!
-    form#loginForm(action="/login" method="POST")
-      input(type="text" name="username" placeholder="Username" required)
-      input(type="password" name="password" placeholder="Password" required)
-      input(type="submit")
+  script(type="text/javascript" src="/javascripts/index/index.js")
 
-  div.formContainer#registerContainer
-    h3 Register here!
-    form#registerForm(action="/fuckit" method="POST")
-      input(type="text" name="first_name" placeholder="First Name" required)
-      input(type="text" name="last_name" placeholder="Last Name" required)
-      input(type="text" name="username" placeholder="Username" required)
-      input(type="password" name="password" placeholder="Password" required)
-      input(type="submit")
+block content
+  div#landingPageContainer(data-ng-controller="indexController")
+    h1#pageTitle= title
+    div.formContainer#loginContainer(ng-show="viewModel.isLogin")
+      p.startMessage Who likes Vicky?!
+      form#loginForm
+        input(type="text" name="username" placeholder="Username" required)
+        input(type="password" name="password" placeholder="Password" required)
+        div.formError
+        input.submitBtn(type="submit" value='Log In')
+      p New to MedImage? 
+        a.switchFormLink(ng-click="switchForm()") Register here!
+    div.formContainer#registerContainer(ng-show="!viewModel.isLogin")
+      p.startMessage Join the MedImage Movement
+      form#registerForm
+        input.nameInput#firstName(type="text" name="first_name" placeholder="First Name" required)
+        input.nameInput(type="text" name="last_name" placeholder="Last Name" required)
+        input(type="text" name="username" placeholder="Username" required)
+        input(type="password" name="password" placeholder="Password" required)
+        div.formError
+        input.submitBtn(type="submit" value="Sign Up")
+      p Already have an account? 
+        a.switchFormLink(ng-click="switchForm()") Login here!

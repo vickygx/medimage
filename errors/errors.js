@@ -7,6 +7,7 @@ module.exports.tags = {};
 module.exports.search = {};
 module.exports.uploads = {};
 module.exports.users = {};
+module.exports.sessions = {};
 
 /////////////////////////////////////////////////////////////////////
 // Global errors
@@ -105,4 +106,12 @@ module.exports.users.notFound = {
   status: 400, 
   name: "Bad input", 
   message: "Unable to find the user"
+}
+
+// Session errors ///////////////////////////////////////////////////
+
+module.exports.sessions.badLoginError = {
+  status: 400,
+  name: "Bad Login",
+  message: "Bad login credentials, please try again"
 }
