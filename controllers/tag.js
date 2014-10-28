@@ -6,6 +6,10 @@ var errors = require('../errors/errors');
 module.exports = {}
 
 
+var getTagKey = function(tagname){
+  return tagname.trim().toLowerCase();
+}
+
 /*  
     Function that adds a tag called tagname to the image with
     image id
@@ -13,8 +17,9 @@ module.exports = {}
       fn - callback function 
 */
 module.exports.addTagTo = function(imageId, tagname, fn){
+  var tag_key = getTagKey(tagname);
   // Check if tag already associated with imageId
-  Tag.find({_image: imageId, tag_name: tagname.trim()}, function(err, tag){
+  Tag.find({_image: imageId, tag_name: tag_key}, function(err, tag){
     if (err)
       fn(err);
     else if (tag && tag.length > 0){
@@ -24,7 +29,7 @@ module.exports.addTagTo = function(imageId, tagname, fn){
       // Create new tag relationship 
       var tag = new Tag({
         _image: imageId,
-        tag_name: tagname.trim()
+        tag_name: tag_key
       });
 
       // Add to database
@@ -41,9 +46,10 @@ module.exports.addTagTo = function(imageId, tagname, fn){
       fn - callback function 
 */
 module.exports.removeTagFrom = function(imageId, tagname, fn){
+  var tag_key = getTagKey(tagname);
   // Finds and removes the tag relationship object
   Tag.findOneAndRemove(
-    {_image: imageId, tag_name: tagname}, fn);
+    {_image: imageId, tag_name: tag_key}, fn);
 }
 
 /**
@@ -75,7 +81,8 @@ module.exports.getTagsOf = function(imageId, fn){
       fn - callback function 
 */
 module.exports.getPhotosWithEitherTag = function(tags, fn){
-  Tag.find({tag_name: {$in: tags }}, fn);
+  var tag_keys = tags.map(function(tag){ return getTagKey(tag);});
+  Tag.find({tag_name: {$in: tag_keys }}, fn);
 }
 
 /*  Function that searches for images with the listed tags
@@ -85,10 +92,11 @@ module.exports.getPhotosWithEitherTag = function(tags, fn){
       tags: list of strings of tag names
 */ 
 module.exports.searchPhotosWithTags = function(tags, limit, fn){
+  var tag_keys = tags.map(function(tag){ return getTagKey(tag);});
   Tag.aggregate(
     [
       { $match: {
-          tag_name: {$in: tags}
+          tag_name: {$in: tag_keys}
       }},
       { $group: {
           _id: "$_image",

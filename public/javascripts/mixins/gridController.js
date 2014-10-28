@@ -53,7 +53,7 @@ medImageApp.controller('gridController', function($scope, medImageService) {
     });
 
     $('#testSearchButton').click(function(){
-      medImageService.displaySearchedImages($scope, "tag=hi&tag=sup");
+      medImageService.displaySearchedImages($scope, "tag=hi&tag=DNA");
     });
 
   }

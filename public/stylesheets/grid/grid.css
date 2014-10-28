@@ -2,7 +2,7 @@
   background-color: white;
   border-radius: 2px;
   border: 1px solid rgb(199, 199, 199);
-  height: 290px;
+  height: 310px;
   position: relative;
   width: 240px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -13,18 +13,23 @@
 
 .gridItem .image {
   width: 220px;
-  height: 200px;
+  height: 220px;
   overflow: hidden;
   margin: 10px auto 5px auto;
   text-align: center;
   border: 1px solid #ccc;
   border-radius: 3px;
+  position:relative;
 }
 
 .gridItem .image img {
-  max-width: 220px;
-  max-height: 190px;
   margin: 0 auto;
+  position: absolute;
+  top: -9999px;
+  bottom: -9999px;
+  left: -9999px;
+  right: -9999px;
+  margin: auto;
 }
 
 .gridItem .title {

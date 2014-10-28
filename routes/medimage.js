@@ -11,6 +11,16 @@ Errors = require('../errors/errors');
 
 module.exports = function(app) {
 
+  // Gets all medical images
+  app.get('/medimages', function(req, res, next){
+    var limit = 50;
+    MedImageController.getAllMedImages(limit, function(err, images){
+      if (err)
+        return next(err);
+      res.json(images);
+    })
+  });
+
   // Gets the medical images for a user
   app.get('/users/:username/medimages', function(req, res, next) {
     var username = req.params.username;
