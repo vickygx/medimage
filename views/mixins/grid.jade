@@ -17,8 +17,3 @@ mixin grid(id)
       div.tagsContainer
         div.tagItem(ng-repeat="tag in image.tags")
           +tag('{{tag}}')
-
-    <br>
-    button(id="testGridButton") getUserImages
-    <br>
-    button(id="testSearchButton") getSearchButton

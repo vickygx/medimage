@@ -4,6 +4,9 @@ var UserController = require('../controllers/user');
 var ContribController = require('../controllers/contribution');
 var AnnotationController = require('../controllers/annotation');
 var TagController = require('../controllers/tag');
+var errors = require('../errors/errors');
+var errorChecking = require('../errors/errorChecking');
+
 
 //Error Modules
 ErrorChecking = require('../errors/errorChecking');
@@ -13,17 +16,41 @@ module.exports = function(app) {
 
   // Gets all medical images
   app.get('/medimages', function(req, res, next){
-    var limit = 50;
+    var limit = errorChecking.search.isValidLimitType(req.query.limit) ? Number(req.query.limit) : 50;
+    var getTags = req.query.tag === 'true' ?  true: false;
+    
+    // Gets limit number of medical images
     MedImageController.getAllMedImages(limit, function(err, images){
-      if (err)
-        return next(err);
-      res.json(images);
+        // get tags for images
+        if (getTags){
+          var imageIds = images.map(function(image){ return image._id });
+
+          // Gets tags by image id
+          TagController.getTagsByImageIDs(imageIds, function(err, tags){
+            if (err)
+              return next(err);
+
+            // Creates a hash of imageId to tags
+            var tagHash = tags.reduce(function(prev, cur){
+              prev[cur._id] = cur.tags; 
+              return prev;
+            }, {});
+
+            res.json({'images': images, 'imageIdToTags': tagHash});
+          });
+        }
+        // If we want to get tags for each medical image
+        else {
+          res.json({'images': images});
+        }
+      
     })
   });
 
   // Gets the medical images for a user
   app.get('/users/:username/medimages', function(req, res, next) {
     var username = req.params.username;
+    var getTags = req.query.tag === 'true' ?  true: false;
 
     //get user
     UserController.getUserByUsername(username, function(err, user) {
@@ -35,10 +62,31 @@ module.exports = function(app) {
 
       //get images for user
       MedImageController.getMedImagesByUserID(user._id, function(err, images) {
-        if (err) {
+        if (err)
           return next(err);
+        
+        // get tags for images
+        if (getTags){
+          var imageIds = images.map(function(image){ return image._id });
+
+          // Gets tags by image id
+          TagController.getTagsByImageIDs(imageIds, function(err, tags){
+            if (err)
+              return next(err);
+
+            // Creates a hash of imageId to tags
+            var tagHash = tags.reduce(function(prev, cur){
+              prev[cur._id] = cur.tags; 
+              return prev;
+            }, {});
+
+            res.json({'images': images, 'imageIdToTags': tagHash});
+          });
         }
-        res.json(images);
+        // If we want to get tags for each medical image
+        else {
+          res.json({'images': images});
+        }
       });
     });
   });

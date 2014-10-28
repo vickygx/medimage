@@ -38,7 +38,6 @@ module.exports.addTagTo = function(imageId, tagname, fn){
   });
 }
 
-
 /*  
     Function that removes a tag called tagname
     associated with the image of image id
@@ -60,6 +59,28 @@ module.exports.removeTagFrom = function(imageId, tagname, fn){
  */
 module.exports.removeTagsFrom = function(imageID, fn) {
   Tag.remove({ _image: imageID }, fn);
+}
+
+/**
+ * Gets a list of imageId and tags that are associated with that imageId
+ *
+ * @param {Array} of imageID
+ * @param {Function} fn - callback function
+ *
+ * returns: list with each item in following format
+ *      {_id: <MedImage id>, tags: <set of tags>}
+ */
+module.exports.getTagsByImageIDs = function(imageIDs, fn){
+  Tag.aggregate(
+    [
+      { $match: {
+          _image: {$in: imageIDs}
+      }},
+      { $group: {
+          _id: "$_image",
+          tags: {$addToSet: '$tag_name'}
+      }},
+    ], fn);
 }
 
 /*  

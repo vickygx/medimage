@@ -30,11 +30,6 @@ medImageApp.controller("medImageAppController", function($scope) {
   })();
 
   var eventHandlers = function() {
-    $('#testButton').click(function(e){
-      e.preventDefault();
-      // console.log(gridController.viewModel);
-
-    });
   }
 
   var init = (function() {

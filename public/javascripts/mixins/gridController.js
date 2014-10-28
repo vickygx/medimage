@@ -48,12 +48,16 @@ medImageApp.controller('gridController', function($scope, medImageService) {
   })();
 
   function eventHandlers() {
-    $('#testGridButton').click(function(){
+    $('#testUserButton').click(function(){
       medImageService.displayUserImages($scope);
     });
 
     $('#testSearchButton').click(function(){
       medImageService.displaySearchedImages($scope, "tag=hi&tag=DNA");
+    });
+
+    $('#testAllButton').click(function(){
+      medImageService.displayAllImages($scope);
     });
 
   }

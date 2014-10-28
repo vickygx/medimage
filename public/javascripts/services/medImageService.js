@@ -42,9 +42,11 @@ medImageApp.service('medImageService', function() {
   // Define shared methods
   function displayUserImages(scope){
     // TODO: check if grid exists
-    ajaxController.get("/users/" + scope.user + "/medimages")
+    ajaxController.get("/users/" + scope.user + "/medimages?tag=true")
       .success(function(res) {
-        scope.viewModel.images = res;
+        var images = combineImageAndTagHash(res.images , res.imageIdToTags);
+
+        scope.viewModel.images = images;
         scope.$apply();
         resizeImages();
       })
@@ -57,7 +59,7 @@ medImageApp.service('medImageService', function() {
   function displaySearchedImages(scope, tagQuery){
     ajaxController.get("/search/tags?" + tagQuery)
       .success(function(res) {
-        var images = turnToGridFormat(res.photos , res.imageIdToImage)
+        var images = combineSortedImageAndImageHash(res.images , res.imageIdToImage);
 
         scope.viewModel.images = images;
         scope.$apply();
@@ -73,9 +75,11 @@ medImageApp.service('medImageService', function() {
 
   function displayAllImages(scope){
     // TODO: check if grid exists
-    ajaxController.get("/users/" + scope.user + "/medimages")
+    ajaxController.get("/medimages?tag=true")
       .success(function(res) {
-        scope.viewModel.images = res;
+        var images = combineImageAndTagHash(res.images, res.imageIdToTags);
+        
+        scope.viewModel.images = images;
         scope.$apply();
         resizeImages();
       })
@@ -109,12 +113,14 @@ medImageApp.service('medImageService', function() {
         tags: <list of tags matched>
       }
       imagesIdToImage are formatted such:
-      {
-        _id:
-        _creator:
-        title:
-        image_url:
-      }
+        key: <mongo id for med image>
+        value: 
+          {
+            _id:
+            _creator:
+            title:
+            image_url:
+          }
     Resulting format:
     { _id: <mongo id for med image>
       image_url: <url for image>
@@ -122,29 +128,66 @@ medImageApp.service('medImageService', function() {
       tags: <array of strings that are tag names>
       [count]: <number of matched tags> }
   **/
-  function turnToGridFormat(sortedPhotos, imagesIdToImage){
+  function combineSortedImageAndImageHash(sortedPhotos, imageIdToImage){
     var result = [];
+    var imageId, imageObject, image;
     for (var i = 0; i < sortedPhotos.length; i++){
-      var imageId = sortedPhotos[i]._id;
-      var imageObject = imagesIdToImage[imageId];
-      var image = {
+      imageId = sortedPhotos[i]._id;
+      imageObject = imageIdToImage[imageId];
+      image = {
         _id: imageId,
         image_url: imageObject.image_url,
         title: imageObject.title,
         tags: sortedPhotos[i].tags,
         count: sortedPhotos[i].count
       }
-
       result.push(image);
-
     }
+    return result;
+  }
 
+  /**
+    Input: 
+      photos are formatted such:
+      {
+        _id: <mongo id for med image>
+        creator: 
+        title: 
+        image_url:
+      }
+      imageIdToTag are formatted such:
+      {
+        key: <mongo id for med image>
+        value: <list of tags (Strings)>
+      }
+    Resulting format:
+    { _id: <mongo id for med image>
+      image_url: <url for image>
+      title: <title of image>
+      tags: <array of strings that are tag names>
+    }
+  **/
+  function combineImageAndTagHash(photos, imageIdToTag){
+    var result = [];
+    var imageId, imageObject, image;
+    for (var i = 0; i < photos.length; i++){
+      imageId = photos[i]._id;
+      tagsList = imageIdToTag[imageId];
+      image = {
+        _id: imageId,
+        image_url: photos[i].image_url,
+        title: photos[i].title,
+        tags: tagsList ? tagsList : [],
+      }
+      result.push(image);
+    }
     return result;
   }
 
   // Share the methods
   return {
     displayUserImages: displayUserImages,
-    displaySearchedImages: displaySearchedImages
+    displaySearchedImages: displaySearchedImages,
+    displayAllImages: displayAllImages
   }
 });
