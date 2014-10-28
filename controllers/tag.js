@@ -99,3 +99,4 @@ module.exports.searchPhotosWithTags = function(tags, limit, fn){
       { $limit : limit }
     ], fn);
 }
+

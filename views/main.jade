@@ -4,10 +4,12 @@ block head
   include mixins/css.jade
   +css('grid')
   +css('tag')
+  +css('mainpage')
 
   include mixins/grid.jade
 
 block content
   div(data-ng-controller='medImageAppController')
-    +grid('gridContainer')
-//- button(id='testButton') click
+    div.gridContainer
+      h1 Images in grid
+      +grid('grid')

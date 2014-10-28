@@ -266,15 +266,14 @@ var DemoController = function() {
       $("#tagSearchForm").on("submit", function(e) {
         e.preventDefault();
         var tags = $("#tags").val().split(',');
-        var i;
         var tagString = '';
-        for (i = 0; i < tags.length ; i++){
+        for (var i = 0; i < tags.length ; i++){
           tagString += 'tag=' + tags[i].trim() + '&';
         }
         var limit = $('#tagSearchForm input[name="limit"]').val();
         tagString += 'limit=' + limit;
 
-        ajaxController.get('/search/tags?' + tagString, null)
+        ajaxController.get('/search/tags?' + tagString)
           .always(function(res) {
             $("#tagsPhotoGet").text(JSON.stringify(res));
         });

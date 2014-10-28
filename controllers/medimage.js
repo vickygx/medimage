@@ -45,6 +45,19 @@ var buildDirectory = function(folderPath, callback) {
 ///////////////// Controller methods /////////////////
 
 /**
+* Gets a list of medical images sorted by modification date
+*  
+* @param {Integer} limit the number of images to be returned
+* @param {Function} callback - callback called after getting images
+*/
+module.exports.getAllMedImages = function(limit, callback){
+  MedImage.find({})
+    .sort([['_id', -1]])
+    .limit(limit)
+    .exec(callback);
+}
+
+/**
  * Gets the medImage by ID
  *
  * @param {ObjectID} imageID - id of image
@@ -80,8 +93,8 @@ module.exports.getMedImagesByUserID = function(userID, callback) {
  * @param {[ObjectIDs]} imageIDs - list of imageIDs
  * @param {function} callback - callback called after getting images
  */
-module.exports.getMedImageURLs = function(imageIDs, callback) {
-  MedImage.find({ _id: {$in: imageIds}}, callback);
+module.exports.getMedImagesByIDs = function(imageIDs, callback) {
+  MedImage.find({ _id: {$in: imageIDs}}, callback);
 }
 
 /**

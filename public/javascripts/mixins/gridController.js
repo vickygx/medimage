@@ -5,7 +5,10 @@ medImageApp.controller('gridController', function($scope, medImageService) {
   // Public /////////////////////////////////////////////////////////
 
   var public = $scope.viewModel = {
-    images: [{id: 'Vicky', image_url: 'www.google.com/', title: 'Vicky Title', tags: ['what']}]
+    images: [{id: 'Vicky', image_url: 'http://www.nist.gov/oles/forensics/images/DNA-Strand.jpg', title: 'DNA Title', 
+            tags: ['DNA', 'Science', 'Genome', 'Acid', 'Sugar']},
+            {id: 'Calvin', image_url: 'http://www.nist.gov/oles/forensics/images/DNA-Strand.jpg', title: 'DNA2 Title', 
+            tags: ['DNA', 'Deoxy', 'Genome', 'Acid']}]
   }
 
 
@@ -18,30 +21,10 @@ medImageApp.controller('gridController', function($scope, medImageService) {
   })();
 
   var helpers = (function() {
+    function setAllImages(){}
+    function setSearchedImages(tags){}
+    function setUserImages(){}
 
-    function setAllImages(){
-      medImageService.method($scope) 
-    }
-
-    function setUserImages(){
-       ajaxController.get("/users/" + $scope.user + "/medimages")
-        .success(function(res) {
-          setImages(JSON.stringify(res));
-        })
-        .error(function(res){
-          console.log('error');
-        });
-    }
-
-    function setSearchedImages(tags){
-
-    }
-
-    function setImages(images){
-      public.images = images;
-      $scope.$apply();
-    }
- 
     function sizingJS() {}
 
     function responsiveJS() {
@@ -51,7 +34,6 @@ medImageApp.controller('gridController', function($scope, medImageService) {
     return {
       sizingJS: sizingJS, 
       responsiveJS: responsiveJS,
-      setImages: setImages
     }
   })();
 
@@ -67,7 +49,12 @@ medImageApp.controller('gridController', function($scope, medImageService) {
 
   function eventHandlers() {
     $('#testGridButton').click(function(){
-      medImageService.setUserImages($scope);
+      medImageService.displayUserImages($scope);
     });
+
+    $('#testSearchButton').click(function(){
+      medImageService.displaySearchedImages($scope, "tag=hi&tag=sup");
+    });
+
   }
 });
