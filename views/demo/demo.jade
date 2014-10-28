@@ -217,6 +217,26 @@ block content
         legend.responseLegend
           div Response: 
           div.responseDiv#contributionAccess
+      li Get all users contributing to an image
+        legend
+          form#imageContributorsForm
+            input(type="text", name="image_id", placeholder="Image ID" required)
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#contributionUsers
+      li Get all images a user is contribution to
+        legend
+          form#userContributionsForm
+            input(type="text", name="username", placeholder="Username" required)
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#contributionImages
       li Add a new contributor from an image
         legend
           form#createContributionForm

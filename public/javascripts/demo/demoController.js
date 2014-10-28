@@ -138,6 +138,29 @@ var DemoController = function() {
         });
       });
 
+      // Get all users contributing to an image
+      $("#imageContributorsForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var imageID = $(this)[0].elements["image_id"].value;
+
+        ajaxController.get("/medimages/" + imageID + "/contributions").always(function(res) {
+          $("#contributionUsers").text(JSON.stringify(res));
+        });
+
+      });
+
+      // Get all users contributing to an image
+      $("#userContributionsForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var username = $(this)[0].elements["username"].value;
+
+        ajaxController.get("/users/" + username + "/contributions").always(function(res) {
+          $("#contributionImages").text(JSON.stringify(res));
+        });
+      });
+
       // Create Contribution
       $("#createContributionForm").on("submit", function(e) {
         e.preventDefault();
