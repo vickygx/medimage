@@ -106,6 +106,7 @@ module.exports = function(app) {
       if (err) {
         return next(err);
       }
+
       if (!image) {
         return next(Errors.medimages.notFound);
       }

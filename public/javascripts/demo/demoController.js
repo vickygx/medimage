@@ -282,7 +282,7 @@ var DemoController = function() {
         });
       });
 
-      // Add a tag to the medical image with given id
+      // Remove a tag from the medical image with given id
       $("#tagRemoveForm").on("submit", function(e) {
 
         e.preventDefault();
@@ -295,7 +295,7 @@ var DemoController = function() {
         });
       });
 
-      // Add a tag to the medical image with given id
+      // Search tags
       $("#tagSearchForm").on("submit", function(e) {
         e.preventDefault();
         var tags = $("#tags").val().split(',');
