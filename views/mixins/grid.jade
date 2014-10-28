@@ -8,7 +8,8 @@ block head
 
 mixin grid(id)
   div.grid(id=id, data-ng-controller="gridController")
-    div(ng-init="user=#{JSON.stringify(session.user.username)}")
+    div(ng-init="$root.user=#{JSON.stringify(session.user.username)}")
+    div.error
     div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
       div.image
         img(ng-src='{{image.image_url}}')

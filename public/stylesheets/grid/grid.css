@@ -1,3 +1,7 @@
+.grid .error {
+  display: none;
+}
+
 .gridItem {
   background-color: white;
   border-radius: 2px;

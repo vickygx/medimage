@@ -8,15 +8,23 @@ block head
 
   include mixins/grid.jade
 
+  script(type="text/javascript", src="/javascripts/mainPage.js") 
+
 block content
   div(data-ng-controller='medImageAppController')
     div.gridContainer
-      h1 Images in grid
+      h2 Images in grid
       +grid('grid')
 
     <br>
-    button(id="testUserButton" class="btn btn-default") getUserImages
+    button(class="display-user-images btn btn-default") getUserImages
     <br>
-    button(id="testSearchButton" class="btn btn-default") getSearchImages
+    form
+      input(name="tags" type="text" placeholder="tags")
+      button(class="get-searched-images-form btn btn-default") getSearchImages
     <br>
-    button(id="testAllButton" class="btn btn-default") getAllImages
+    button(class="display-all-images btn btn-default") getAllImages
+    <br>
+    button(class="clear-images btn btn-default") clearImages
+
+

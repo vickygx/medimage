@@ -30,9 +30,6 @@ module.exports = function(app){
 
         res.json({'images': imageTags, 'imageIdToImage': imageHash});  
       });
-
     });
-    
   });
-
 }
