@@ -38,6 +38,8 @@ app.configure(function(){
   app.use(function(err, req, res, next) {
     if (err.status === 400) {
       res.send(400, err.message);
+    } else if (err.status === 401) {
+      res.send(401, err.message);
     } else if (err.status === 403) {
       res.send(403, err.message);
     } else if (err.status === 404) {

@@ -31,6 +31,12 @@ module.exports.invalidAppEnvError = {
   message: "Unexpected app environment"
 }
 
+module.exports.notLoggedIn = {
+  status: 401,
+  name: "Not Logged In",
+  message: "Not authorized. You must be logged in"
+}
+
 // Annotation errors ////////////////////////////////////////////////
 
 module.exports.annotations.missingTypeError = {
