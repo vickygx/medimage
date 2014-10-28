@@ -60,6 +60,19 @@ block content
   div.collectionDiv 
     h1.collectionTitle MedImages
     ul
+      li Get all images
+      legend
+        form#allMedImageForm
+          input(type="radio" name="tag" value="true")
+          span  Show tags 
+          input(type="radio" name="tag" value="false")
+          span  Do not show tags
+          br
+          input(type="submit")
+          br
+      legend.responseLegend
+        div Response: 
+        div.responseDiv#allMedImage
       li Get medical images for a user
         legend
           form#medImageForUserForm

@@ -10,10 +10,10 @@ body {
 
 #pageTitle {
   text-align: center;
-  font-size: 84px;
-  margin-top: 100px;
+  font-size: 80px;
+  margin-top: 76px;
   margin-bottom: 40px;
-  font-weight: normal;
+  font-weight: 300;
   color: white;
   text-shadow: 2px 2px 5px rgba(22, 22, 22, 1);
 }

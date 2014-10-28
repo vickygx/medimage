@@ -9,6 +9,7 @@
   display: inline-block;
   vertical-align: top;
   margin: 5px;
+  cursor: pointer;
 }
 
 .gridItem .image {

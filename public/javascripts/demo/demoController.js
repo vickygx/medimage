@@ -191,6 +191,16 @@ var DemoController = function() {
     /////////////////////////////////////////////////////////////////
 
     (function() {
+      $("#allMedImageForm").on("submit", function(e){
+        // prevent reload
+        e.preventDefault();
+        var showTag = $(this)[0].elements["tag"].value;
+
+        ajaxController.get('/medimages?tag=' + showTag).always(function(res){
+          $("#allMedImage").text(JSON.stringify(res));
+        })
+      });
+
       // Get MedImages for a User
       $("#medImageForUserForm").on("submit", function(e) {
         //prevent reload
