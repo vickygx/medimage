@@ -93,7 +93,7 @@ module.exports = function(app) {
 
   // Creates a medical image
   app.post('/medimages', function(req, res, next) {
-    var username = req.body.username;
+    var username = req.session.user.username;
     var title = req.body.title.trim();
     var medImage = req.files.medImage;
 

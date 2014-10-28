@@ -30,13 +30,13 @@ body {
   width: 400px;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 800px) {
   #searchForm input {
     width: 200px;
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 615px) {
   #searchForm input {
     display: none;
   }
