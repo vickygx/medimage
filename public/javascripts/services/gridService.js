@@ -230,17 +230,3 @@ medImageApp.directive('displayAllImages', ['gridService', function(gridService){
   }
 }]);
 
-/*  Directive to clear all iamges from display 
-*/
-medImageApp.directive('clearImages', ['gridService', function(gridService){
-  return {
-    restrict: "C", 
-    link: function(scope, element, attrs) {
-
-      element.bind("click", function(e){
-        gridService.clearImages();
-      });
-    }
-  }
-}]);
-
