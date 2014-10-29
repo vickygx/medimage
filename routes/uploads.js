@@ -1,3 +1,5 @@
+var isLoggedIn = require('./middleware/isLoggedIn');
+
 //Node Dependency Modules
 var path = require('path');
 
@@ -11,7 +13,7 @@ var Errors = require('../errors/errors');
 
 module.exports = function(app) {
 
-  app.get('/uploads/images/:username/:image_name', function(req, res, next) {
+  app.get('/uploads/images/:username/:image_name', isLoggedIn, function(req, res, next) {
     var username = req.params.username;
     var imageName = req.params.image_name;
 

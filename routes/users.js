@@ -9,6 +9,9 @@ module.exports = function(app) {
 
   // Gets all users
   app.get('/users', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
 
     UserController.getAllUsers(function(err, data) {
       if (err) {
@@ -51,7 +54,6 @@ module.exports = function(app) {
 
   // Edit an existing user
   app.put('/users/:username', function(req, res, next) {
-
     var updateData = {};
   
     // Empty inputs are not considered

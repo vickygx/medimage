@@ -1,4 +1,3 @@
-var isLoggedInAPI = require('./middleware/isLoggedInAPI');
 var MedImage = require('../data/models/medimage');
 var AnnotationController = require('../controllers/annotation');
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
@@ -11,9 +10,9 @@ module.exports = function(app){
 
   // Get all the annotations of the medical image
   // with the given id
-  app.get('/medImages/:id/annotations', isLoggedInAPI, function(err, req, res, next) {
-    if (err) {
-      return next(err);
+  app.get('/medImages/:id/annotations', function(req, res, next) {
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
     }
     var id = req.params.id;
 
@@ -32,9 +31,9 @@ module.exports = function(app){
   });
 
   // Create a new annotation
-  app.post('/annotations', isLoggedInAPI, function(err, req, res, next) {
-    if (err) {
-      return next(err);
+  app.post('/annotations', function(req, res, next) {
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
     }
 
     var data = req.body;
@@ -69,9 +68,9 @@ module.exports = function(app){
   });
 
   // Edit an existing annotation
-  app.put('/annotations/:id', isLoggedInAPI, function(err, req, res, next) {
-    if (err) {
-      return next(err);
+  app.put('/annotations/:id', function(req, res, next) {
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
     }
 
     var id = req.params.id
@@ -110,9 +109,9 @@ module.exports = function(app){
   });
 
   // Delete an annotation
-  app.del('/annotations/:id', isLoggedInAPI, function(err, req, res, next) {
-    if (err) {
-      return next(err);
+  app.del('/annotations/:id', function(req, res, next) {
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
     }
 
     var id = req.params.id;
