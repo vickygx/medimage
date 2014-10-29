@@ -1,6 +1,6 @@
 var medImageApp = angular.module('medImageApp');
 
-medImageApp.controller('editorController', function($scope) {
+medImageApp.controller('editorController', function($scope, $rootScope) {
 
   // Public /////////////////////////////////////////////////////////
 
@@ -19,8 +19,8 @@ medImageApp.controller('editorController', function($scope) {
   var setLocal = function() {
     local.ctx = $("#imageCanvas")[0].getContext('2d');
     local.img = new Image();
-    local.img.src = $("#div-image-data")[0].getAttribute("data-imageUrl");
-    local.image_id = $("#div-image-data")[0].getAttribute("data-image-id");
+    local.img.src = $rootScope.imgUrl;
+    local.image_id = $rootScope.image_id;
     local.editorImg = new EditorImg(local.img, new Coord(0, 0), 1, local.ctx, $("#imageCanvas")[0]);
     local.editType = "annotation";
     local.annotation;
@@ -394,6 +394,7 @@ medImageApp.controller('editorController', function($scope) {
   }
 
   var sizingJS = function() {
+    $(".editorContainer").height($(window).height() - 60);
     $("#imageCanvas")[0].width = $("#imageCanvas").parent().width();
     $("#imageCanvas")[0].height = $("#imageCanvas").parent().height();
   }

@@ -1,10 +1,11 @@
 var medImageApp = angular.module('medImageApp', []);
 
-medImageApp.controller("medImageAppController", function($scope) {
+medImageApp.controller("medImageAppController", function($scope, $rootScope) {
   // Public /////////////////////////////////////////////////////////
 
   var public = $scope.viewModel = {
-    images : [{test: 'hi'}]
+    images : [{test: 'hi'}], 
+    editing: false
   }
 
 
@@ -35,6 +36,12 @@ medImageApp.controller("medImageAppController", function($scope) {
         window.location.replace("/");
       });
     });
+
+    $scope.editImage = function(imgUrl, image_id) {
+      $rootScope.editing = true;
+      $rootScope.imgUrl = imgUrl;
+      $rootScope.image_id = image_id;
+    }
   }
 
   var init = (function() {

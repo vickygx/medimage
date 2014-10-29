@@ -138,6 +138,11 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
     clearImages: function(){
       service.images = [];
       $rootScope.$broadcast( 'images.update' );
+    },
+
+    setEditing: function(editing) {
+      $rootScope.editing = editing;
+      $rootScope.$apply();
     }
   }
   
@@ -169,6 +174,7 @@ medImageApp.directive('displaySearchedImages', ['gridService', function(gridServ
 
       element.bind("click", function(e){
         var tag = e.currentTarget.innerHTML;
+        gridService.setEditing(false);
         gridService.displaySearchedImages("tag=" + tag);
       });
     }
@@ -181,6 +187,7 @@ medImageApp.directive('displayUserImages', ['gridService', function(gridService)
     link: function(scope, element, attrs) {
 
       element.bind("click", function(e){
+        gridService.setEditing(false);
         gridService.displayUserImages();
       });
     }
@@ -193,6 +200,7 @@ medImageApp.directive('displayAllImages', ['gridService', function(gridService){
     link: function(scope, element, attrs) {
 
       element.bind("click", function(e){
+        gridService.setEditing(false);
         gridService.displayAllImages();
       });
     }

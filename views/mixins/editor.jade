@@ -17,9 +17,9 @@ block head
 
   include tag.jade
 
-mixin editor(imgUrl, image_id)
+mixin editor()
   div#div-user-data(data-username="#{session.user.username}")
-  div#div-image-data(data-imageUrl="#{imgUrl}", data-image-id="#{image_id}")
+  // div#div-image-data(data-imageUrl="{{viewModel.imgUrl}}", data-image-id="{{viewModel.image_id}}")
   div(id="editor", data-ng-controller="editorController")
     div#annotationInputCont
       input#annotationInput.form-control(name="annotationNote", 
