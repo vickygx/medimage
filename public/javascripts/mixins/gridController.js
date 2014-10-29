@@ -38,25 +38,10 @@ medImageApp.controller('gridController', function($scope, gridService) {
     // Updates the view
     var updateViewImages = function(){
       resizeImages();
-      if ($scope.viewModel.isUserPage){
-        $('#addGridImage').click(function(e){
-          $(e.currentTarget.parentElement).find('input[name="medImage"]').click();
-        });
-        $('#uploadImageForm').on("submit", function(e){
-          e.preventDefault();
-          var formData = new FormData($(this)[0]);
 
-          //upload image
-          $.ajax({
-            url: "/medimages",
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-          }).always(function(res) {
-            gridService.displayUserImages();
-          });
-        });
+      // Update add and upload event handlers
+      if ($scope.viewModel.isUserPage){
+        addImageEventHandlers();
       }
     }
     /** 
@@ -119,11 +104,32 @@ medImageApp.controller('gridController', function($scope, gridService) {
 
   var init = (function() {
     helpers.displayAllImages();
-    eventHandlers();
   })();
 
-  function eventHandlers() {
+  function addImageEventHandlers() {
+    // Click handler for adding image 
+    $('#addGridImage').click(function(e){
+      $(e.currentTarget.parentElement).find('input[name="medImage"]').click();
+    });
 
+    // Handler for submit
+    $('#uploadImageForm').on("submit", function(e){
+      e.preventDefault();
+      var formData = new FormData($(this)[0]);
+
+      // Upload image
+      $.ajax({
+        url: "/medimages",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+      }).success(function(res){
+        $('#uploadImageForm')[0].reset();
+      }).always(function(res) {
+        gridService.displayUserImages();
+      });
+    });
   }
 });
 
