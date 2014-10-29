@@ -54,6 +54,11 @@ module.exports = function(app) {
 
   // Edit an existing user
   app.put('/users/:username', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    } else if (req.session.user.username != username) {
+      return next(Errors.notAuthorized);
+    }
     var updateData = {};
   
     // Empty inputs are not considered

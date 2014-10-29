@@ -29,6 +29,8 @@ module.exports = function(app) {
         return next(err);
       } else if (!image) {
         return next(Errors.medimages.notFound);
+      } else if (image._creator != req.session.user._id) {
+        return next(Errors.notAuthorized);
       }
 
       //Check if user exists
@@ -64,12 +66,31 @@ module.exports = function(app) {
       return next(Errors.invalidIdError);
     }
 
-    ContriController.deleteContribution(contribID, function(err) {
+    ContriController.getContributionByID(contribID, function(err, contribution) {
       if (err) {
         return next(err);
+      } else if (!contribution) {
+        res.json({});
+        return;
       }
 
-      res.json({});
+      MedImageController.getMedImageByID(contribution.image_id, function(err, image) {
+        if (err) {
+          return next(err);
+        } else if (!image) {
+          return next(Errors.medimages.notFound);
+        } else if (image._creator != req.session.user._id) {
+          return next(Errors.notAuthorized);
+        }
+
+        ContriController.deleteContribution(contribID, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.json({});
+        });
+      });
     });
   });
 

@@ -1,4 +1,4 @@
-var MedImage = require('../data/models/medimage');
+var ContribController = require('../controllers/contribution');
 var AnnotationController = require('../controllers/annotation');
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
 var RangeAnnotation = require('../data/models/annotation/rangeAnnotation');
@@ -58,12 +58,21 @@ module.exports = function(app){
       delete data.end_y;
     }
 
-    AnnotationController.createAnnotation(req.body.type, data, function(err, annotation) {
+    ContribController.hasAccess(req.session.user._id, data.image_id, function(err, access) {
       if (err) {
         return next(err);
       }
+      if (!access.has_access) {
+        return next(errors.notAuthorized);
+      }
 
-      res.json(annotation);
+      AnnotationController.createAnnotation(req.body.type, data, function(err, annotation) {
+        if (err) {
+          return next(err);
+        }
+
+        res.json(annotation);
+      });
     });
   });
 
@@ -99,12 +108,31 @@ module.exports = function(app){
       data.end_point = {x: req.body.end_x, y: req.body.end_y};
     } 
 
-    AnnotationController.updateAnnotation(id, type, data, function(err) {
+    AnnotationController.getAnnotationByID(id, type, function(err, annotation) {
       if (err) {
         return next(err);
       }
+      if (!annotation) {
+        res.json({});
+        return;
+      }
 
-      res.json({});
+      ContribController.hasAccess(req.session.user._id, annotation.image_id, function(err, access) {
+        if (err) {
+          return next(err);
+        }
+        if (!access.has_access) {
+          return next(errors.notAuthorized);
+        }
+
+        AnnotationController.updateAnnotation(id, type, data, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.json({});
+        });
+      });
     });
   });
 
@@ -127,12 +155,31 @@ module.exports = function(app){
       return next(errors.annotations.missingTypeError);
     }
 
-    AnnotationController.deleteAnnotation(id, type, function(err) {
+    AnnotationController.getAnnotationByID(id, type, function(err, annotation) {
       if (err) {
         return next(err);
       }
+      if (!annotation) {
+        res.json({});
+        return;
+      }
 
-      res.json({});
+      ContribController.hasAccess(req.session.user._id, annotation.image_id, function(err, access) {
+        if (err) {
+          return next(err);
+        }
+        if (!access.has_access) {
+          return next(errors.notAuthorized);
+        }
+
+        AnnotationController.deleteAnnotation(id, type, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.json({});
+        });
+      });
     });
   });
 
