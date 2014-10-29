@@ -128,11 +128,14 @@ medImageApp.controller('gridController', function($scope, gridService) {
   */
   function addImageEventHandlers() {
     // Click handler for adding image 
+    $('#addGridImage').unbind('click');
     $('#addGridImage').click(function(e){
       $(e.currentTarget.parentElement).find('input[name="medImage"]').click();
     });
 
+
     // Handler for submit
+    $('#uploadImageForm').unbind('submit');
     $('#uploadImageForm').on("submit", function(e){
       e.preventDefault();
       var formData = new FormData($(this)[0]);
