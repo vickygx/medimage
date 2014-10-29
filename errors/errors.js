@@ -37,6 +37,12 @@ module.exports.notLoggedIn = {
   message: "Not authorized. You must be logged in"
 }
 
+module.exports.notAuthorized = {
+  status: 401,
+  name: "Not Authorized",
+  message: "Not authorized to perform this action"
+}
+
 // Annotation errors ////////////////////////////////////////////////
 
 module.exports.annotations.missingTypeError = {
