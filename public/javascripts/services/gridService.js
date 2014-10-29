@@ -94,16 +94,18 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
   
     images: [],
     error: 'All is good!',
+    isUserPage: false,
     
     // Function to display searched images
     displaySearchedImages: function(tagQuery){
       ajaxController.get("/search/tags?" + tagQuery)
         .success(function(res) {
+          service.isUserPage = false;
           service.images = helpers.combineSortedImageAndImageHash(res.images , res.imageIdToImage);        
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          services.error = res.responseText ? res.responseText : 'error';
+          service.error = res.responseText ? res.responseText : 'error';
           $rootScope.$broadcast( 'images.error' );
         });
 
@@ -113,11 +115,12 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
     displayAllImages: function(){
       ajaxController.get("/medimages?tag=true")
         .success(function(res) {
+          service.isUserPage = false;
           service.images = helpers.combineImageAndTagHash(res.images, res.imageIdToTags);
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          services.error = res.responseText ? res.responseText : 'error';
+          service.error = res.responseText ? res.responseText : 'error';
           $rootScope.$broadcast( 'images.error' );
       });
     },
@@ -126,16 +129,19 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
     displayUserImages: function(){
       ajaxController.get("/users/" + $rootScope.user + "/medimages?tag=true")
         .success(function(res) {
+          service.isUserPage = true;
           service.images = helpers.combineImageAndTagHash(res.images , res.imageIdToTags);
           $rootScope.$broadcast( 'images.update' );
         })
         .error(function(res){
-          services.error = res.responseText ? res.responseText : 'error';
+          service.error = res.responseText ? res.responseText : 'error';
           $rootScope.$broadcast( 'images.error' );
       });
     },
 
+    // Clears the images
     clearImages: function(){
+      service.isUserPage = false;
       service.images = [];
       $rootScope.$broadcast( 'images.update' );
     },
@@ -150,12 +156,14 @@ medImageApp.service('gridService', ['$rootScope', function($rootScope) {
 
 }]);
 
+/*  Directive to get searched images through a form
+    The div that contains this directive must have an input with name="tags" 
+*/
 medImageApp.directive('getSearchedImagesForm', ['gridService', function(gridService){
   return {
     restrict: "C", 
     link: function(scope, element, attrs) {
       element.bind("click", function(e){
-        // TODO: checking on input string
         var tags = $(e.currentTarget.parentElement).find('input[name="tags"]').val().split(',');
         var tagQuery = '';
         for (var i = 0; i < tags.length ; i++){
@@ -167,6 +175,9 @@ medImageApp.directive('getSearchedImagesForm', ['gridService', function(gridServ
   }
 }]);
 
+/*  Directive to display searched images 
+    Requirements: innerHTML of object with directive contains the tag name 
+*/
 medImageApp.directive('displaySearchedImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -181,6 +192,8 @@ medImageApp.directive('displaySearchedImages', ['gridService', function(gridServ
   }
 }]);
 
+/*  Directive to display images of session user 
+*/
 medImageApp.directive('displayUserImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -194,6 +207,8 @@ medImageApp.directive('displayUserImages', ['gridService', function(gridService)
   }
 }]);
 
+/*  Directive to display all images 
+*/
 medImageApp.directive('displayAllImages', ['gridService', function(gridService){
   return {
     restrict: "C", 
@@ -207,6 +222,8 @@ medImageApp.directive('displayAllImages', ['gridService', function(gridService){
   }
 }]);
 
+/*  Directive to clear all iamges from display 
+*/
 medImageApp.directive('clearImages', ['gridService', function(gridService){
   return {
     restrict: "C", 

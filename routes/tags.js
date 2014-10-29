@@ -1,12 +1,14 @@
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
 var errors = require('../errors/errors');
-var errorChecking = require('../errors/errorChecking');
-
 module.exports = function(app){
 
   // Get all the tags of the medical image with given id
   app.get('/tag/:imageid', function(req, res, next) {
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
+    }
+
     var imageId = req.params.imageid;
 
     if (errorChecking.invalidId(imageId)) {
@@ -31,6 +33,10 @@ module.exports = function(app){
 
   // Create or add tag for photo with given id
   app.post('/tag/:imageid', function(req, res, next){
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
+    }
+
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 
@@ -49,6 +55,10 @@ module.exports = function(app){
 
   // Remove tag off of photo with given id
   app.del('/tag/:imageid', function(req, res, next){
+    if (!req.session.user) {
+      return next(errors.notLoggedIn);
+    }
+
     var imageId = req.params.imageid;
     var tagName = req.body.tag;
 

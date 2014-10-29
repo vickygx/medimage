@@ -12,6 +12,19 @@ mixin grid(id)
     div(ng-init="$root.user=#{JSON.stringify(session.user.username)}")
     div.error(id='errorBox')
     div.gridItemContainer
+      //- Upload image  
+      div.gridItem(id="addGridItem" ng-if="viewModel.isUserPage === true")
+        div.image(id="addGridImage")
+          img(src="/images/plus-icon.png")
+        
+        form#uploadImageForm
+          input(type="text", name="title", placeholder="Image Title", required)
+          <br>
+          input(id="imageFile" type="file", name="medImage", required)
+          input(type="submit" class="btn btn-default")
+            
+
+      //- Normal Images
       div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
         div.image(ng-click="editImage(image.image_url, image._id)")
           img(ng-src='{{image.image_url}}')

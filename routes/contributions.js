@@ -11,6 +11,10 @@ module.exports = function(app) {
 
   // Adds user to collaboration on medical image with given id
   app.post('/contributions', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var username = req.body.username;
     var imageID = req.body.image_id;
 
@@ -49,6 +53,10 @@ module.exports = function(app) {
 
   // Delete contribution relationship
   app.del('/contributions/:id', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var contribID = req.params.id;
 
     //Check if valid objectID
@@ -67,6 +75,10 @@ module.exports = function(app) {
 
   // Sees if user has access to edit medical image with given id
   app.get('/contributions/access', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var username = req.query.username;
     var imageID = req.query.imageID;
 
@@ -100,6 +112,10 @@ module.exports = function(app) {
 
   //Get all contributions for an image
   app.get('/medimages/:id/contributions', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var imageID = req.params.id;
 
     MedImageController.getMedImageByID(imageID, function(err, image) {
@@ -135,6 +151,10 @@ module.exports = function(app) {
 
   //Get all images a user can contribute to
   app.get('/users/:username/contributions', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var username = req.params.username;
 
     UserController.getUserByUsername(username, function(err, user) {

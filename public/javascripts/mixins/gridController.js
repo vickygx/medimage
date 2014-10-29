@@ -4,12 +4,15 @@ medImageApp.controller('gridController', function($scope, gridService) {
 
   //////////////////////////// Scope Variables
   var public = $scope.viewModel = {
-    images: gridService.images
+    images: gridService.images,
+    isUserPage: gridService.isUserPage
   }
 
   // Updator function for images variables changing
   $scope.$on('images.update', function( event ) {
     $scope.viewModel.images = gridService.images;
+    $scope.viewModel.isUserPage = gridService.isUserPage;
+
     $scope.$apply();
     helpers.updateViewImages();
   });
@@ -22,16 +25,24 @@ medImageApp.controller('gridController', function($scope, gridService) {
   //////////////////////////// Helpers
   var helpers = (function() { 
 
+    // Updates the error box
     var updateError = function(){
       $('.grid .error').html(gridService.error);
     }
 
+    // Displays all images
     var displayAllImages = function(){
       gridService.displayAllImages();
     }
 
+    // Updates the view
     var updateViewImages = function(){
       resizeImages();
+
+      // Update add and upload event handlers
+      if ($scope.viewModel.isUserPage){
+        addImageEventHandlers();
+      }
     }
     /** 
       Resizes the images to fit in the displayed box
@@ -101,11 +112,32 @@ medImageApp.controller('gridController', function($scope, gridService) {
 
   var init = (function() {
     helpers.displayAllImages();
-    eventHandlers();
   })();
 
-  function eventHandlers() {
+  function addImageEventHandlers() {
+    // Click handler for adding image 
+    $('#addGridImage').click(function(e){
+      $(e.currentTarget.parentElement).find('input[name="medImage"]').click();
+    });
 
+    // Handler for submit
+    $('#uploadImageForm').on("submit", function(e){
+      e.preventDefault();
+      var formData = new FormData($(this)[0]);
+
+      // Upload image
+      $.ajax({
+        url: "/medimages",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+      }).success(function(res){
+        $('#uploadImageForm')[0].reset();
+      }).always(function(res) {
+        gridService.displayUserImages();
+      });
+    });
   }
 });
 
