@@ -17,6 +17,13 @@ var hasAccess = module.exports.hasAccess = function(userID, imageID, callback) {
   });
 }
 
+/** 
+ * Get contribution by ID
+ */
+module.exports.getContributionByID = function(id, callback) {
+  Contribution.findById(id, callback);
+}
+
 /**
  * Gets list of image IDs that a user contributes to
  *
