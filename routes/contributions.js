@@ -29,7 +29,7 @@ module.exports = function(app) {
         return next(err);
       } else if (!image) {
         return next(Errors.medimages.notFound);
-      } else if (image._creator !== req.session.user._id) {
+      } else if (image._creator != req.session.user._id) {
         return next(Errors.notAuthorized);
       }
 
@@ -79,7 +79,7 @@ module.exports = function(app) {
           return next(err);
         } else if (!image) {
           return next(Errors.medimages.notFound);
-        } else if (image._creator !== req.session.user._id) {
+        } else if (image._creator != req.session.user._id) {
           return next(Errors.notAuthorized);
         }
 

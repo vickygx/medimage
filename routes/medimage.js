@@ -169,15 +169,22 @@ module.exports = function(app) {
       return next(Errors.invalidStringError);
     }
 
-    MedImageController.editMedImageTitle(imageID, title, function(err, image) {
+    MedImageController.getMedImageByID(imageID, function(err, image) {
       if (err) {
         return next(err);
-      }
-      if (!image) {
-        return next(Errors.medimages.notFound);
+      } else if (!image) {
+        return next(Errors.medimage.notFound);
+      } else if (image._creator != req.session.user._id) {
+        return next(Errors.notAuthorized);
       }
 
-      res.json({});
+      MedImageController.editMedImageTitle(imageID, title, function(err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.json({});
+      });
     });
   });
 
@@ -199,6 +206,8 @@ module.exports = function(app) {
         return next(err);
       } else if (!medImage) {
         return next(Errors.medimages.notFound);
+      } else if (medImage._creator._id != req.session.user._id) {
+        return next(Errors.notAuthorized);
       }
 
       //Delete image
