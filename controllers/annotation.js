@@ -1,3 +1,9 @@
+/*  All the functions related to manipulating and retrieving information 
+    from the Annotation database
+
+    @author: Danny Sanchez
+*/
+
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');
 var RangeAnnotation = require('../data/models/annotation/rangeAnnotation');
 

@@ -1,5 +1,7 @@
 /*  All the functions related to manipulating and retrieving information 
-    from the tag database
+    from the Tag database
+
+    @author: Vicky Gong
 */
 var Tag = require('../data/models/tag');
 var errors = require('../errors/errors');

@@ -1,4 +1,9 @@
-//Module Dependencies
+/*  All the functions related to manipulating and retrieving information 
+    from the Contribution database
+
+    @author: Calvin Li
+*/
+
 var Contribution = require('../data/models/contribution');
 
 /**
