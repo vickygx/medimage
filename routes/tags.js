@@ -77,12 +77,20 @@ module.exports = function(app){
       return next(errors.invalidIdError);
     }
 
-    TagController.removeTagFrom(imageId, tagName, function(err, tag){
-      if (err)
+    ContribController.hasAccess(req.session.user._id, imageId, function(err, access) {
+      if (err) {
         return next(err);
-      else {
-        res.json({});
+      } else if (!access.has_access) {
+        return next(errors.notAuthorized);
       }
+
+      TagController.removeTagFrom(imageId, tagName, function(err, tag){
+        if (err)
+          return next(err);
+        else {
+          res.json({});
+        }
+      });
     });
   });
     
