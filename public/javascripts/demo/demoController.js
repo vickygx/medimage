@@ -20,6 +20,32 @@ var DemoController = function() {
   var eventListeners = function() {
 
     /////////////////////////////////////////////////////////////////
+    // Sessions
+    /////////////////////////////////////////////////////////////////
+
+    (function() {
+      $("#loginForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var data = {
+          username: $(this)[0].elements["username"].value,
+          password: $(this)[0].elements["password"].value
+        }
+        ajaxController.post("/login", data).always(function(res) {
+          $("#loginResponse").text(JSON.stringify(res));
+        });
+      }); 
+
+      $("#logoutForm").on("submit", function(e) {
+        e.preventDefault();
+
+        ajaxController.post("/logout").always(function(res) {
+          $("#logoutResponse").text(JSON.stringify(res));
+        })
+      });
+    })();
+
+    /////////////////////////////////////////////////////////////////
     // Users
     /////////////////////////////////////////////////////////////////
     (function() {

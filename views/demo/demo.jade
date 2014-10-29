@@ -12,7 +12,30 @@ block content
     $(document).ready(function() {
       demoController.init();
     });
-  
+
+  div.collectionDiv 
+    h1.collectionTitle Sessions (Login, Logout)
+    ul
+      li Login
+        legend
+          form#loginForm(name="loginForm")
+            input(name="username", placeholder="Username", required) 
+            br
+            input(name="password", placeholder="Password", type="password", required) 
+            br
+            input(type="submit")
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#loginResponse
+      li Logout
+        legend
+          form#logoutForm(name="logoutForm")
+            input(type="submit") 
+            br
+        legend.responseLegend
+          div Response: 
+          div.responseDiv#logoutResponse
   div.collectionDiv 
     h1.collectionTitle Users
     ul
