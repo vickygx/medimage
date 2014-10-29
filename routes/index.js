@@ -20,7 +20,7 @@ module.exports = function(app){
   });
 
   app.get('/main', isLoggedIn, function(req, res) {
-    res.render('main', {title: 'Testing Grid' });
+    res.render('main', {title: 'MedImage App' });
   });
 
 };
