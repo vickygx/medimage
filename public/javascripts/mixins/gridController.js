@@ -3,7 +3,7 @@ var medImageApp = angular.module('medImageApp');
 medImageApp.controller('gridController', function($scope, gridService) {
 
   //////////////////////////// Scope Variables
-  $scope.viewModel = {
+  var public = $scope.viewModel = {
     images: gridService.images,
     isUserPage: gridService.isUserPage
   }
@@ -51,7 +51,15 @@ medImageApp.controller('gridController', function($scope, gridService) {
     var resizeImages = function(){
       $('.gridItem .image img').each(function(i){
 
-        var img = $(this)[0];
+        var parent = $(this).parent();
+
+        var src = $(this)[0].src;
+        $(this).remove();
+
+        var img = new Image();
+        img.src = src;
+
+        parent.append($(img));
 
         img.onload = function() {
           var css = calcImgMaxOrMin(img, false, 1);

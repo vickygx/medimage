@@ -51,6 +51,23 @@ module.exports = function(app) {
     })
   });
 
+  // Gets a medical image by imageID, returns creator populated
+  app.get('/medimages/:image_id', function(req, res, next) {
+
+    //Check if id is a valid objectID
+    if (ErrorChecking.invalidId(req.params.image_id)) {
+      return next(Errors.invalidIdError);
+    }
+
+    MedImageController.getMedImageByIDPopulated(req.params.image_id, function(err, medimage) {
+      if (err) {
+        return next(err);
+      }
+
+      res.json(medimage);
+    });
+  });
+
   // Gets the medical images for a user
   app.get('/users/:username/medimages', function(req, res, next) {
     if (!req.session.user) {

@@ -1,7 +1,9 @@
 var ContribController = require('../controllers/contribution');
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
+var errorChecking = require('../errors/errorChecking');
 var errors = require('../errors/errors');
+
 module.exports = function(app){
 
   // Get all the tags of the medical image with given id

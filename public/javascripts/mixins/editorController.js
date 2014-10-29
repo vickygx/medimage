@@ -1,11 +1,15 @@
 var medImageApp = angular.module('medImageApp');
 
-medImageApp.controller('editorController', function($scope) {
+medImageApp.controller('editorController', function($scope, $rootScope) {
 
   // Public /////////////////////////////////////////////////////////
 
   var public = $scope.viewModel = {
-
+    user: {
+      username: $("#div-user-data")[0].getAttribute("data-username")
+    }, 
+    isContributor: false, 
+    isCreator: false
   }
 
   // Private ////////////////////////////////////////////////////////
@@ -15,8 +19,8 @@ medImageApp.controller('editorController', function($scope) {
   var setLocal = function() {
     local.ctx = $("#imageCanvas")[0].getContext('2d');
     local.img = new Image();
-    local.img.src = $("#div-image-data")[0].getAttribute("data-imageUrl");
-    local.image_id = $("#div-image-data")[0].getAttribute("data-image-id");
+    local.img.src = $rootScope.imgUrl;
+    local.image_id = $rootScope.image_id;
     local.editorImg = new EditorImg(local.img, new Coord(0, 0), 1, local.ctx, $("#imageCanvas")[0]);
     local.editType = "annotation";
     local.annotation;
@@ -186,10 +190,15 @@ medImageApp.controller('editorController', function($scope) {
       e.preventDefault();
 
       var contributionID = $(this)[0].elements["contribution_id"].value;
+      var username = $(this)[0].elements["contribution_username"].value;
       ajaxController.del('/contributions/' + contributionID).done(function() {
         for (var i = 0; i < public.contributions.contributions.length; i++) {
           if (contributionID == public.contributions.contributions[i]._id) {
             public.contributions.contributions.splice(i, 1);
+
+            var index = public.contributionsUsernames.indexOf(username);
+            public.contributionsUsernames.splice(i, 1);
+
             break;
           }
         }
@@ -205,6 +214,7 @@ medImageApp.controller('editorController', function($scope) {
       var data = {
         tag: tagName
       }
+
       ajaxController.del('/tag/' + local.image_id, data).done(function() {
         for (var i = 0; i < public.tags.length; i++) {
           if (tagName == public.tags[i].tag_name) {
@@ -217,24 +227,79 @@ medImageApp.controller('editorController', function($scope) {
       });
     }
 
+    var addContributionSubmit = function(e) {
+      e.preventDefault()
+
+      var username = $("#addContributionForm")[0].elements["username"].value;
+
+      ajax.addContributor(username);
+    }
+
+    var addTagSubmit = function(e) {
+      e.preventDefault();
+
+      var data = $(this).serializeArray();
+      exports.addTag(data);
+    }
+
+    var tagEventOff = function() {
+      $(".deleteTagForm").off("submit", deleteContributionSubmit);
+      $("#addTagForm").off("submit", addTagSubmit);
+    }
+
+    var tagEventOn = function() {
+      $(".deleteTagForm").on("submit", deleteTagSubmit);
+      $("#addTagForm").on("submit", addTagSubmit);
+    }
+
+    var tagEventReset = function() {
+      tagEventOff();
+      tagEventOn();
+    }
+
+    var contributionEventOff = function() {
+      $("#addContributionForm").off("submit", addContributionSubmit);
+      $(".deleteContributionForm").off("submit", deleteContributionSubmit);
+    }
+
+    var contributionEventOn = function() {
+      $("#addContributionForm").on("submit", addContributionSubmit);
+      $(".deleteContributionForm").on("submit", deleteContributionSubmit);
+    }
+
+    var contributionEventReset = function() {
+      contributionEventOff();
+      contributionEventOn();
+    }
+
     exports.getTags = function() {
       return ajaxController.get('/tag/' + local.image_id).done(function(res) {
         public.tags = res;
         $scope.$apply();
 
-        $(".deleteTagForm").on("submit", deleteTagSubmit);
+        tagEventReset();
       }).fail(function(e) {
         alert(e.responseText);
       }); 
     }
 
     exports.getContributors = function() {
+      tagEventOff();
       return ajaxController.get('/medimages/' + local.image_id + '/contributions').done(function(res) {
 
         public.contributions = res;
+        public.contributionsUsernames = [];
+        for (var i = 0; i < res.contributions.length; i++) {
+          var contribution = res.contributions[i];
+          var username = res.userIDToUser[contribution.user_id].username;
+          public.contributionsUsernames.push(username);
+        } 
+
+        public.isContributor = public.contributionsUsernames.indexOf(public.user.username) > -1;
         $scope.$apply();
 
-        $(".deleteContributionForm").on("submit", deleteContributionSubmit);
+        contributionEventReset();
+        tagEventOn();
       }).fail(function(e) {
         alert(e.responseText);
       });
@@ -243,9 +308,9 @@ medImageApp.controller('editorController', function($scope) {
     exports.addTag = function(data) {
       return ajaxController.post('/tag/' + local.image_id, data).done(function(res) {
         public.tagError = false;
-        $(".deleteTagForm").off("submit", deleteContributionSubmit);
-
         exports.getTags();
+
+        $("#addTagInput").val("");
       }).fail(function(e) {
         public.tagError = true;
         public.tagErrorText = e.responseText;
@@ -265,10 +330,25 @@ medImageApp.controller('editorController', function($scope) {
 
         public.contributions = [];
         exports.getContributors();
+
+        $("#addContributionInput").val("");
       }).fail(function(e) {
         public.contributionError = true;
         public.contributionErrorText = e.responseText;
         $scope.$apply();
+      });
+    }
+
+    exports.getMedImage = function(image_id) {
+      contributionEventOff();
+
+      return ajaxController.get('/medimages/' + image_id).done(function(res) {
+        local.medImage = res;
+        public.creator = res._creator;
+        public.isCreator = (public.user.username == public.creator.username);
+        $scope.$apply();
+
+        contributionEventOn();
       });
     }
 
@@ -285,8 +365,8 @@ medImageApp.controller('editorController', function($scope) {
       responsiveJS();
     });
 
+    ajax.getMedImage(local.image_id);
     ajax.getTags();
-
     ajax.getContributors();
 
     eventListeners();
@@ -314,6 +394,7 @@ medImageApp.controller('editorController', function($scope) {
   }
 
   var sizingJS = function() {
+    $(".editorContainer").height($(window).height() - 60);
     $("#imageCanvas")[0].width = $("#imageCanvas").parent().width();
     $("#imageCanvas")[0].height = $("#imageCanvas").parent().height();
   }
@@ -644,23 +725,6 @@ medImageApp.controller('editorController', function($scope) {
         }
       });
     })();
-
-    // Add Tags
-    $("#addTagForm").on("submit", function(e) {
-      e.preventDefault();
-
-      var data = $(this).serializeArray();
-      ajax.addTag(data);
-    });
-
-    // Add contributions
-    $("#addContributionForm").on("submit", function(e) {
-      e.preventDefault()
-
-      var username = $(this)[0].elements["username"].value;
-
-      ajax.addContributor(username);
-    });
 
     // Tooltips
     $("#zoomInBtn").tooltip({placement: "bottom", title: "Zoom in"});
