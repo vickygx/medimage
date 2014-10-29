@@ -1,3 +1,9 @@
+/*  All the functions related to manipulating and retrieving information 
+    from the User database
+
+    @author: Danny Sanchez
+*/
+
 var User = require('../data/models/user');
 var errors = require('../errors/errors');
 

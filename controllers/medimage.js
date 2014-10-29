@@ -1,3 +1,9 @@
+/*  All the functions related to manipulating and retrieving information 
+    from the Med Image database
+
+    @author: Calvin Li
+*/
+
 //Dependency Modules
 var fs = require('fs');
 var mkdirp = require('mkdirp');
