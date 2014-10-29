@@ -60,17 +60,34 @@ module.exports = function(app) {
       return next(Errors.notAuthorized);
     }
     var updateData = {};
+
+
   
     // Empty inputs are not considered
-    if (req.body.first_name && req.body.first_name.trim().length != 0) {
-      updateData.first_name = req.body.first_name.trim();
-    } 
-    if (req.body.last_name && req.body.last_name.trim().length != 0) {
-      updateData.last_name = req.body.last_name.trim();
-    } 
-    if (req.body.password && req.body.password.trim().length != 0) {
-      updateData.password = req.body.password;
+    if (req.body.first_name) {
+      if (req.body.first_name.trim().length != 0) {
+        updateData.first_name = req.body.first_name.trim();
+      } else {
+        return next(Errors.invalidStringError);
+      }
     }
+
+    if (req.body.last_name) {
+      if (req.body.last_name.trim().length != 0) {
+        updateData.last_name = req.body.last_name.trim();
+      } else {
+        return next(Errors.invalidStringError);
+      }
+    } 
+
+    if (req.body.password) {
+      if (req.body.password.trim().length != 0) {
+        updateData.password = req.body.password;
+      } else {
+        return next(Errors.invalidStringError);
+      }
+    }
+
 
     UserController.editUser(req.params.username, updateData, function(err) {
       if (err) {
