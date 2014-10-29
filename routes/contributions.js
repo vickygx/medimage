@@ -81,6 +81,8 @@ module.exports = function(app) {
           return next(Errors.medimages.notFound);
         } else if (image._creator != req.session.user._id) {
           return next(Errors.notAuthorized);
+        } else if (image._creator == contribution.user_id) {
+          return next(Errors.notAuthorized);
         }
 
         ContriController.deleteContribution(contribID, function(err) {
