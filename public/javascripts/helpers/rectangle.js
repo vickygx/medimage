@@ -1,3 +1,8 @@
+/*  Represents a rectangular object on a canvas
+* 
+*   @author: Danny Sanchez
+*/
+
 var Rectangle = (function() {
 
   var Rectangle = function(startCoord, endCoord) {

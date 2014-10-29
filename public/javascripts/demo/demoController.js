@@ -1,3 +1,8 @@
+/*  Controller for the demo page
+*   Contains all the eventlisteners and varaibles.
+* 
+*   @author: Danny Sanchez, Calvin Li, Vicky Gong
+*/
 var DemoController = function() {
   
   // Public variables, available outside controller

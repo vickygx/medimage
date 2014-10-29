@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with contributions
+*
+*   @author: Calvin Li
+*/
+
 //Controller Modules
 var ContriController = require('../controllers/contribution');
 var MedImageController = require('../controllers/medimage');

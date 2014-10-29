@@ -1,3 +1,8 @@
+/*  Represents circles on a canvas 
+* 
+*   @author: Danny Sanchez
+*/
+
 var Circle = (function() {
 
   var Circle = function(coord, radius) {

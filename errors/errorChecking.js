@@ -1,4 +1,7 @@
-//TODO REMOVE
+/*  File of all error checkings used by the app
+
+    @author: Danny Sanchez, Calvin Li, Vicky Gong
+*/
 var errors = require('./errors');
 var ObjectId = require('mongoose').Types.ObjectId;
 

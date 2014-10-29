@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with session, logging in, logging out
+*
+*   @author: Calvin Li
+*/
+
 var UserController = require('../controllers/user');
 
 //Error Modules

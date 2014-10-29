@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with MedImage
+*
+*   @author: Calvin Li
+*/
+
 //Controllers
 var MedImageController = require('../controllers/medimage');
 var UserController = require('../controllers/user');

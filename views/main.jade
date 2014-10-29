@@ -1,4 +1,7 @@
+//- 
 extends layout
+//- Main app page
+//- @author: Vicky Gong
 
 block head
   include mixins/css.jade
@@ -8,8 +11,6 @@ block head
 
   include mixins/grid.jade
   include mixins/editor.jade
-
-  script(type="text/javascript", src="/javascripts/mainPage.js") 
 
 block content
   div(id="medImageAppContainer", data-ng-controller='medImageAppController')

@@ -1,6 +1,8 @@
 /**
  * Controller for easily sending common ajax requests
- * @constructor
+ * 
+ * @author: Danny Sanchez
+ * @constructor 
  */
 var AjaxController = function() {
 

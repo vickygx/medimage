@@ -1,3 +1,11 @@
+/*  gridService
+*
+*   Angular Service for grid mixin
+*   Takes care of the data population, ajax calls of data related to grid
+* 
+*   @author: Vicky Gong
+*/
+
 medImageApp = angular.module('medImageApp');
 
 medImageApp.service('gridService', ['$rootScope', function($rootScope) {

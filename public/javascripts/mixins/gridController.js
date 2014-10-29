@@ -1,3 +1,14 @@
+/*  gridController
+*
+*   Angular Controller for grid mixin
+*     Takes care of the view for the grid mixin while getting updates from gridService
+*     for data updates.
+*
+*   Dependencies: gridService
+* 
+*   @author: Vicky Gong
+*/
+
 var medImageApp = angular.module('medImageApp');
 
 medImageApp.controller('gridController', function($scope, gridService) {
@@ -8,7 +19,8 @@ medImageApp.controller('gridController', function($scope, gridService) {
     isUserPage: gridService.isUserPage
   }
 
-  // Updator function for images variables changing
+  /* Updator function for images variables changing
+  */
   $scope.$on('images.update', function( event ) {
     $scope.viewModel.images = gridService.images;
     $scope.viewModel.isUserPage = gridService.isUserPage;
@@ -17,7 +29,8 @@ medImageApp.controller('gridController', function($scope, gridService) {
     helpers.updateViewImages();
   });
 
-  // Updator function for error variable changing
+  /* Updator function for error variable changing
+  */
   $scope.$on('images.error', function( event) {
     helpers.updateError();
   });
@@ -25,17 +38,20 @@ medImageApp.controller('gridController', function($scope, gridService) {
   //////////////////////////// Helpers
   var helpers = (function() { 
 
-    // Updates the error box
+    /* Updates the error box
+    */
     var updateError = function(){
       $('.grid .error').html(gridService.error);
     }
 
-    // Displays all images
+    /* Displays all images
+    */
     var displayAllImages = function(){
       gridService.displayAllImages();
     }
 
-    // Updates the view
+    /* Updates the view
+    */
     var updateViewImages = function(){
       resizeImages();
 
@@ -102,10 +118,14 @@ medImageApp.controller('gridController', function($scope, gridService) {
     }
   })();
 
+  /* Initializer function 
+  */
   var init = (function() {
     helpers.displayAllImages();
   })();
 
+  /* Function that adds all the event handlers associated with adding image
+  */
   function addImageEventHandlers() {
     // Click handler for adding image 
     $('#addGridImage').click(function(e){

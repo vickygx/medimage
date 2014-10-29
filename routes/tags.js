@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with tags
+*
+*   @author: Vicky Gong
+*/
+
 var ContribController = require('../controllers/contribution');
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
