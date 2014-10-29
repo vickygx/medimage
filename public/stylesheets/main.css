@@ -55,8 +55,5 @@ body {
 }
 
 .editorContainer {
-  position: relative;
   margin: 60px auto 0 auto;
-  padding: 20px;
-  min-height: 100%;
 }
