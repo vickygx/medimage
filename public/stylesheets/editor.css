@@ -45,7 +45,7 @@ table {
 }
 
 #imageCanvas {
-  cursor: crosshair;
+  cursor: default;
   border: 1px solid #ccc;
 }
 

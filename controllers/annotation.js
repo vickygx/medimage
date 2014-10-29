@@ -17,6 +17,16 @@ var getAnnotationModel = module.exports.getAnnotationModel = function(type) {
   }
 }
 
+/** 
+ * Get annotation by ID
+ */
+module.exports.getAnnotationByID = function(annoID, type, callback) {
+
+  var Annotation = getAnnotationModel(type);
+
+  Annotation.findById(annoID, callback);
+}
+
 /**
  * Gets all annotations for the medical image with the given image id
  * @param {ObjectId} imageId: _id of MedImage to get annotations from
