@@ -22,7 +22,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
     local.img.src = $rootScope.imgUrl;
     local.image_id = $rootScope.image_id;
     local.editorImg = new EditorImg(local.img, new Coord(0, 0), 1, local.ctx, $("#imageCanvas")[0]);
-    local.editType = "annotation";
+    local.editType = "edit";
     local.annotation;
     local.pointAnnotations = [];
     local.rangeAnnotations = [];
@@ -169,6 +169,15 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
       }
     }
 
+    // Edit type
+    var changeEditType = function(editType, mouseType, $this) {
+      local.editType = editType;
+      $("#imageCanvas").css("cursor", mouseType);
+      $(".editTypeBtn").attr("disabled", false)
+                       .removeClass("highlight");
+      $this.attr("disabled", true).addClass("highlight");
+    }
+
     return {
       drawImg: drawImg, 
       zoomIn: zoomIn, 
@@ -178,7 +187,8 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
       hideAnnotationInput: hideAnnotationInput, 
       checkInsideRectangle: checkInsideRectangle, 
       setAnnotation: setAnnotation, 
-      deleteAnnotation: deleteAnnotation
+      deleteAnnotation: deleteAnnotation, 
+      changeEditType: changeEditType
     }
   })();
 
@@ -242,6 +252,10 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
       exports.addTag(data);
     }
 
+    var annotationBtnClick = function() {
+      helpers.changeEditType("annotation", "crosshair", $(this));
+    }
+
     var tagEventOff = function() {
       $(".deleteTagForm").off("submit", deleteContributionSubmit);
       $("#addTagForm").off("submit", addTagSubmit);
@@ -250,6 +264,19 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
     var tagEventOn = function() {
       $(".deleteTagForm").on("submit", deleteTagSubmit);
       $("#addTagForm").on("submit", addTagSubmit);
+    }
+
+    var annotationBtnEventOff = function() {
+      $("#annotationBtn").off("click", annotationBtnClick);
+    }
+
+    var annotationBtnEventOn = function() {
+      $("#annotationBtn").on("click", annotationBtnClick);
+    }
+
+    var annotationBtnEventReset = function() {
+      annotationBtnEventOff();
+      annotationBtnEventOn();
     }
 
     var tagEventReset = function() {
@@ -300,6 +327,48 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
 
         contributionEventReset();
         tagEventOn();
+        annotationBtnEventOn();
+
+        // Input box
+        (function() {
+          $("#annotationInput").on("keyup", function(e) {
+            if (public.isContributor) {
+              if (e.keyCode == 13) { // Enter
+                if (local.annotation) {
+                  annotationClicked = false;
+                  if ($(this).val().trim().length == 0) {
+                    helpers.deleteAnnotation();
+
+                  } else {
+                    local.annotation.text = $(this).val();
+                    local.annotation.submit();
+                  }
+                  helpers.hideAnnotationInput(annotationClicked);
+                }
+              } else if (e.keyCode == 27) { // Escape
+                if (local.annotation.mutex.state() == "resolved") {
+                  if (!local.annotation.inDB()) {
+                    helpers.deleteAnnotation();              
+                    helpers.setAnnotation(undefined);
+                  }
+
+                  annotationClicked = false;
+                  helpers.hideAnnotationInput(annotationClicked);
+                } else {
+                  local.annotation.mutex.done(function() {
+                    if (!local.annotation.inDB()) {
+                      helpers.deleteAnnotation();               
+                      helpers.setAnnotation(undefined);
+                    }
+
+                    annotationClicked = false;
+                    helpers.hideAnnotationInput(annotationClicked);
+                  });
+                }
+              }
+            }
+          });
+        })();
       }).fail(function(e) {
         alert(e.responseText);
       });
@@ -449,10 +518,11 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         lastEventCoord = getEventCoord(e);
         
         if (local.editType == "edit") {
-
-          // Notice startDrag if mouse over annotation
-          if (overAnnotation) {
-            startDrag = true;
+          if (public.isContributor) {
+            // Notice startDrag if mouse over annotation
+            if (overAnnotation) {
+              startDrag = true;
+            }
           }
         } else if (local.editType == "move") {
 
@@ -476,7 +546,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         if (local.editType == "edit") {
 
           // If we've started dragging, move the current annotation with the mouse
-          if (local.annotation && startDrag) {
+          if (local.annotation && startDrag && public.isContributor) {
 
             if (dragging || (Math.abs(e.offsetX - lastEventCoord.x) >= 0.5 ||
                              Math.abs(e.offsetY - lastEventCoord.y) >= 0.5)) {
@@ -631,7 +701,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
           dragging = false;
           local.annotation.submit();
         } else {
-          if (local.editType == "edit") {
+          if (local.editType == "edit" && public.isContributor) {
             if (overAnnotation) {
               helpers.showAnnotationInput(e);
               annotationClicked = true;
@@ -647,25 +717,12 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
     // Controls
     (function() {
 
-      // Edit type
-      var changeEditType = function(editType, mouseType, $this) {
-        local.editType = editType;
-        $("#imageCanvas").css("cursor", mouseType);
-        $(".editTypeBtn").attr("disabled", false)
-                         .removeClass("highlight");
-        $this.attr("disabled", true).addClass("highlight");
-      }
-
       $("#editBtn").on("click", function() {
-        changeEditType("edit", "default", $(this));
-      });
-
-      $("#annotationBtn").on("click", function() {
-        changeEditType("annotation", "crosshair", $(this));
+        helpers.changeEditType("edit", "default", $(this));
       });
 
       $("#moveBtn").on("click", function() {
-        changeEditType("move", "move", $(this));
+        helpers.changeEditType("move", "move", $(this));
       });
 
 
@@ -683,46 +740,6 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         helpers.deleteAnnotation();
         annotationClicked = false;
         helpers.hideAnnotationInput();
-      });
-    })();
-
-    // Input box
-    (function() {
-      $("#annotationInput").on("keyup", function(e) {
-
-        if (e.keyCode == 13) { // Enter
-          if (local.annotation) {
-            annotationClicked = false;
-            if ($(this).val().trim().length == 0) {
-              helpers.deleteAnnotation();
-
-            } else {
-              local.annotation.text = $(this).val();
-              local.annotation.submit();
-            }
-            helpers.hideAnnotationInput(annotationClicked);
-          }
-        } else if (e.keyCode == 27) { // Escape
-          if (local.annotation.mutex.state() == "resolved") {
-            if (!local.annotation.inDB()) {
-              helpers.deleteAnnotation();              
-              helpers.setAnnotation(undefined);
-            }
-
-            annotationClicked = false;
-            helpers.hideAnnotationInput(annotationClicked);
-          } else {
-            local.annotation.mutex.done(function() {
-              if (!local.annotation.inDB()) {
-                helpers.deleteAnnotation();               
-                helpers.setAnnotation(undefined);
-              }
-
-              annotationClicked = false;
-              helpers.hideAnnotationInput(annotationClicked);
-            });
-          }
-        }
       });
     })();
 

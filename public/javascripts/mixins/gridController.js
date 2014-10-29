@@ -51,15 +51,7 @@ medImageApp.controller('gridController', function($scope, gridService) {
     var resizeImages = function(){
       $('.gridItem .image img').each(function(i){
 
-        var parent = $(this).parent();
-
-        var src = $(this)[0].src;
-        $(this).remove();
-
-        var img = new Image();
-        img.src = src;
-
-        parent.append($(img));
+        var img = $(this)[0];
 
         img.onload = function() {
           var css = calcImgMaxOrMin(img, false, 1);

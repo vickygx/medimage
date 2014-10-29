@@ -22,10 +22,12 @@ mixin editor()
   // div#div-image-data(data-imageUrl="{{viewModel.imgUrl}}", data-image-id="{{viewModel.image_id}}")
   div(id="editor", data-ng-controller="editorController")
     div#annotationInputCont
-      input#annotationInput.form-control(name="annotationNote", 
+      input#annotationInput.form-control(ng-if="viewModel.isContributor"
+                                         name="annotationNote", 
                                          placeholder="Leave empty and press enter to delete", 
                                          autocomplete="off")
-      button#annotationDeleteBtn.btn.btn-danger
+      input#annotationInput.form-control(ng-if="!viewModel.isContributor", disabled)
+      button#annotationDeleteBtn.btn.btn-danger(ng-if="viewModel.isContributor")
         span.glyphicon.glyphicon-trash
 
     table#editorTable
@@ -49,9 +51,11 @@ mixin editor()
                             span.glyphicon.glyphicon-zoom-out
                       td
                         div.btn-group
-                          button(id="editBtn", class="btn btn-default editTypeBtn")
+                          button(id="editBtn", class="btn btn-default editTypeBtn highlight", disabled)
                             span.glyphicon.glyphicon-pencil
-                          button(id="annotationBtn", class="btn btn-default editTypeBtn highlight", disabled) 
+                          button(id="annotationBtn", 
+                                 class="btn btn-default editTypeBtn", 
+                                 ng-if="viewModel.isContributor") 
                             span.glyphicon.glyphicon-record
                           button(id="moveBtn", class="btn btn-default editTypeBtn")
                             span.glyphicon.glyphicon-move
