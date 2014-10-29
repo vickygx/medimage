@@ -1,7 +1,8 @@
+//- Mixin for Grid of Images
+//-   Takes in the id of the mixin 
+//- @author Vicky Gong
+
 include ./tag.jade
-//- Each item represents a single medical image
-//- And should be in the following format: 
-//- {Id: W, Title: X, ImageUrl: Y, Tags: Z }
 
 block head
   script(type="text/javascript", src="/javascripts/mixins/gridController.js")
@@ -12,6 +13,7 @@ mixin grid(id)
     div(ng-init="$root.user=#{JSON.stringify(session.user.username)}")
     div.error(id='errorBox')
     div.gridItemContainer
+
       //- Upload image  
       div.gridItem(id="addGridItem" ng-if="viewModel.isUserPage === true")
         div.image(id="addGridImage")

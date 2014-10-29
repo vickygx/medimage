@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with uploads of images
+*
+*   @author: Calvin Li
+*/
+
 var isLoggedIn = require('./middleware/isLoggedIn');
 
 //Node Dependency Modules

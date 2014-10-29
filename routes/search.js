@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with search
+*
+*   @author: Vicky Gong
+*/
+
 var TagController = require('../controllers/tag');
 var MedImageController = require('../controllers/medimage');
 var errors = require('../errors/errors');

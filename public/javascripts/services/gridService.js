@@ -1,3 +1,11 @@
+/*  gridService
+*
+*   Angular Service for grid mixin
+*   Takes care of the data population, ajax calls of data related to grid
+* 
+*   @author: Vicky Gong
+*/
+
 medImageApp = angular.module('medImageApp');
 
 medImageApp.service('gridService', ['$rootScope', function($rootScope) {
@@ -217,20 +225,6 @@ medImageApp.directive('displayAllImages', ['gridService', function(gridService){
       element.bind("click", function(e){
         gridService.setEditing(false);
         gridService.displayAllImages();
-      });
-    }
-  }
-}]);
-
-/*  Directive to clear all iamges from display 
-*/
-medImageApp.directive('clearImages', ['gridService', function(gridService){
-  return {
-    restrict: "C", 
-    link: function(scope, element, attrs) {
-
-      element.bind("click", function(e){
-        gridService.clearImages();
       });
     }
   }

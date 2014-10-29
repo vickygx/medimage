@@ -1,3 +1,10 @@
+/*  indexController
+*
+*   Angular Controller for Login/Logout page
+* 
+*   @author: Calvin Li
+*/
+
 var medImageApp = angular.module('medImageApp');
 
 medImageApp.controller("indexController", function($scope) {

@@ -1,3 +1,8 @@
+/*  Represents annotation
+* 
+*   @author: Danny Sanchez
+*/
+
 var Annotation = (function() {
 
   var Annotation = function(text) {

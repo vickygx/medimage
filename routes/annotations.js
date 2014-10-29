@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with annotations
+*
+*   @author: Danny Sanchez
+*/
+
 var ContribController = require('../controllers/contribution');
 var AnnotationController = require('../controllers/annotation');
 var PointAnnotation = require('../data/models/annotation/pointAnnotation');

@@ -1,3 +1,8 @@
+/*  Represents the a photo canvas editor
+* 
+*   @author: Danny Sanchez
+*/
+
 var EditorImg = (function() {
 
   var EditorImg = function(img, coord, zoom, ctx, canvas) {

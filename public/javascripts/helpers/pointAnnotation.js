@@ -1,3 +1,8 @@
+/*  Represents a point annotation on a canvas
+* 
+*   @author: Danny Sanchez
+*/
+
 var PointAnnotation = (function() {
 
   var PointAnnotation = function(text, coord, ctx, img, image_id, radius, _id) {

@@ -1,3 +1,8 @@
+/*  File of helper functions 
+* 
+*   @author: Danny Sanchez
+*/
+
 var getEventCoord = function(e) {
       
   var currentX, currentY;

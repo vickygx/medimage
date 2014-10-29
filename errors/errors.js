@@ -1,3 +1,7 @@
+/*  File of specific errors used by the app
+
+    @author: Danny Sanchez, Calvin Li, Vicky Gong
+*/
 
 // Any specific errors go into their own object
 module.exports.annotations = {};

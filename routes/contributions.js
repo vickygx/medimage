@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with contributions
+*
+*   @author: Calvin Li
+*/
+
 //Controller Modules
 var ContriController = require('../controllers/contribution');
 var MedImageController = require('../controllers/medimage');
@@ -80,6 +86,8 @@ module.exports = function(app) {
         } else if (!image) {
           return next(Errors.medimages.notFound);
         } else if (image._creator != req.session.user._id) {
+          return next(Errors.notAuthorized);
+        } else if (image._creator == contribution.user_id) {
           return next(Errors.notAuthorized);
         }
 

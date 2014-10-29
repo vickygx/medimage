@@ -1,3 +1,8 @@
+/*  Represents a range annotation on a canvas
+* 
+*   @author: Danny Sanchez
+*/
+
 var RangeAnnotation = (function() {
 
   var RangeAnnotation = function(text, startCoord, endCoord, ctx, img, image_id, _id) {

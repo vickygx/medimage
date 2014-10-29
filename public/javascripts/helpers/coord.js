@@ -1,3 +1,8 @@
+/*  Represents a coordinate in space
+* 
+*   @author: Danny Sanchez
+*/
+
 var Coord = (function() {
 
   var Coord = function(x, y) {

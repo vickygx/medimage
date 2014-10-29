@@ -1,3 +1,10 @@
+/*  
+*   File that takes care of all the routes dealing with users
+*
+*   @author: Danny Sanchez
+*/
+
+
 //Controller Modules
 var UserController = require('../controllers/user');
 

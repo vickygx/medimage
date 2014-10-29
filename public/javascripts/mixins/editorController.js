@@ -1,3 +1,10 @@
+/*  editorController
+*
+*   Angular Controller for closeup image editing mixin
+* 
+*   @author: Danny Sanchez
+*/
+
 var medImageApp = angular.module('medImageApp');
 
 medImageApp.controller('editorController', function($scope, $rootScope) {

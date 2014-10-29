@@ -1,3 +1,9 @@
+/*  
+*   File that takes care of all the routes dealing with index
+*
+*   @author: Danny Sanchez, Calvin Li, Vicky Gong
+*/
+
 var isLoggedIn = require('./middleware/isLoggedIn');
 
 module.exports = function(app){
@@ -14,13 +20,8 @@ module.exports = function(app){
   });
 
   app.get('/main', isLoggedIn, function(req, res) {
-    res.render('main', {title: 'Testing Grid' });
+    res.render('main', {title: 'MedImage App' });
   });
 
-
-  // TODO: Remove this as well
-  app.get('/editorTest', function(req, res) {
-    res.render('editorTest', {title: 'Editor testing page'});
-  });
 };
 
