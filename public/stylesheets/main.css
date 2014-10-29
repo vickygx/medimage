@@ -1,6 +1,11 @@
 body {
   margin: 0;
 }
+
+#medImageAppContainer {
+  min-height: 100%;
+}
+
 .navBar {
   position: fixed;
   height: 60px;
@@ -47,4 +52,8 @@ body {
   margin: 60px auto 0 auto;
   padding: 20px;
   text-align: center;
+}
+
+.editorContainer {
+  margin: 60px auto 0 auto;
 }

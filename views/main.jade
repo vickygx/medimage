@@ -7,11 +7,12 @@ block head
   +css('mainpage')
 
   include mixins/grid.jade
+  include mixins/editor.jade
 
   script(type="text/javascript", src="/javascripts/mainPage.js") 
 
 block content
-  div(data-ng-controller='medImageAppController')
+  div(id="medImageAppContainer", data-ng-controller='medImageAppController')
     //- Navigation bar
     div.navBar
       div(class="navItem")
@@ -28,9 +29,8 @@ block content
         button(class="clear-images btn btn-default") clearImages
 
     //- Grid Container
-    div.gridContainer
+    div.gridContainer(ng-if="!editing")
       +grid('grid')
 
-    
-
-
+    div.editorContainer(ng-if="editing")    
+      +editor()

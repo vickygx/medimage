@@ -26,7 +26,7 @@ mixin grid(id)
 
       //- Normal Images
       div.gridItem(id='{{image._id}}' ng-repeat="image in viewModel.images track by $index")
-        div.image
+        div.image(ng-click="editImage(image.image_url, image._id)")
           img(ng-src='{{image.image_url}}')
         div.title
           p(ng-bind='image.title')

@@ -17,8 +17,9 @@ block head
 
   include tag.jade
 
-mixin editor(imgUrl, image_id)
-  div#div-image-data(data-imageUrl="#{imgUrl}", data-image-id="#{image_id}")
+mixin editor()
+  div#div-user-data(data-username="#{session.user.username}")
+  // div#div-image-data(data-imageUrl="{{viewModel.imgUrl}}", data-image-id="{{viewModel.image_id}}")
   div(id="editor", data-ng-controller="editorController")
     div#annotationInputCont
       input#annotationInput.form-control(name="annotationNote", 
@@ -56,12 +57,12 @@ mixin editor(imgUrl, image_id)
                             span.glyphicon.glyphicon-move
               legend
                 h2 Tags
-                table
-                  tbody
-                    tr
-                      form#addTagForm
+                form#addTagForm(ng-if="viewModel.isContributor")
+                  table
+                    tbody
+                      tr
                         td(width="100%")
-                          input.form-control(name="tag", placeholder="Add tag")
+                          input#addTagInput.form-control(name="tag", placeholder="Add tag")
                         td(style="padding-left: 5px")
                           button.btn.btn-default(type="submit")
                             span.glyphicon.glyphicon-plus
@@ -74,23 +75,25 @@ mixin editor(imgUrl, image_id)
                   div(class="tagContainer", ng-repeat="tag in viewModel.tags")
                     +tag('{{tag.tag_name}}')
                     form.deleteTagForm
-                      input(type="hidden", name="tag", value="{{tag.tag_name}}")
-                      button(type="submit" class="close" data-dismiss="tagContainer")
-                        span(aria-hidden="true") ×
-                        span(class="sr-only") Close
+                      span(ng-if="viewModel.isContributor")
+                        input(type="hidden", name="tag", value="{{tag.tag_name}}")
+                        button(type="submit" class="close" data-dismiss="tagContainer")
+                          span(aria-hidden="true") ×
+                          span(class="sr-only") Close
 
 
               legend
                 h2 Contributors
-                table
-                  tbody
-                    tr
-                      form#addContributionForm
+                form#addContributionForm(ng-if="viewModel.isCreator", ng-submit="addContributionSubmit($event)")
+                  table
+                    tbody
+                      tr
                         td(width="100%")
-                          input.form-control(name="username", placeholder="Add contributors")
+                          input#addContributionInput.form-control(name="username", placeholder="Add contributors")
                         td(style="padding-left: 5px")
-                          button.btn.btn-default(type="submit")
+                          button#addContributionBtn.btn.btn-default(type="submit")
                             span.glyphicon.glyphicon-plus
+
                 div.alert.alert-danger.error(ng-if="viewModel.contributionError")
                   button(type="button" class="close" data-dismiss="alert")
                     span(aria-hidden="true") ×
@@ -98,13 +101,18 @@ mixin editor(imgUrl, image_id)
                   span(ng-bind="viewModel.contributionErrorText")
                 span(ng-if="viewModel.contributions")
                   div(class="contributionsContainer", ng-repeat="contribution in viewModel.contributions.contributions")
+                    span(ng-init="contributorUsername = viewModel.contributions.userIDToUser[contribution.user_id].username")
                     table
                       tbody
                         tr
                           td(width="100%")
-                            span(ng-bind="viewModel.contributions.userIDToUser[contribution.user_id].username")
+                            span(ng-bind="contributorUsername")
                           td
-                            form.deleteContributionForm
-                              input(name="contribution_id", value="{{contribution._id}}", type="hidden")
-                              button(type="submit", class="btn btn-danger")
-                                span.glyphicon.glyphicon-trash
+                            form.deleteContributionForm(ng-if="viewModel.creator.username != contributorUsername")
+                              span(ng-if="viewModel.isCreator")
+                                input(name="contribution_id", value="{{contribution._id}}", type="hidden")
+                                input(name="contribution_username", 
+                                      value="{{viewModel.contributions.userIDToUser[contributions.user_id].username}}", 
+                                      type="hidden")
+                                button(type="submit", class="btn btn-danger")
+                                  span.glyphicon.glyphicon-trash

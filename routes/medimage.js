@@ -16,6 +16,10 @@ module.exports = function(app) {
 
   // Gets all medical images
   app.get('/medimages', function(req, res, next){
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var limit = errorChecking.search.isValidLimitType(req.query.limit) ? Number(req.query.limit) : 50;
     var getTags = req.query.tag === 'true' ?  true: false;
     
@@ -47,8 +51,29 @@ module.exports = function(app) {
     })
   });
 
+  // Gets a medical image by imageID, returns creator populated
+  app.get('/medimages/:image_id', function(req, res, next) {
+
+    //Check if id is a valid objectID
+    if (ErrorChecking.invalidId(req.params.image_id)) {
+      return next(Errors.invalidIdError);
+    }
+
+    MedImageController.getMedImageByIDPopulated(req.params.image_id, function(err, medimage) {
+      if (err) {
+        return next(err);
+      }
+
+      res.json(medimage);
+    });
+  });
+
   // Gets the medical images for a user
   app.get('/users/:username/medimages', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var username = req.params.username;
     var getTags = req.query.tag === 'true' ?  true: false;
 
@@ -93,6 +118,10 @@ module.exports = function(app) {
 
   // Creates a medical image
   app.post('/medimages', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var username = req.session.user.username;
     var title = req.body.title.trim();
     var medImage = req.files.medImage;
@@ -140,6 +169,10 @@ module.exports = function(app) {
 
   //Editing a medical image (only title field)
   app.put('/medimages/:id', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     var imageID = req.params.id;
     var title = req.body.title;
 
@@ -167,6 +200,10 @@ module.exports = function(app) {
 
   // Deletes a medical image
   app.del('/medimages/:id', function(req, res, next) {
+    if (!req.session.user) {
+      return next(Errors.notLoggedIn);
+    }
+
     //Check if valid id
     var imageID = req.params.id;
     if (ErrorChecking.invalidId(imageID)) {
