@@ -47,7 +47,9 @@ mixin editor()
                     td
                       legend
                         h1(ng-if="!viewModel.isCreator", ng-bind="imgTitle")
-                        input#titleInput.form-control(ng-if="viewModel.isCreator", value="{{imgTitle}}")
+                        input#titleInput.form-control(ng-if="viewModel.isCreator", 
+                                                      value="{{imgTitle}}", 
+                                                      placeholder="Title may not be empty")
                   tr#controlsRow
                     td
                       legend

@@ -662,7 +662,6 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         $("#zoomOutBtn").on("click", function() {
           helpers.zoomOut(0.2);
         });
-
       })();
 
       // Tooltips
