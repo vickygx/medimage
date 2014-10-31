@@ -37,10 +37,11 @@ medImageApp.controller("medImageAppController", function($scope, $rootScope) {
       });
     });
 
-    $scope.editImage = function(imgUrl, image_id) {
+    $scope.editImage = function(imgUrl, image_id, imgTitle) {
       $rootScope.editing = true;
       $rootScope.imgUrl = imgUrl;
       $rootScope.image_id = image_id;
+      $rootScope.imgTitle = imgTitle;
     }
   }
 

@@ -84,3 +84,21 @@ table {
 .deleteTagForm {
   display: inline-block;
 }
+
+#controlsTable {
+  height: 100%;
+  overflow: auto;
+}
+
+#controlsTable td {
+  vertical-align: top;
+}
+
+#controlsRow {
+  height: 100%;
+  overflow: auto;
+}
+
+#deleteImg {
+  width: 100%;
+}
