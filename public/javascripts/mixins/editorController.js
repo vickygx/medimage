@@ -333,7 +333,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
 
     exports.deleteMedImage = function(image_id) {
       return ajaxController.del('/medimages/' + image_id).done(function(res) {
-        $("#homeButton").click();
+        $("#homeButton").children("button").click();
 
         $scope.$apply();
       });
