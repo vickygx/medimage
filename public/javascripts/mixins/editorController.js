@@ -339,6 +339,13 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
       });
     }
 
+    exports.editTitle = function(data) {
+      ajaxController.put("medimages/" + local.image_id, data).done(function(res) {
+        // Green border
+        $("#titleInput").removeClass("inputError");
+      });
+    }
+
     return exports;
   })();
 
@@ -714,6 +721,22 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         helpers.changeEditType("annotation", "crosshair", $(this));
       }
 
+      var editTitleSubmit = function(e) {
+        e.preventDefault();
+
+        var title = $("#titleInput").val().trim();
+
+        if (title && title.length > 0) {
+          var data = {
+            title: title
+          };
+
+          ajax.editTitle(data);
+        } else {
+          $("#titleInput").addClass("inputError");
+        }
+      }
+
       var inputKeyup = function(e) {
 
         if (public.isContributor) {
@@ -836,6 +859,23 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
         exports.inputEventOn();
       }
 
+      // titleInput
+
+      exports.titleEventOff = function() {
+
+        $("#titleInput").off("keyup", editTitleSubmit);
+      }
+
+      exports.titleEventOn = function() {
+
+        $("#titleInput").on("keyup", editTitleSubmit);
+      }
+
+      exports.titleEventReset = function() {
+        exports.titleEventOff();
+        exports.titleEventOn();
+      }
+
       // annotationDelete
 
       exports.annotationDeleteEventOff = function() {
@@ -883,6 +923,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
       exports.isCreatorEventsReset = function() {
         eventListeners.contributionEventReset();
         eventListeners.deleteImgBtnEventReset();
+        eventListeners.titleEventReset();
       }
     })();
 

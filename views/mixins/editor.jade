@@ -46,7 +46,8 @@ mixin editor()
                   tr
                     td
                       legend
-                        h1(ng-bind="imgTitle")
+                        h1(ng-if="!viewModel.isCreator", ng-bind="imgTitle")
+                        input#titleInput.form-control(name="title", value="{{imgTitle}}")
                   tr#controlsRow
                     td
                       legend
