@@ -474,7 +474,7 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
 
             // If we haven't started dragging and have not clicked an annotation
             // display the annotation we are hovering over
-            } else if (!annotationClicked) {
+            } else {
 
               // Look for point annotations close by first
               for (var i = 0; i < local.pointAnnotations.length; i++) {
@@ -483,10 +483,13 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
 
                 if (Math.abs(e.offsetX - canvasCoord.x) <= local.circleRadius &&
                     Math.abs(e.offsetY - canvasCoord.y) <= local.circleRadius) {
-                  var text = annotation.text;
-                  helpers.showAnnotationInput(e, text);
+                  
+                  if (!annotationClicked) {
+                    var text = annotation.text;
+                    helpers.showAnnotationInput(e, text);
 
-                  helpers.setAnnotation(annotation);
+                    helpers.setAnnotation(annotation);
+                  }
 
                   overAnnotation = true;
 
@@ -498,10 +501,13 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
               for (var i = 0; i < local.rangeAnnotations.length; i++) {
                 var annotation = local.rangeAnnotations[i];
                 if (helpers.checkInsideRectangle(annotation.rectangle, e.offsetX, e.offsetY)) {
-                  var text = annotation.text;
-                  helpers.showAnnotationInput(e, text);
+                  
+                  if (!annotationClicked) {  
+                    var text = annotation.text;
+                    helpers.showAnnotationInput(e, text);
 
-                  helpers.setAnnotation(annotation);
+                    helpers.setAnnotation(annotation);
+                  }
 
                   overAnnotation = true;
 
@@ -562,6 +568,9 @@ medImageApp.controller('editorController', function($scope, $rootScope) {
               if (overAnnotation) {
                 helpers.showAnnotationInput(e);
                 annotationClicked = true;
+              } else {
+                helpers.hideAnnotationInput(false);
+                annotationClicked = false;
               }
             }
           }
