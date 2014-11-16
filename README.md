@@ -1,7 +1,7 @@
 proj3
 =====
 
-Project 3: Mini team project
+Project 3: Med Image
 
 url: http://medimage-calvinli.rhcloud.com/
 
